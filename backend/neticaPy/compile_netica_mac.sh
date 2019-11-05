@@ -1,7 +1,8 @@
 #!/bin/sh
 echo "compiling"
-gcc src/NeticaEx.c -c -I./src -L./lib_mac -o lib_mac/NeticaEx.o
-g++ -shared lib_mac/libnetica.a lib_mac/NeticaEx.o -o lib/libnetica.so
+mkdir -p lib
+gcc $1/src/NeticaEx.c -c -I $1/src -L $1/lib -o lib/NeticaEx.o
+g++ -shared $1/lib/libnetica.a lib/NeticaEx.o -o lib/libnetica.so
 
 echo "done compiling"
 
