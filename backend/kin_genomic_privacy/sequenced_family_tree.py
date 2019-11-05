@@ -14,7 +14,7 @@ __project__ = "Data-less Kin Genomic Privacy Estimator"
 from collections.abc import MutableMapping, Hashable
 import hashlib
 import json
-from logging import Logger
+import logging
 import math
 import random
 from copy import deepcopy
@@ -31,6 +31,7 @@ from .genomic_privacy import entropy, ABSOLUTE_EQUALITY_TOLERANCE, snp2int
 from .MendelianInheritanceCPD import MendelianInheritanceCPD
 from .NeticaFamilyTree import NeticaFamilyTree
 
+logging.getLogger("neticaPy.netica").setLevel(logging.WARNING)
 
 class SequencedFamilyTree(BayesianModel, Hashable):
 
@@ -132,7 +133,7 @@ class SequencedFamilyTree(BayesianModel, Hashable):
     }
     _cache = {}
 
-    def __init__(self, family_tree_edges: list, sequenced_relatives: list, target: str, family_nodes: list, minimize:bool=True, logger:Logger=None, cache=None):
+    def __init__(self, family_tree_edges: list, sequenced_relatives: list, target: str, family_nodes: list, minimize:bool=True, logger:logging.Logger=None, cache=None):
         """
         Represents a Family Tree containing sequenced members and the target of an inference attack
 
