@@ -23,14 +23,6 @@ from config import config
 import database as db
 
 
-"""
-For a remote connection run those 2 commands in your terminal (stop mysql + ssh port forwarding)
-brew services stop mysql
-ssh -L 3306:localhost:3306 webmaster@santeperso.unil.ch -N
-For low consumption
-nice -n 20 venv/bin/python3 daemon.py -n 1
-"""
-
 def _fetch(syn_queue, nb_entry = 2000):
     with db.connect_db(config["DATABASE_CONFIG"], config["LOGGER"]) as db_connexion:
       result = db.get_null_privacy_metrics(db_connexion, nb_entry)
