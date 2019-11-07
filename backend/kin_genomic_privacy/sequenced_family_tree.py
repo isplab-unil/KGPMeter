@@ -518,24 +518,41 @@ class SequencedFamilyTree(BayesianModel, Hashable):
             else:
                 return mean_entropy_posterior[0], mean_exp_error[0]
 
-    def get_privacy_metrics(self, maf):
-        """Returns a tuple with (mean posterior entropy, mean expected error) from cache if possible and by computing it otherwise"""
-        return self.cache[maf] if maf in self.cache else self.compute_privacy_metrics(maf)
+    def get_privacy_metrics(self, maf, detailed_results: bool = False):
+        """Returns a tuple with (mean posterior entropy, mean expected error) from cache if possible and by computing it otherwise.
 
-    def compute_normalized_entropy(self, maf):
+        If detailed_results=True, it doesn't use cache."""
+        if not detailed_results:
+            return self.cache[maf] if maf in self.cache else self.compute_privacy_metrics(maf)
+        else:
+            return self.compute_privacy_metrics(maf, detailed_results)
+
+    def compute_normalized_entropy(self, maf, detailed_results: bool = False):
         """Computes normalized entropy correctly, handling lim maf->0 correctly
 
         It mainly handles the edge-case lim maf->0:
         - normalized entropy->0 if any sequenced individual reveals information
         - normalized entropy->1 if no sequenced individual reveals information
         """
+        normalized_entropy = float('nan')
         if len(self.sequenced_relatives())==0:
-            return 1
+            normalized_entropy = 1
         if math.isclose(maf, 0.0, abs_tol=ABSOLUTE_EQUALITY_TOLERANCE):
-            return 0
-        posterior_entropy = self.get_privacy_metrics(maf)[0]
+            normalized_entropy = 0
+        privacy_metrics = self.get_privacy_metrics(maf, detailed_results)
         prior_entropy = entropy(MendelianInheritanceCPD.prior(maf)).tolist()
-        return posterior_entropy / prior_entropy
+        if not detailed_results:
+            if not math.isnan(normalized_entropy):
+                return normalized_entropy
+            normalized_entropy = privacy_metrics[0] / prior_entropy
+            return normalized_entropy
+        else:
+            for case in privacy_metrics:
+                if not math.isnan(normalized_entropy):
+                    case["normalized_entropy"] = normalized_entropy
+                else:
+                    case["normalized_entropy"] = case["entropy_posterior"] / prior_entropy
+            return privacy_metrics
 
     def snps_privacy_score(self, mafs_to_compute:List[float], mafs_to_interpolate = None):
         mafs_to_compute = sorted(mafs_to_compute)
