@@ -53,8 +53,8 @@ def test_get_family_relation(sft):
   - correctly throws a NodeNotFound error"""
 
 
-  print("sft.nodes()")
-  print(sft.nodes())
+  print("sft.nodes")
+  print(sft.nodes)
 
   assert(sft.get_family_relation("you", "grandfather") == "grandparent")
   assert(sft.get_family_relation("you", "father") == "parent")
