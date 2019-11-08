@@ -14,7 +14,8 @@ import signal
 import time
 from typing import Tuple, Optional as Opt
 
-from config import config
+from flask import current_app
+
 from kin_genomic_privacy import SequencedFamilyTree
 import database as db
 
@@ -35,8 +36,8 @@ def compute_and_save_privacy_metrics(family_tree:SequencedFamilyTree, maf:float,
     computation_time = time.process_time() - computation_time
 
     # # insert result in database:
-    if config["ENGINE_USE_CACHE"] and value_id:
-        with db.connect_db(config["DATABASE_CONFIG"], config["LOGGER"]) as db_connexion:
+    if current_app.config["ENGINE_USE_CACHE"] and value_id:
+        with db.connect_db(current_app.config["DATABASE_CONFIG"], current_app.config["LOGGER"]) as db_connexion:
             db.update_privacy_metric(db_connexion, value_id, mean_entropy_posterior, mean_exp_error, computation_time)
 
     return (maf, mean_entropy_posterior, mean_exp_error, computation_time)
@@ -45,7 +46,7 @@ def compute_and_save_privacy_metrics(family_tree:SequencedFamilyTree, maf:float,
 def handler(signum, frame):
     raise TimeoutError("end of time")
 
-def compute_and_save_privacy_metrics_with_timeout(family_tree:SequencedFamilyTree, maf:float, value_id:int, timeout:int=config["ENGINE_DEFAULT_TIMEOUT"]) -> Tuple[float,Opt[float],Opt[float],float]:
+def compute_and_save_privacy_metrics_with_timeout(family_tree:SequencedFamilyTree, maf:float, value_id:int, timeout:int=10) -> Tuple[float,Opt[float],Opt[float],float]:
     """Wraps compute_privacy_metrics() with a timer using signal module returns (maf, None, None) on timeout"""
 
 
