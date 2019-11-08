@@ -555,7 +555,7 @@ class SequencedFamilyTree(Hashable):
         normalized_entropy = float('nan')
         if len(self.sequenced_relatives())==0:
             normalized_entropy = 1
-        if math.isclose(maf, 0.0, abs_tol=ABSOLUTE_EQUALITY_TOLERANCE):
+        elif math.isclose(maf, 0.0, abs_tol=ABSOLUTE_EQUALITY_TOLERANCE):
             normalized_entropy = 0
         privacy_metrics = self.get_privacy_metrics(maf, detailed_results)
         prior_entropy = entropy(MendelianInheritanceCPD.prior(maf)).tolist()
