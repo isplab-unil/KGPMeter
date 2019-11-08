@@ -68,4 +68,4 @@ if __name__ == '__main__':
     if args.run:
         application.config["LOGGER"].warning("Running app in testing/debugging mode, DO NOT USE IN PRODUCTION")
 
-    application.run(debug=True, port=args.port)
+        application.run(debug=True, port=args.port)
