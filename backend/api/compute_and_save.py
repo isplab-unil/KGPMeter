@@ -37,7 +37,7 @@ def compute_and_save_privacy_metrics(family_tree:SequencedFamilyTree, maf:float,
 
     # # insert result in database:
     if current_app.config["ENGINE_USE_CACHE"] and value_id:
-        with db.connect_db(current_app.config["DATABASE_CONFIG"], current_app.config["LOGGER"]) as db_connexion:
+        with db.connect_db(current_app.config["DATABASE_CONFIG"]) as db_connexion:
             db.update_privacy_metric(db_connexion, value_id, mean_entropy_posterior, mean_exp_error, computation_time)
 
     return (maf, mean_entropy_posterior, mean_exp_error, computation_time)

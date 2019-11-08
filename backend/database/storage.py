@@ -12,6 +12,7 @@ __email__ = "didier.dupertuis@unil.ch"
 __project__ = "Data-less Kin Genomic Privacy Estimator"
 
 from contextlib import closing, contextmanager
+import logging
 import json
 import sys
 import traceback
@@ -23,21 +24,20 @@ import warnings
 
 import mysql.connector
 
-def connect_db(db_config, logger = None):
+logger = logging.getLogger(__name__)
+
+def connect_db(db_config):
     """Handles the connection to the database, returns None in case of error/missing configuration"""
     if db_config:
+        logger
         try:
             db_connexion = closing(mysql.connector.connect(**db_config))
             return db_connexion
         except Exception as e:
             error_msg_header = "Error connecting to database, not using it. See stacktrace:\n%s" % (e,)
             error_traceback = traceback.format_exc()
-            if logger:
-                logger.warning(error_msg_header)
-                logger.warning(error_traceback)
-            else:
-                print(error_msg_header, file=sys.stderr)
-                print(error_traceback, file=sys.stderr)
+            logger.warning(error_msg_header)
+            logger.warning(error_traceback)
     else:
         logger.info("No databasse configuration given, returning empty context")
 
@@ -59,12 +59,8 @@ def db_exceptions_graceful_handler(request_function):
         except Exception as e:
             error_msg_header = "A function in database package failed, see stacktrace:\n%s" % (e,)
             error_traceback = traceback.format_exc()
-            if kwargs["logger"]:
-                kwargs["logger"].warning(error_msg_header)
-                kwargs["logger"].warning(error_traceback)
-            else:
-                print(error_msg_header, file=sys.stderr)
-                print(error_traceback, file=sys.stderr)
+            logger.warning(error_msg_header)
+            logger.warning(error_traceback)
     return handle_db_exception_wrapper
 
 @db_exceptions_graceful_handler

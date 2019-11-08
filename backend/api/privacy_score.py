@@ -86,7 +86,7 @@ def privacy_score() -> KgpResponse:
 
 
         db_config = current_app.config["DATABASE_CONFIG"] if current_app.config["ENGINE_USE_CACHE"] else None
-        with db.connect_db(db_config, current_app.config["LOGGER"]) as db_connexion:
+        with db.connect_db(db_config) as db_connexion:
 
             if (current_app.config["ENGINE_VERBOSE"]):
                 if not current_app.config["ENGINE_USE_CACHE"]:
