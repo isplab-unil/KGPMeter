@@ -45,10 +45,10 @@ def root():
     # TODO: 302 code to static doc page
     return 'Hello World!'
 
-
 # Privacy score entry point: Computes privacy score from JSON request
 application.route('/privacy-score', methods=["POST"])(privacy_score)
 
+# only for local testing:
 if application.config["TESTING"]:
     @application.route('/%s/' % application.config["SERVE_STATIC_FILES_FROM"], defaults={'path': ""})
     @application.route('/%s/<path:path>' % application.config["SERVE_STATIC_FILES_FROM"])
@@ -61,3 +61,16 @@ if application.config["TESTING"]:
             # ...as well as index.html reference
             path = path + "index.html"
         return send_from_directory(application.config["STATIC_FILES_FOLDER"], path)
+
+
+# if file is main and -r option: run the Flask application
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Run the website in testing/debugging mode, DO NOT USE IN PRODUCTION")
+    parser.add_argument('-r', '--run', help='Whether to run the flask app', action='store_true')
+    parser.add_argument('-p', '--port', help='Port the app should be run from', type=int, default=5000)
+    args = parser.parse_args()
+
+    if args.run:
+        application.config["LOGGER"].warning("Running app in testing/debugging mode, DO NOT USE IN PRODUCTION")
+
+    application.run(debug=True, port=args.port)
