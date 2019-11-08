@@ -38,7 +38,8 @@ class Config(object):
     "user": "app",
     "password": "KGP_m3t3r",
     "host": "localhost",
-    "database": "kgp_meter"
+    "database": "kgp_meter",
+    "use_pure": True
   }
 
   LOGGER = logging.getLogger("KGP_METER")
