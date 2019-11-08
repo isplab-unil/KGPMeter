@@ -370,7 +370,7 @@ class SequencedFamilyTree(Hashable):
     def copy(self):
         return deepcopy(self)
 
-    def to_netica_net(self, maf):
+    def _to_netica_net(self, maf):
 
         #TODO : ASCIIFY PROPERLY: REPRESENT THEM IN HEXADECIMAL/base 64
         def bytify(str):
@@ -445,7 +445,7 @@ class SequencedFamilyTree(Hashable):
                 }
         """
 
-        with self.to_netica_net(maf) as netica_net:
+        with self._to_netica_net(maf) as netica_net:
             result = []  # list used only for detailed results
             evidence = {}  # dict to contain observed evidence in each case
             # using lists for reference
