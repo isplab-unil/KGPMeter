@@ -55,14 +55,3 @@ CREATE TABLE value (
   REFERENCES request (id)
     ON DELETE CASCADE
 );
-
-CREATE TABLE question (
-  id             INT         NOT NULL AUTO_INCREMENT,
-  user_id        VARCHAR(64) NOT NULL,
-  created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  question       VARCHAR(64) NOT NULL,
-  response       TEXT        NOT NULL,
-  lng            VARCHAR(8)  NOT NULL,
-  survey_trigger VARCHAR(16) NOT NULL,
-  PRIMARY KEY (id)
-);

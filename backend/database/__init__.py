@@ -17,7 +17,7 @@ from .storage import update_privacy_metric
 from .storage import insert_null_privacy_metrics
 from .storage import insert_new_request
 from .storage import insert_new_tree
-from .storage import insert_survey_answer
+from .storage import db_exceptions_graceful_handler
 from .storage import get_tree_privacy_metrics
 
-__all__=["connect_db","insert_new_request", "insert_new_tree", "insert_null_privacy_metrics", "check_cache", "get_tree_privacy_metrics", "update_privacy_metric", "get_null_privacy_metrics", "insert_survey_answer"]
+__all__=["connect_db","insert_new_request", "insert_new_tree", "insert_null_privacy_metrics", "check_cache", "get_tree_privacy_metrics", "update_privacy_metric", "get_null_privacy_metrics", "db_exceptions_graceful_handler"]

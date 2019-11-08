@@ -193,26 +193,3 @@ def get_null_privacy_metrics(db_connexion, nb_entries: int) -> Opt[List[Tuple[st
     results = cursor.fetchall()
     if cursor.rowcount > 0:
         return [row for row in results]
-
-
-@db_exceptions_graceful_handler
-def insert_survey_answer(db_connexion, user_id: str, question_code: str, response: str, lng: str, survey_trigger: str) -> bool:
-    """
-
-    :param user_id: User_id in the json of the request
-    :param question_code: The question code in as a string, see translation file
-    :param response: The value of the answer
-    :param lng: The 2-letter language code
-    :param survey_trigger: The event that triggered the start of the survey ("volunteer"/"trigger"/"resume"/etc)
-    :return: boolean indicating whether insertion was successful
-    """
-    cursor = db_connexion.cursor(prepared=True)
-    if question_code == "survey-comment" and len(response) > 1000:
-        warnings.warn("database.insert_survey_answer(): survey-comment too long (>1000 characters) cutting after 1000, part that was cut:\n"+response[1000:])
-        response = response[:1000]
-
-    cursor.execute(
-        'INSERT INTO question (user_id, question, response, lng, survey_trigger) VALUES (%s, %s, %s, %s, %s)',
-        (user_id, question_code, response, lng, survey_trigger))
-    db_connexion.commit()
-    return True
