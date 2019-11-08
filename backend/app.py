@@ -34,11 +34,6 @@ else:
     warnings.warn("No configuration file (config.py) found, loading default configuration file instead...")
     application.config.from_object("config_default.Config")
 
-print("application.config")
-print(application.config)
-print("application.config[TESTING]")
-print(application.config["TESTING"])
-
 # Test entry point: Redirects to API documentation.
 @application.route('/')
 def root():
