@@ -371,6 +371,7 @@ class SequencedFamilyTree(Hashable):
         return deepcopy(self)
 
     def _to_netica_net(self, maf):
+        assert maf>=0 and maf <= 0.5
 
         #TODO : ASCIIFY PROPERLY: REPRESENT THEM IN HEXADECIMAL/base 64
         def bytify(str):
@@ -444,6 +445,7 @@ class SequencedFamilyTree(Hashable):
                     "exp_error": float
                 }
         """
+        assert maf>=0 and maf <= 0.5
 
         with self._to_netica_net(maf) as netica_net:
             result = []  # list used only for detailed results
@@ -536,6 +538,7 @@ class SequencedFamilyTree(Hashable):
         """Returns a tuple with (mean posterior entropy, mean expected error) from cache if possible and by computing it otherwise.
 
         If detailed_results=True, it doesn't use cache."""
+        assert maf>=0 and maf <= 0.5
         if not detailed_results:
             return self.cache[maf] if maf in self.cache else self.compute_privacy_metrics(maf)
         else:
@@ -548,6 +551,7 @@ class SequencedFamilyTree(Hashable):
         - normalized entropy->0 if any sequenced individual reveals information
         - normalized entropy->1 if no sequenced individual reveals information
         """
+        assert maf>=0 and maf <= 0.5
         normalized_entropy = float('nan')
         if len(self.sequenced_relatives())==0:
             normalized_entropy = 1
@@ -572,6 +576,7 @@ class SequencedFamilyTree(Hashable):
         mafs_to_compute = sorted(mafs_to_compute)
         norm_post_entropies = [self.compute_normalized_entropy(maf) for maf in mafs_to_compute]
         if mafs_to_interpolate:
+            assert all(maf>=0 and maf <= 0.5 for maf in mafs_to_interpolate)
             return np.mean(np.interp(mafs_to_interpolate, mafs_to_compute, norm_post_entropies))
         else:
             return np.mean(norm_post_entropies)
