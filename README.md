@@ -4,7 +4,7 @@
 
 ### Downloading and compiling Netica
 
-To use Netica on your machine, it needs to be download and compiled from Norsys sources.
+KGP Meter depends on Netica, a Bayesian Network library in C. Netica needs to be download and compiled from Norsys sources.
 Run the shell script "backend/neticaPy/download_compile_netica_<your OS>.sh" corresponding to your OS in the ```backend/neticaPy/``` folder to do so.
 
 ### Estimate a privacy score in python
