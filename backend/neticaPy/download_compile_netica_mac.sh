@@ -9,7 +9,6 @@ g++ -shared Netica_API_504/lib/libnetica.a lib/NeticaEx.o -o lib/libnetica.so
 
 echo "done compiling, removing files"
 rm NeticaAPI_Mac.zip
-rm -r Netica_API_504/
 
 
 
