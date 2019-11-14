@@ -5,12 +5,14 @@
 ### Downloading Netica and installing python dependencies
 
 KGP Meter depends on Netica, a Bayesian Network library in C. Netica needs to be download and compiled from Norsys sources:
-(note: for Mac OS X you will need to have the xcode developer tools and the compilation will fire some warnings that can be safely ignored)
 ```
 cd backend/neticaPy/
-sh download_compile_netica_<your OS>.sh
+sh download_compile_netica_<your OS: mac, linux64 or linux32>.sh
 cd ../..
 ```
+Notes:
+- for Mac OS X you will need to have the xcode developer tools and the compilation will fire some warnings that can be safely ignored.
+- for Windows, we don't have a download_compile script yet. If you write one, we would be very happy to add it!
 
 Install python dependencies:
 ```
