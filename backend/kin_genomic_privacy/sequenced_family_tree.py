@@ -298,7 +298,7 @@ class SequencedFamilyTree(Hashable):
         bayesian_network = BayesianModel(self.edges)
         bayesian_network.add_node(self.target)
         for fn in self.family_nodes():
-            if len(bayesian_network.successors(fn))==0:
+            if len(list(bayesian_network.successors(fn)))==0:
                 bayesian_network.add_edge(fn,self._generate_new_node_id())
             bayesian_network.add_edges_from([(pred, succ) for pred in bayesian_network.predecessors(fn) for succ in bayesian_network.successors(fn)])
             bayesian_network.remove_node(fn)
@@ -402,7 +402,7 @@ class SequencedFamilyTree(Hashable):
         for node, netica_node in nodes.items():
             # todo calculate b"AA, Aa, aa"
             netica.setnodestatenames(netica_node, b"AA, Aa, aa")
-            parents = self.inference_network.predecessors(node)
+            parents = list(self.inference_network.predecessors(node))
             # no parents
             if len(parents) == 0:
                 netica.setnodeprobs(netica_node, [], MendelianInheritanceCPD.prior(maf))
