@@ -24,10 +24,29 @@ class KinGenomicPrivacyMeter{
 
     this.updateSvgWidth()
 
+    // user id&source
+    let idCookie = cookieLocalStoragePrefix+"user-id"
+    let sourceCookie = cookieLocalStoragePrefix+"user-source"
+    this.userId = cookie.read(idCookie)
+    this.userSource = cookie.read(sourceCookie)
+    let new_user = !this.userId
+    if(new_user){
+      this.userId = (+new Date())+"-"+Math.random()
+      cookie.create(idCookie,this.userId,1)
+      this.userSource = document.URL
+      // TODO: remove or refine ?test
+      if(Boolean(this.userSource.match(/\/privacy-dev\//))){
+        this.userSource = this.userSource+"?test"
+      }
+      cookie.create(sourceCookie,this.userSource,1)
+    }
+
     // api urls
     this.api_base_url = api_base_url
     this.privacyScoreApiEndpoint = this.api_base_url+"/privacy-score"
     this.surveyApiEndpoint = this.api_base_url+"/survey"
+
+    kgpsurvey = new KgpSurvey(this.surveyApiEndpoint, this.userId, this.i18n)
 
     // privacy bar
     let privacyBarWidth = 30
@@ -67,24 +86,8 @@ class KinGenomicPrivacyMeter{
     kgpMeterScoreRequestHandler.addListener((...args) => kgpsurvey.await(...args))
     kgpMeterScoreRequestHandler.addListener((...args) => otherThingsToDoOnKgpMeterScoreResponse(...args))
     
-    // trash button
-    this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
-
-    // user id&source
-    let idCookie = cookieLocalStoragePrefix+"user-id"
-    let sourceCookie = cookieLocalStoragePrefix+"user-source"
-    this.userId = cookie.read(idCookie)
-    this.userSource = cookie.read(sourceCookie)
-    if(!this.userId){
-      this.userId = (+new Date())+"-"+Math.random()
-      cookie.create(idCookie,this.userId,1)
-      this.userSource = document.URL
-      if(Boolean(this.userSource.match(/\/privacy-dev\//))){
-        this.userSource = this.userSource+"?test"
-      }
-      cookie.create(sourceCookie,this.userSource,1)
-
-      // initializationRequest
+    // new user: send init request
+    if(new_user){
       kgpMeterScoreRequestHandler.requestScore(
         "i1",
         [["i1","f1"],["f1","i2"]], [],
@@ -92,6 +95,9 @@ class KinGenomicPrivacyMeter{
         true // silent request
       )
     }
+    
+    // trash button
+    this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
 
     onWindowResize(()=>self.resizeSvg())
 

@@ -7,15 +7,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var kgpsurvey = void 0;
 
 var KgpSurvey = function () {
-  function KgpSurvey(api_endpoint, i18n) {
-    var launchWaitTimeBasis = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 60;
-    var launchWaitTimePoissonMean = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 90;
-    var launchWaitTimeMax = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 300;
+  function KgpSurvey(api_endpoint, userId, i18n) {
+    var launchWaitTimeBasis = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 60;
+    var launchWaitTimePoissonMean = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 90;
+    var launchWaitTimeMax = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 300;
 
     _classCallCheck(this, KgpSurvey);
 
     this.api_endpoint = api_endpoint;
     this.questions = ["prior-knowledge", "score-exp", "you-or-family", "utility-website", "nps", "survey-comment", "survey-sex", "survey-age", "survey-own-sequence", "survey-other-sequence"];
+    this.userId = userId;
     this.i18n = i18n;
 
     var self = this;
@@ -47,8 +48,8 @@ var KgpSurvey = function () {
           answer: $(this).val(),
           survey_trigger: self.surveyTrigger,
           user: {
-            id: USER_ID,
-            lng: i18n.lng
+            id: self.userId,
+            lng: self.i18n.lng
           }
         };
         fetch(self.api_endpoint, {
@@ -66,8 +67,8 @@ var KgpSurvey = function () {
         answer: $(this).val(),
         survey_trigger: self.surveyTrigger,
         user: {
-          id: USER_ID,
-          lng: i18n.lng
+          id: self.userId,
+          lng: self.i18n.lng
         }
       };
       fetch(self.api_endpoint, {
@@ -108,10 +109,13 @@ var KgpSurvey = function () {
   }, {
     key: "launchSurvey",
     value: function launchSurvey(trigger) {
-      if (!this.getSurveyStatus()) {
+      var status = this.getSurveyStatus();
+      if (!status) {
         this.surveyTrigger = trigger;
-        $("#modal-survey").modal('show');
         this.setSurveyStatus("launched");
+      }
+      if (status != "finished") {
+        $("#modal-survey").modal('show');
       }
       //$('#modal-survey').on('hidden.bs.modal', function (e) {if(getSurveyStatus()!="finished"){ showSurveyVolunteerButton() }})
     }

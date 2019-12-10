@@ -61,7 +61,6 @@ kgp = new KinGenomicPrivacyMeter(
 
 
 //initSurvey()
-kgpsurvey = new KgpSurvey("/survey", i18n)
 
 ftree = loadFamilyTreeFromLocalStorage()
 
@@ -94,8 +93,6 @@ if(!savedFtree){
   ftree = FamilyTreeLayout.unserialize(JSON.stringify(start_ftree))
 }
 
-//console.log("kgp.target: ", kgp.target, ", kgp.target.id: ", kgp.target.id)
-console.log("ftree.nodesArray().filter(n =>n.id==kgp.target)[0]: ",ftree.nodesArray().filter(n =>n.id==kgp.target)[0])
 if(kgp.target){
   if(!kgp.target.id){
     kgp.target = ftree.nodesArray().filter(n =>n.id==kgp.target)[0]

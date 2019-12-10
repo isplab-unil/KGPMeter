@@ -2,9 +2,10 @@
 
 let kgpsurvey;
 class KgpSurvey{
-  constructor(api_endpoint, i18n, launchWaitTimeBasis=60, launchWaitTimePoissonMean=90, launchWaitTimeMax = 300){
+  constructor(api_endpoint, userId, i18n, launchWaitTimeBasis=60, launchWaitTimePoissonMean=90, launchWaitTimeMax = 300){
     this.api_endpoint = api_endpoint
     this.questions = ["prior-knowledge","score-exp","you-or-family","utility-website","nps","survey-comment","survey-sex","survey-age", "survey-own-sequence", "survey-other-sequence"]
+    this.userId = userId
     this.i18n = i18n
 
     let self = this
@@ -36,8 +37,8 @@ class KgpSurvey{
           answer:$(this).val(),
           survey_trigger:self.surveyTrigger,
           user:{
-            id:USER_ID,
-            lng:i18n.lng
+            id: self.userId,
+            lng: self.i18n.lng
           }
         }
         fetch(self.api_endpoint, {
@@ -55,8 +56,8 @@ class KgpSurvey{
         answer:$(this).val(),
         survey_trigger:self.surveyTrigger,
         user:{
-          id:USER_ID,
-          lng:i18n.lng
+          id: self.userId,
+          lng: self.i18n.lng
         }
       }
       fetch(self.api_endpoint, {
@@ -89,10 +90,13 @@ class KgpSurvey{
    * @param {*} trigger either "volunteer", "automatic", "resume"
    */
   launchSurvey(trigger){
-    if(!this.getSurveyStatus()){
+    let status = this.getSurveyStatus()
+    if(!status){
       this.surveyTrigger = trigger
-      $("#modal-survey").modal('show')
       this.setSurveyStatus("launched")
+    }
+    if(status!="finished"){
+      $("#modal-survey").modal('show')
     }
     //$('#modal-survey').on('hidden.bs.modal', function (e) {if(getSurveyStatus()!="finished"){ showSurveyVolunteerButton() }})
   }
