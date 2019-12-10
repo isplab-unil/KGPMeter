@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "babel app/src -d app/ -watch",
-    "es6-build": "cp -r app/src/js app/"
+    "build": "babel app/src -d app/ -watch & babel lib/src -d lib/ -watch",
+    "es6-build": "cp -r app/src/js app/ & cp -r lib/src/ lib/"
   },
   "keywords": [],
   "author": "",
