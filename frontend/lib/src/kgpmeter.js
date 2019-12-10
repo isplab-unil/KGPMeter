@@ -7,7 +7,7 @@ class KgpMeter{
     this.apiUrl = apiUrl
     this.lang = lang
 
-    this.div = document.getElementById(this.divId)
-    this.div.innerHTML = "<iframe src='{src}'></iframe>".replace("{src}",this.apiUrl)
+    this.div = document.getElementById(divId)
+    this.div.innerHTML = "<iframe src='{src}/app/'></iframe>".replace("{src}",this.apiUrl)
   }
 }
