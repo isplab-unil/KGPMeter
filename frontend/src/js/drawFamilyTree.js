@@ -16,7 +16,6 @@ class KinGenomicPrivacyMeter{
     
     this.maxFamilyTreeDepth = maxFamilyTreeDepth
     this.youNodeId = youNodeId // "@I1@"
-    this.target = youNodeId
     this.privacyMetric = 1
     this.relationships = KinGenomicPrivacyMeter.getRelationships()
 
