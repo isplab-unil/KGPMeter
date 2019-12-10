@@ -91,11 +91,9 @@ class KgpSurvey{
    */
   launchSurvey(trigger){
     let status = this.getSurveyStatus()
-    if(!status){
+    if(status!="finished"){
       this.surveyTrigger = trigger
       this.setSurveyStatus("launched")
-    }
-    if(status!="finished"){
       $("#modal-survey").modal('show')
     }
     //$('#modal-survey').on('hidden.bs.modal', function (e) {if(getSurveyStatus()!="finished"){ showSurveyVolunteerButton() }})
