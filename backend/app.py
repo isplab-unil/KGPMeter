@@ -53,8 +53,8 @@ def serve_iframe_app(path):
         if len(path) > 0 and not path.endswith("/"):
             return redirect(request.path + "/", code=301)
         # ...as well as index.html reference
-        path = path + "app.html"
-    return send_from_directory("../frontend/", path)
+        path = path + "index.html"
+    return send_from_directory("../frontend/app/", path)
 
 # only for local testing:
 if application.config["TESTING"]:
