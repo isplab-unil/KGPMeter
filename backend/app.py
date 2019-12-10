@@ -43,6 +43,19 @@ def root():
 # Privacy score entry point: Computes privacy score from JSON request
 application.route('/privacy-score', methods=["POST"])(privacy_score)
 
+# serve iframe website
+@application.route('/iframe/', defaults={'path': ""})
+@application.route('/iframe/<path:path>')
+def serve_iframe_app(path):
+    # TODO TOO MUCH OF A HACK
+    if not re.search("\\.", path):
+        # add trailing slash if missing
+        if len(path) > 0 and not path.endswith("/"):
+            return redirect(request.path + "/", code=301)
+        # ...as well as index.html reference
+        path = path + "app.html"
+    return send_from_directory("../frontend/", path)
+
 # only for local testing:
 if application.config["TESTING"]:
     @application.route('/%s/' % application.config["SERVE_STATIC_FILES_FROM"], defaults={'path': ""})
