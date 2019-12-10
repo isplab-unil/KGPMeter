@@ -7,15 +7,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var kgpsurvey = void 0;
 
 var KgpSurvey = function () {
-  function KgpSurvey(api_endpoint, kgpMeterScoreUpdateCallbacks, i18n) {
-    var launchWaitTimeBasis = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 60;
-    var launchWaitTimePoissonMean = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 90;
-    var launchWaitTimeMax = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 300;
+  function KgpSurvey(api_endpoint, i18n) {
+    var launchWaitTimeBasis = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 60;
+    var launchWaitTimePoissonMean = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 90;
+    var launchWaitTimeMax = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 300;
 
     _classCallCheck(this, KgpSurvey);
 
     this.api_endpoint = api_endpoint;
-    this.kgpMeterScoreUpdateCallbacks = kgpMeterScoreUpdateCallbacks;
     this.questions = ["prior-knowledge", "score-exp", "you-or-family", "utility-website", "nps", "survey-comment", "survey-sex", "survey-age", "survey-own-sequence", "survey-other-sequence"];
     this.i18n = i18n;
 

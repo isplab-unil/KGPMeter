@@ -90,7 +90,7 @@ kgp = new KinGenomicPrivacyMeter("", "svg-kin-genomics-privacy-app", "@I1@", i18
 
 
 //initSurvey()
-kgpsurvey = new KgpSurvey("/survey", kgpMeterScoreUpdateCallbacks, i18n, 20, 10, 40);
+kgpsurvey = new KgpSurvey("/survey", i18n);
 
 ftree = loadFamilyTreeFromLocalStorage();
 

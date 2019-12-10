@@ -2,9 +2,8 @@
 
 let kgpsurvey;
 class KgpSurvey{
-  constructor(api_endpoint, kgpMeterScoreUpdateCallbacks, i18n, launchWaitTimeBasis=60, launchWaitTimePoissonMean=90, launchWaitTimeMax = 300){
+  constructor(api_endpoint, i18n, launchWaitTimeBasis=60, launchWaitTimePoissonMean=90, launchWaitTimeMax = 300){
     this.api_endpoint = api_endpoint
-    this.kgpMeterScoreUpdateCallbacks = kgpMeterScoreUpdateCallbacks
     this.questions = ["prior-knowledge","score-exp","you-or-family","utility-website","nps","survey-comment","survey-sex","survey-age", "survey-own-sequence", "survey-other-sequence"]
     this.i18n = i18n
 
