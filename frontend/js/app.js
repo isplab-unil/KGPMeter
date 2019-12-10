@@ -1,14 +1,7 @@
 "use strict";
 
-// will be called on window resizes
-/*function updateSvgWidth(){
-  kgp.svgWidth = kgp.svg.node().parentNode.clientWidth
-  kgp.svg.attr("width",kgp.svgWidth)
-}*/
-
 /* NodeList polyfill for IE11: not included in Babel (->?!?) */
 
-// languageLoader and i18n object: Internationalisation
 var languageLoader = function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(lng) {
     var translation;
@@ -69,14 +62,12 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
 var kgp = void 0;
 
 var ftree = 0;
-var DEV_SUFFIX = Boolean(document.URL.match(/\/privacy-dev\//)) ? "-dev" : "";
-var BASEURL = "/privacy" + DEV_SUFFIX;
-var API_URL = document.domain == "localhost" ? "" : "/api" + DEV_SUFFIX;
-var LANGUAGE_FILES_URL = BASEURL + "/assets/translations/";
-var PRIVACY_SCORE_API_ENDPOINT = API_URL + "privacy-score";
-var SURVEY_API_ENDPOINT = API_URL + "survey";
 var resp = void 0;
 var gedData = 0;
+
+// languageLoader and i18n object: Internationalisation
+var LANGUAGE_FILES_URL = "./i18n/";
+
 
 function onChangeLanguage(oldLng, newLng) {
   cookie.create("lng", newLng, 30);
@@ -92,71 +83,60 @@ i18n.observe(document);
 //i18n.dynamic["cookie-text"] = (t,d) => t.replace("{#1}",Boolean(document.URL.match(/\/privacy-dev\//))? "/privacy-dev" : "/privacy")
 
 
-// only launch Kin Genomic Privacy tool if we're on the tool page
-if (document.URL.match("/tool/|app.html")) {
+//constructor(api_base_url, svgId, youNodeId, i18n, maxFamilyTreeDepth=5, cookieLocalStoragePrefix="kgpmeter-"){
+kgp = new KinGenomicPrivacyMeter("", "svg-kin-genomics-privacy-app", "@I1@", i18n);
 
-  //constructor(api_base_url, svgId, youNodeId, i18n, maxFamilyTreeDepth=5, cookieLocalStoragePrefix="kgpmeter-"){
-  kgp = new KinGenomicPrivacyMeter(API_URL, "svg-kin-genomics-privacy-app", "@I1@", i18n);
+// ==================== LOAD initial GEDCOM FROM SERVER ====================
 
-  /*kgp.svgSelector = "#svg-kin-genomics-privacy-app"
-  kgp.privacyMetrics = undefined // will be filled in after 1st request
-  kgp.svg = d3.select(kgp.svgSelector)
-  kgp.svgHeight = parseInt(kgp.svg.attr("height"))
-  kgp.svgOriginalHeight = kgp.svgHeight
-  kgp.svgMaxHeight = parseInt(kgp.svg.attr("data-max-height"))
-  kgp.svgMaxHeight =  kgp.svgMaxHeight? kgp.svgMaxHeight : kgp.svgHeight
-  kgp.youNodeId = "@I1@"
-  kgp.signaturesRequestedTrees = new Set()
-  kgp.surveyTrigger = undefined
-  updateSvgWidth()
-  onWindowResize(resizeSvg)*/
 
-  // ==================== LOAD initial GEDCOM FROM SERVER ====================
+//initSurvey()
+kgpsurvey = new KgpSurvey("/survey", kgpMeterScoreUpdateCallbacks, i18n, 20, 10, 40);
 
-  var gedcome_files = ["assets/start_family2.ged", "assets/example_gedcom.ged", //ok
-  "assets/GeorgeWashingtonFamilyBig.ged", // big tree, buggy! interesting
-  "assets/HouseofHabsburg.ged", // 1 mistake
-  "assets/KennedyFamily.ged", // wide family tree: many errors, nodes cramped together
-  "assets/KoranFamilyTree.ged", "assets/royal92.ged", // too large!
-  "assets/family.ged"].map(function (f) {
-    return BASEURL + "/" + f;
-  });
-  resp = $.get(gedcome_files[0], function (data) {
-    gedData = data;
+ftree = loadFamilyTreeFromLocalStorage();
 
-    //initSurvey()
-    kgpsurvey = new KgpSurvey(SURVEY_API_ENDPOINT, kgpMeterScoreUpdateCallbacks, i18n, 20, 10, 40);
+var savedFtree = Boolean(ftree);
+if (!savedFtree) {
+  //console.log("NO FAMILY TREE IN STORAGE")
+  var start_ftree = {
+    "class": "FamilyTreeLayout",
+    "nodes": [{
+      "id": "@I1@",
+      "sex": "F",
+      "tag": "INDI",
+      "fams": [],
+      "famc": null,
+      "chil": [],
+      "wife": null,
+      "husb": null,
+      "sequencedDNA": false,
+      "i18nName": "you"
+    }],
+    "properties": ["id", "name", "sex", "tag", "fams", "famc", "chil", "wife", "husb", "sequencedDNA", "lastSequencedDNA", "i18nName"],
+    "centerNodeId": 0
+  };
+  ftree = FamilyTreeLayout.unserialize(JSON.stringify(start_ftree));
+}
 
-    ftree = loadFamilyTreeFromLocalStorage();
-
-    var savedFtree = Boolean(ftree);
-    if (!savedFtree) {
-      //console.log("NO FAMILY TREE IN STORAGE")
-      parseGed();
-    }
-
-    //console.log("kgp.target: ", kgp.target, ", kgp.target.id: ", kgp.target.id)
-    console.log("ftree.nodesArray().filter(n =>n.id==kgp.target)[0]: ", ftree.nodesArray().filter(function (n) {
+//console.log("kgp.target: ", kgp.target, ", kgp.target.id: ", kgp.target.id)
+console.log("ftree.nodesArray().filter(n =>n.id==kgp.target)[0]: ", ftree.nodesArray().filter(function (n) {
+  return n.id == kgp.target;
+})[0]);
+if (kgp.target) {
+  if (!kgp.target.id) {
+    kgp.target = ftree.nodesArray().filter(function (n) {
       return n.id == kgp.target;
-    })[0]);
-    if (kgp.target) {
-      if (!kgp.target.id) {
-        kgp.target = ftree.nodesArray().filter(function (n) {
-          return n.id == kgp.target;
-        })[0];
-      }
-      selectTarget(kgp.target);
-    }
+    })[0];
+  }
+  selectTarget(kgp.target);
+}
 
-    familyTreeArtist = new FamilyTreeArtist(kgp, i18n, 0);
-    mobileBlock();
-    IEBlock();
-    if (savedFtree) {
-      kgpMeterScoreRequestHandler.requestScore(kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
-        return n.sequencedDNA;
-      }).map(function (n) {
-        return n.id;
-      }), kgp.userId, kgp.userSource, i18n.lng);
-    }
-  });
+familyTreeArtist = new FamilyTreeArtist(kgp, i18n, 0);
+mobileBlock();
+IEBlock();
+if (savedFtree) {
+  kgpMeterScoreRequestHandler.requestScore(kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+    return n.sequencedDNA;
+  }).map(function (n) {
+    return n.id;
+  }), kgp.userId, kgp.userSource, i18n.lng);
 }
