@@ -28,3 +28,5 @@ backend/website
 *node_modules*
 
 backend/neticaPy/Netica_API_*
+
+frontend/i18n/*.json
