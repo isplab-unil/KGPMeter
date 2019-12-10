@@ -44,8 +44,8 @@ def root():
 application.route('/privacy-score', methods=["POST"])(privacy_score)
 
 # serve iframe website
-@application.route('/iframe/', defaults={'path': ""})
-@application.route('/iframe/<path:path>')
+@application.route('/app/', defaults={'path': ""})
+@application.route('/app/<path:path>')
 def serve_iframe_app(path):
     # TODO TOO MUCH OF A HACK
     if not re.search("\\.", path):
