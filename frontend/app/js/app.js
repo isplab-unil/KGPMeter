@@ -65,6 +65,17 @@ var ftree = 0;
 var resp = void 0;
 var gedData = 0;
 
+// FTA
+var familyTreeArtist = void 0;
+// privacy_bar.js
+var privacyBar = void 0;
+var privacyWordedScore = void 0;
+var privacyBackendStatus = void 0;
+var privacyScoreNumberExplainer = void 0;
+var kgpMeterScoreRequestHandler = void 0;
+// surveys.js
+var kgpsurvey = void 0;
+
 // languageLoader and i18n object: Internationalisation
 var LANGUAGE_FILES_URL = "./i18n/";
 
@@ -86,48 +97,23 @@ i18n.observe(document);
 //constructor(api_base_url, svgId, youNodeId, i18n, maxFamilyTreeDepth=5, cookieLocalStoragePrefix="kgpmeter-"){
 kgp = new KinGenomicPrivacyMeter("", "svg-kin-genomics-privacy-app", "@I1@", i18n);
 
-// ==================== LOAD initial GEDCOM FROM SERVER ====================
-
-
 //initSurvey()
 
-ftree = loadFamilyTreeFromLocalStorage();
-
+kgp.loadFamilyTreeFromLocalStorage();
 var savedFtree = Boolean(ftree);
 if (!savedFtree) {
   //console.log("NO FAMILY TREE IN STORAGE")
-  var start_ftree = {
-    "class": "FamilyTreeLayout",
-    "nodes": [{
-      "id": "@I1@",
-      "sex": "F",
-      "tag": "INDI",
-      "fams": [],
-      "famc": null,
-      "chil": [],
-      "wife": null,
-      "husb": null,
-      "sequencedDNA": false,
-      "i18nName": "you"
-    }],
-    "properties": ["id", "name", "sex", "tag", "fams", "famc", "chil", "wife", "husb", "sequencedDNA", "lastSequencedDNA", "i18nName"],
-    "centerNodeId": 0
-  };
-  ftree = FamilyTreeLayout.unserialize(JSON.stringify(start_ftree));
-}
-
-if (kgp.target) {
-  if (!kgp.target.id) {
-    kgp.target = ftree.nodesArray().filter(function (n) {
-      return n.id == kgp.target;
-    })[0];
-  }
-  selectTarget(kgp.target);
+  ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree();
 }
 
 familyTreeArtist = new FamilyTreeArtist(kgp, i18n, 0);
-mobileBlock();
-IEBlock();
+
+if (kgp.target) {
+  kgp.selectTarget(kgp.target, true);
+}
+
+kgp.mobileBlock();
+kgp.IEBlock();
 if (savedFtree) {
   kgpMeterScoreRequestHandler.requestScore(kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
     return n.sequencedDNA;

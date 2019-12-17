@@ -35,7 +35,7 @@ var FamilyTree = function () {
       if (n.tag === "FAM") {
         n.name += " " + (n.husb ? n.husb.name : "") + "," + (n.wife ? n.wife.name : "");
       }
-      addSpouseMethod(n);
+      FamilyTree.addSpouseMethod(n);
     });
 
     //compute nodes positions
@@ -290,7 +290,7 @@ var FamilyTree = function () {
     value: function addFamily(wife, husb, child) {
       //console.log("addFamily")
       var node = {
-        id: toGedcomId(this.minFreeFamId++, "F"),
+        id: FamilyTree.gedcomId(this.minFreeFamId++, "F"),
         tag: "FAM",
         wife: this.getNode(wife),
         husb: this.getNode(husb),
@@ -312,7 +312,7 @@ var FamilyTree = function () {
     value: function addIndividual(name, famc, fams, sex) {
       //console.log("addIndividual")
       var node = {
-        id: toGedcomId(this.minFreeIndivId++),
+        id: FamilyTree.gedcomId(this.minFreeIndivId++),
         tag: "INDI",
         name: name,
         famc: this.getNode(famc),
@@ -321,7 +321,7 @@ var FamilyTree = function () {
         }),
         sex: sex
       };
-      addSpouseMethod(node);
+      FamilyTree.addSpouseMethod(node);
       this.nodes[node.id] = node;
 
       return node;
@@ -599,6 +599,31 @@ var FamilyTree = function () {
       serializedFtree = JSON.parse(serializedFtree);
       var ftree = new FamilyTree(FamilyTree.unserializeParseNodes(serializedFtree));
       return ftree;
+    }
+  }, {
+    key: "gedcomId",
+    value: function gedcomId(idnb) {
+      var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "I";
+
+      return "@" + type + idnb + "@";
+    }
+  }, {
+    key: "addSpouseMethod",
+    value: function addSpouseMethod(n) {
+      n.spouse = function () {
+        var famsIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+        // only if desired fams exists...
+        if (this.fams && this.fams.length > famsIndex) {
+          var fams = this.fams[famsIndex];
+          // only if both spouses... present
+          if (fams.wife && fams.husb) {
+            // ...can we find the spouse
+            return this.id == fams.wife.id ? fams.husb : fams.wife;
+          }
+        }
+        return undefined;
+      };
     }
   }]);
 

@@ -19,6 +19,16 @@ let ftree = 0
 let resp;
 let gedData = 0
 
+// FTA
+let familyTreeArtist
+// privacy_bar.js
+let privacyBar
+let privacyWordedScore
+let privacyBackendStatus
+let privacyScoreNumberExplainer
+let kgpMeterScoreRequestHandler
+// surveys.js
+let kgpsurvey;
 
 // languageLoader and i18n object: Internationalisation
 let LANGUAGE_FILES_URL = "./i18n/"
@@ -57,52 +67,25 @@ kgp = new KinGenomicPrivacyMeter(
   i18n
 )
 
-// ==================== LOAD initial GEDCOM FROM SERVER ====================
-
 
 //initSurvey()
 
-ftree = loadFamilyTreeFromLocalStorage()
-
-
+kgp.loadFamilyTreeFromLocalStorage()
 let savedFtree = Boolean(ftree)
 if(!savedFtree){
   //console.log("NO FAMILY TREE IN STORAGE")
-  let start_ftree = {
-    "class": "FamilyTreeLayout",
-    "nodes": [
-      {
-        "id": "@I1@",
-        "sex": "F",
-        "tag": "INDI",
-        "fams": [],
-        "famc": null,
-        "chil": [],
-        "wife": null,
-        "husb": null,
-        "sequencedDNA": false,
-        "i18nName": "you"
-      }
-    ],
-    "properties": [
-      "id", "name", "sex", "tag", "fams", "famc", "chil", "wife",
-      "husb", "sequencedDNA", "lastSequencedDNA", "i18nName"
-    ],
-    "centerNodeId": 0
-  }
-  ftree = FamilyTreeLayout.unserialize(JSON.stringify(start_ftree))
+  ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
 }
 
-if(kgp.target){
-  if(!kgp.target.id){
-    kgp.target = ftree.nodesArray().filter(n =>n.id==kgp.target)[0]
-  }
-  selectTarget(kgp.target)
-}
 
 familyTreeArtist = new FamilyTreeArtist(kgp, i18n,0)
-mobileBlock()
-IEBlock()
+
+if(kgp.target){
+  kgp.selectTarget(kgp.target, true)
+}
+
+kgp.mobileBlock()
+kgp.IEBlock()
 if(savedFtree){
   kgpMeterScoreRequestHandler.requestScore(
     kgp.target?kgp.target.id:"",
