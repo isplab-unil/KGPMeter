@@ -155,9 +155,9 @@ class KinGenomicPrivacyMeter{
     let saveDate = +localStorage.getItem(saveDateKey)
     //console.log("LOADING family tree, ftl = ", ftl, ", targetId = ",targetId, ", saveDate = ",saveDate)
     if(Boolean(ftl) & (saveDate+2*3600*1000>=+new Date()) ){
-      ftl = familyTreeClass.unserialize(ftl)
-      self.target = targetId? ftl.nodes[targetId] : null
-      return ftl
+      ftree = familyTreeClass.unserialize(ftl)
+      this.target = targetId? ftree.nodes[targetId] : null
+      return ftree
     }
     return null
   }
