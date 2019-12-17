@@ -132,14 +132,31 @@ class KinGenomicPrivacyMeter{
       ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
       d3.select("#familytree-g").remove()
       familyTreeArtist.init(0)
-      saveFamilyTreeToLocalStorage()
+      self.saveFamilyTreeToLocalStorage()
     },transitionDuration+2)
   }
 
-  /** Update the svg width, called on window resizes */
-  updateSvgWidth(){
-    this.svgWidth = this.svg.node().parentNode.clientWidth
-    this.svg.attr("width",this.svgWidth)
+  saveFamilyTreeToLocalStorage(familyTreeKey="kgp-familyTree", targetKey="kgp-targetId", saveDateKey="kgp-saveDate"){
+    localStorage.setItem(familyTreeKey,JSON.stringify(ftree.serialize(["sequencedDNA","lastSequencedDNA","i18nName"])))
+    localStorage.setItem(saveDateKey,+new Date())
+    if(this.target){
+      localStorage.setItem(targetKey,kgp.target.id)
+    }else{
+      localStorage.setItem(targetKey,null)
+    }
+  }
+  
+  loadFamilyTreeFromLocalStorage(familyTreeKey="kgp-familyTree", targetKey="kgp-targetId", saveDateKey="kgp-saveDate", familyTreeClass=FamilyTreeLayout){
+    let ftl = localStorage.getItem(familyTreeKey)
+    let targetId = localStorage.getItem(targetKey)
+    let saveDate = +localStorage.getItem(saveDateKey)
+    //console.log("LOADING family tree, ftl = ", ftl, ", targetId = ",targetId, ", saveDate = ",saveDate)
+    if(Boolean(ftl) & (saveDate+2*3600*1000>=+new Date()) ){
+      ftl = familyTreeClass.unserialize(ftl)
+      kgp.target = targetId? ftl.nodes[targetId] : null
+      return ftl
+    }
+    return null
   }
 
   selectTarget(newTarget, forceUpdate=false){
@@ -156,8 +173,14 @@ class KinGenomicPrivacyMeter{
         ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
         self.userId, self.userSource, i18n.lng
       )
-      saveFamilyTreeToLocalStorage()
+      self.saveFamilyTreeToLocalStorage()
     }
+  }
+
+  /** Update the svg width, called on window resizes */
+  updateSvgWidth(){
+    this.svgWidth = this.svg.node().parentNode.clientWidth
+    this.svg.attr("width",this.svgWidth)
   }
 
   /**
@@ -632,7 +655,7 @@ class FamilyTreeArtist{
             this.addEventListener("keydown",function(event){
               this.removeAttribute(self.i18n.keyAttr)
               d.name = this.innerHTML
-              saveFamilyTreeToLocalStorage()
+              self.kgp.saveFamilyTreeToLocalStorage()
               // if line return: remove selection and unselect element
               if(event.keyCode==13){
                 window.getSelection().removeAllRanges()
@@ -695,7 +718,7 @@ class FamilyTreeArtist{
         ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
         kgp.userId, kgp.userSource, i18n.lng)
       familyTreeArtist.update()
-      saveFamilyTreeToLocalStorage()
+      self.kgp.saveFamilyTreeToLocalStorage()
     }
   
     self.nodeButtons.addButton("remove-node",25,-50, "\uf506", "80px","50px", "hint-delete-node")
@@ -717,7 +740,7 @@ class FamilyTreeArtist{
         kgp.target?kgp.target.id:"",
         ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
         kgp.userId, kgp.userSource, i18n.lng)
-      saveFamilyTreeToLocalStorage()
+        self.kgp.saveFamilyTreeToLocalStorage()
   
     }
     let toggleDNAbutton = self.nodeButtons.addButton("toggle-dna",25,50, "\uf471+", "170px", "70px", "hint-sequence-node")
@@ -792,7 +815,7 @@ class FamilyTreeArtist{
               familyTreeArtist.update(node)
               self.nodeButtons.hide()
               addRelativeHitbox.remove()
-              saveFamilyTreeToLocalStorage()
+              self.kgp.saveFamilyTreeToLocalStorage()
             })
       }
   
@@ -844,7 +867,7 @@ class FamilyTreeArtist{
         spouseCircle.classed("woman", isWoman)
         //document.querySelector("#"+nodeGroupId(spouse.id)+" .node-name").setAttribute(i18n.keyAttr, isWoman? "node-name-woman":"node-name-man")
       }
-      saveFamilyTreeToLocalStorage()
+      self.kgp.saveFamilyTreeToLocalStorage()
     }
     self.nodeButtons.addButton("change-sex", -25, 50, "\uf228", 80, 45, "hint-change-sex",
       {
@@ -926,28 +949,7 @@ function showNodesIds(){
 }
 
 
-function saveFamilyTreeToLocalStorage(){
-  localStorage.setItem("ftree.nodes",JSON.stringify(ftree.serialize(["sequencedDNA","lastSequencedDNA","i18nName"])))
-  localStorage.setItem("ftree_save_date",+new Date())
-  if(kgp.target){
-    localStorage.setItem("kgp.target.id",kgp.target.id)
-  }else{
-    localStorage.setItem("kgp.target.id",null)
-  }
-}
 
-function loadFamilyTreeFromLocalStorage(ftreeKey = "ftree.nodes", targetKey = "kgp.target.id", saveDateKey = "ftree_save_date"){
-  let ftl = localStorage.getItem(ftreeKey)
-  let targetId = localStorage.getItem(targetKey)
-  let saveDate = +localStorage.getItem(saveDateKey)
-  //console.log("LOADING family tree, ftl = ", ftl, ", targetId = ",targetId, ", saveDate = ",saveDate)
-  if(Boolean(ftl) & (saveDate+2*3600*1000>=+new Date()) ){
-    ftl = FamilyTreeLayout.unserialize(ftl)
-    kgp.target = targetId? ftl.nodes[targetId] : null
-    return ftl
-  }
-  return null
-}
 
 
 

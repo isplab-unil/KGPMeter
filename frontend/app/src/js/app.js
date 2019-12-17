@@ -60,7 +60,7 @@ kgp = new KinGenomicPrivacyMeter(
 
 //initSurvey()
 
-ftree = loadFamilyTreeFromLocalStorage()
+ftree = kgp.loadFamilyTreeFromLocalStorage()
 let savedFtree = Boolean(ftree)
 if(!savedFtree){
   //console.log("NO FAMILY TREE IN STORAGE")

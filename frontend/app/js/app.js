@@ -88,7 +88,7 @@ kgp = new KinGenomicPrivacyMeter("", "svg-kin-genomics-privacy-app", "@I1@", i18
 
 //initSurvey()
 
-ftree = loadFamilyTreeFromLocalStorage();
+ftree = kgp.loadFamilyTreeFromLocalStorage();
 var savedFtree = Boolean(ftree);
 if (!savedFtree) {
   //console.log("NO FAMILY TREE IN STORAGE")

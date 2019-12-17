@@ -153,17 +153,42 @@ var KinGenomicPrivacyMeter = function () {
         ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree();
         d3.select("#familytree-g").remove();
         familyTreeArtist.init(0);
-        saveFamilyTreeToLocalStorage();
+        self.saveFamilyTreeToLocalStorage();
       }, transitionDuration + 2);
     }
-
-    /** Update the svg width, called on window resizes */
-
   }, {
-    key: "updateSvgWidth",
-    value: function updateSvgWidth() {
-      this.svgWidth = this.svg.node().parentNode.clientWidth;
-      this.svg.attr("width", this.svgWidth);
+    key: "saveFamilyTreeToLocalStorage",
+    value: function saveFamilyTreeToLocalStorage() {
+      var familyTreeKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "kgp-familyTree";
+      var targetKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "kgp-targetId";
+      var saveDateKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "kgp-saveDate";
+
+      localStorage.setItem(familyTreeKey, JSON.stringify(ftree.serialize(["sequencedDNA", "lastSequencedDNA", "i18nName"])));
+      localStorage.setItem(saveDateKey, +new Date());
+      if (this.target) {
+        localStorage.setItem(targetKey, kgp.target.id);
+      } else {
+        localStorage.setItem(targetKey, null);
+      }
+    }
+  }, {
+    key: "loadFamilyTreeFromLocalStorage",
+    value: function loadFamilyTreeFromLocalStorage() {
+      var familyTreeKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "kgp-familyTree";
+      var targetKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "kgp-targetId";
+      var saveDateKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "kgp-saveDate";
+      var familyTreeClass = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : FamilyTreeLayout;
+
+      var ftl = localStorage.getItem(familyTreeKey);
+      var targetId = localStorage.getItem(targetKey);
+      var saveDate = +localStorage.getItem(saveDateKey);
+      //console.log("LOADING family tree, ftl = ", ftl, ", targetId = ",targetId, ", saveDate = ",saveDate)
+      if (Boolean(ftl) & saveDate + 2 * 3600 * 1000 >= +new Date()) {
+        ftl = familyTreeClass.unserialize(ftl);
+        kgp.target = targetId ? ftl.nodes[targetId] : null;
+        return ftl;
+      }
+      return null;
     }
   }, {
     key: "selectTarget",
@@ -185,8 +210,17 @@ var KinGenomicPrivacyMeter = function () {
         }).map(function (n) {
           return n.id;
         }), self.userId, self.userSource, i18n.lng);
-        saveFamilyTreeToLocalStorage();
+        self.saveFamilyTreeToLocalStorage();
       }
+    }
+
+    /** Update the svg width, called on window resizes */
+
+  }, {
+    key: "updateSvgWidth",
+    value: function updateSvgWidth() {
+      this.svgWidth = this.svg.node().parentNode.clientWidth;
+      this.svg.attr("width", this.svgWidth);
     }
 
     /**
@@ -480,7 +514,7 @@ var FamilyTreeArtist = function () {
           }, _callee, this);
         }));
 
-        return function (_x14) {
+        return function (_x21) {
           return _ref.apply(this, arguments);
         };
       }());
@@ -714,7 +748,7 @@ var FamilyTreeArtist = function () {
                   this.addEventListener("keydown", function (event) {
                     this.removeAttribute(self.i18n.keyAttr);
                     d.name = this.innerHTML;
-                    saveFamilyTreeToLocalStorage();
+                    self.kgp.saveFamilyTreeToLocalStorage();
                     // if line return: remove selection and unselect element
                     if (event.keyCode == 13) {
                       window.getSelection().removeAllRanges();
@@ -731,7 +765,7 @@ var FamilyTreeArtist = function () {
           }, _callee2, this);
         }));
 
-        return function (_x16) {
+        return function (_x23) {
           return _ref2.apply(this, arguments);
         };
       }());
@@ -793,7 +827,7 @@ var FamilyTreeArtist = function () {
                       familyTreeArtist.update(node);
                       self.nodeButtons.hide();
                       addRelativeHitbox.remove();
-                      saveFamilyTreeToLocalStorage();
+                      self.kgp.saveFamilyTreeToLocalStorage();
                     });
                   };
 
@@ -861,7 +895,7 @@ var FamilyTreeArtist = function () {
           }, _callee3, this);
         }));
 
-        return function addRelativeMenu(_x17) {
+        return function addRelativeMenu(_x24) {
           return _ref3.apply(this, arguments);
         };
       }();
@@ -879,7 +913,7 @@ var FamilyTreeArtist = function () {
           return n.id;
         }), kgp.userId, kgp.userSource, i18n.lng);
         familyTreeArtist.update();
-        saveFamilyTreeToLocalStorage();
+        self.kgp.saveFamilyTreeToLocalStorage();
       }
 
       self.nodeButtons.addButton("remove-node", 25, -50, "\uF506", "80px", "50px", "hint-delete-node").on("click.remove", removeNode);
@@ -900,7 +934,7 @@ var FamilyTreeArtist = function () {
         }).map(function (n) {
           return n.id;
         }), kgp.userId, kgp.userSource, i18n.lng);
-        saveFamilyTreeToLocalStorage();
+        self.kgp.saveFamilyTreeToLocalStorage();
       }
       var toggleDNAbutton = self.nodeButtons.addButton("toggle-dna", 25, 50, "\uF471+", "170px", "70px", "hint-sequence-node").on("click.sequenced-dna", toggleDNA);
       self.nodeButtons.onWakeCallbacks.push(toggleDnaButtonText);
@@ -958,7 +992,7 @@ var FamilyTreeArtist = function () {
           spouseCircle.classed("woman", isWoman);
           //document.querySelector("#"+nodeGroupId(spouse.id)+" .node-name").setAttribute(i18n.keyAttr, isWoman? "node-name-woman":"node-name-man")
         }
-        saveFamilyTreeToLocalStorage();
+        self.kgp.saveFamilyTreeToLocalStorage();
       }
       self.nodeButtons.addButton("change-sex", -25, 50, "\uF228", 80, 45, "hint-change-sex", {
         FAx: -10, FAy: 6,
@@ -1038,33 +1072,6 @@ function showNodesIds() {
   })
   //.attr("class","node-id")
   .attr("transform", "translate(" + -50 + ",0)");
-}
-
-function saveFamilyTreeToLocalStorage() {
-  localStorage.setItem("ftree.nodes", JSON.stringify(ftree.serialize(["sequencedDNA", "lastSequencedDNA", "i18nName"])));
-  localStorage.setItem("ftree_save_date", +new Date());
-  if (kgp.target) {
-    localStorage.setItem("kgp.target.id", kgp.target.id);
-  } else {
-    localStorage.setItem("kgp.target.id", null);
-  }
-}
-
-function loadFamilyTreeFromLocalStorage() {
-  var ftreeKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "ftree.nodes";
-  var targetKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "kgp.target.id";
-  var saveDateKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "ftree_save_date";
-
-  var ftl = localStorage.getItem(ftreeKey);
-  var targetId = localStorage.getItem(targetKey);
-  var saveDate = +localStorage.getItem(saveDateKey);
-  //console.log("LOADING family tree, ftl = ", ftl, ", targetId = ",targetId, ", saveDate = ",saveDate)
-  if (Boolean(ftl) & saveDate + 2 * 3600 * 1000 >= +new Date()) {
-    ftl = FamilyTreeLayout.unserialize(ftl);
-    kgp.target = targetId ? ftl.nodes[targetId] : null;
-    return ftl;
-  }
-  return null;
 }
 
 function detectIE11() {
