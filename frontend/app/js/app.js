@@ -62,8 +62,6 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
 var kgp = void 0;
 
 var ftree = 0;
-var resp = void 0;
-var gedData = 0;
 
 // languageLoader and i18n object: Internationalisation
 var LANGUAGE_FILES_URL = "./i18n/";

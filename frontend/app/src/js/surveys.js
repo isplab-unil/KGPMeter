@@ -43,7 +43,7 @@ class KgpSurvey{
         fetch(self.api_endpoint, {
           method: 'POST',
           body: JSON.stringify(json_to_send)
-        })//.then(resp => console.log("question posted resp: ", resp))
+        })
       })
       // success!
     });

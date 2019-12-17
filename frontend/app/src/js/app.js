@@ -16,8 +16,6 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
 let kgp
 
 let ftree = 0
-let resp;
-let gedData = 0
 
 
 // languageLoader and i18n object: Internationalisation

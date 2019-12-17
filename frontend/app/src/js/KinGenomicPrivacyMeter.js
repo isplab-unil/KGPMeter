@@ -150,7 +150,6 @@ class KinGenomicPrivacyMeter{
     // set privacy score back to 1:
     self.privacyMetric = 1
     self.target = null
-    resp = null
     this.privacyBar.elements.transition(200).attr("opacity",1)
     this.privacyBar.update(1)
     this.privacyBackendStatus.hide()

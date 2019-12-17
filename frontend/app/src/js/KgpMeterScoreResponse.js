@@ -64,6 +64,6 @@ class KgpMeterScoreError extends KgpMeterScoreResponse{
 class KgpMeterScoreStale extends KgpMeterScoreResponse{
   constructor(kgpResp){
     super("stale", kgpResp.timestamp_js, kgpResp.request, kgpResp.tree_signature, kgpResp.extras)
-    this.resp = kgpResp
+    this.staleResp = kgpResp
   }
 }
