@@ -63,34 +63,10 @@ kgp = new KinGenomicPrivacyMeter(
 //initSurvey()
 
 ftree = loadFamilyTreeFromLocalStorage()
-
-
 let savedFtree = Boolean(ftree)
 if(!savedFtree){
   //console.log("NO FAMILY TREE IN STORAGE")
-  let start_ftree = {
-    "class": "FamilyTreeLayout",
-    "nodes": [
-      {
-        "id": "@I1@",
-        "sex": "F",
-        "tag": "INDI",
-        "fams": [],
-        "famc": null,
-        "chil": [],
-        "wife": null,
-        "husb": null,
-        "sequencedDNA": false,
-        "i18nName": "you"
-      }
-    ],
-    "properties": [
-      "id", "name", "sex", "tag", "fams", "famc", "chil", "wife",
-      "husb", "sequencedDNA", "lastSequencedDNA", "i18nName"
-    ],
-    "centerNodeId": 0
-  }
-  ftree = FamilyTreeLayout.unserialize(JSON.stringify(start_ftree))
+  ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
 }
 
 if(kgp.target){

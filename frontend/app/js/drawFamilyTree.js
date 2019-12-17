@@ -150,7 +150,7 @@ var KinGenomicPrivacyMeter = function () {
 
       // once this is done (after 800ms), reset the empty ftree from GEDCOM data
       setTimeout(function () {
-        parseGed();
+        ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree();
         d3.select("#familytree-g").remove();
         familyTreeArtist.init(0);
         saveFamilyTreeToLocalStorage();
@@ -322,6 +322,28 @@ var KinGenomicPrivacyMeter = function () {
         relationships[tuple[0]]["partner"] = tuple[2];
       });
       return relationships;
+    }
+  }, {
+    key: "getEmptyFamilyTree",
+    value: function getEmptyFamilyTree() {
+      var emptyFamilyTree = {
+        "class": "FamilyTreeLayout",
+        "nodes": [{
+          "id": "@I1@",
+          "sex": "F",
+          "tag": "INDI",
+          "fams": [],
+          "famc": null,
+          "chil": [],
+          "wife": null,
+          "husb": null,
+          "sequencedDNA": false,
+          "i18nName": "you"
+        }],
+        "properties": ["id", "name", "sex", "tag", "fams", "famc", "chil", "wife", "husb", "sequencedDNA", "lastSequencedDNA", "i18nName"],
+        "centerNodeId": 0
+      };
+      return FamilyTreeLayout.unserialize(JSON.stringify(emptyFamilyTree));
     }
 
     /** getSex() returns "F" if given relation is female, "M" if male */
