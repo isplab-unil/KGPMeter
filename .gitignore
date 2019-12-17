@@ -19,7 +19,8 @@ notes
 *.pdf
 *.pyc
 
-config.json
+backend/config.py
+backend/website
 
 *.ipynb_checkpoints*
 *.idea/*

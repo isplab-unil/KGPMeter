@@ -16,4 +16,4 @@ from .privacy_score import privacy_score
 from .compute_and_save import compute_and_save_privacy_metrics
 from .compute_and_save import compute_and_save_privacy_metrics_with_timeout
 
-__all__=["answer_survey","compute_and_save_privacy_metrics", "compute_and_save_privacy_metrics_with_timeout", "privacy_score", "KgpSuccess","KgpError"]
+__all__=["compute_and_save_privacy_metrics", "compute_and_save_privacy_metrics_with_timeout", "privacy_score", "KgpSuccess","KgpError"]

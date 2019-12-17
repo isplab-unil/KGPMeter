@@ -23,16 +23,8 @@ from config import config
 import database as db
 
 
-"""
-For a remote connection run those 2 commands in your terminal (stop mysql + ssh port forwarding)
-brew services stop mysql
-ssh -L 3306:localhost:3306 webmaster@santeperso.unil.ch -N
-For low consumption
-nice -n 20 venv/bin/python3 daemon.py -n 1
-"""
-
 def _fetch(syn_queue, nb_entry = 2000):
-    with db.connect_db(config["DATABASE_CONFIG"], config["LOGGER"]) as db_connexion:
+    with db.connect_db(config["DATABASE_CONFIG"]) as db_connexion:
       result = db.get_null_privacy_metrics(db_connexion, nb_entry)
       if result:
         [syn_queue.append(record) for record in result]
@@ -43,7 +35,7 @@ def daemon_compute_and_save_privacy_metrics(tree: str, maf: float, value_id:int)
     """
     unserialized_tree = kgp.SequencedFamilyTree.unserialize(tree)
     if len(unserialized_tree.inference_network.nodes()) > config["ENGINE_MAX_NODES"] and config["ENGINE_USE_CACHE"]:
-        with db.connect_db(config["DATABASE_CONFIG"], config["LOGGER"]) as db_connexion:
+        with db.connect_db(config["DATABASE_CONFIG"]) as db_connexion:
             db.update_privacy_metric(db_connexion, value_id, -1, -1, 0)
         return (maf, -1, -1, 0)
     res = (maf, -1, -1, 0)

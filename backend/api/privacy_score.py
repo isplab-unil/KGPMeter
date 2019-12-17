@@ -22,9 +22,8 @@ import traceback
 import warnings
 
 import numpy as np
-from flask import request, jsonify, Response
+from flask import request, jsonify, Response, current_app
 
-from config import config
 import database as db
 import kin_genomic_privacy as kgp
 from .kgp_response import KgpResponse, KgpSuccess, KgpError
@@ -33,7 +32,7 @@ from .compute_and_save import compute_and_save_privacy_metrics_with_timeout, com
 LIST_SNP_FILE = os.path.dirname(os.path.realpath(__file__)) + "/list_snp_v4.txt"
 try:
     with open(LIST_SNP_FILE) as f:
-        LIST_SNP = [x for x in f.readlines()]
+        LIST_SNP = [float(x) for x in f.readlines()]
 except Exception:
     LIST_SNP = None
     warnings.warn("Loading of SNP MAFs' distribution from file '"+LIST_SNP_FILE+"' didn't work, using constant MAFs' distribution.")
@@ -56,9 +55,9 @@ def privacy_score() -> KgpResponse:
         timestamp_js = parameters["timestamp_js"]
         assert(isinstance(timestamp_js, int))
 
-        if (config["ENGINE_VERBOSE"]):
-            config["LOGGER"].info("\n\nprivacy-score request parameters:")
-            config["LOGGER"].info(parameters)
+        if (current_app.config["ENGINE_VERBOSE"]):
+            current_app.config["LOGGER"].info("\n\nprivacy-score request parameters:")
+            current_app.config["LOGGER"].info(parameters)
 
         # needed for Netica: strings must be free of special characters, might be improved (@ comes from GEDCOM files)
         byte_readify = lambda s: s.replace("@","X")
@@ -73,7 +72,7 @@ def privacy_score() -> KgpResponse:
 
         # if no target or target not in tree -> return error
         if(all([tree_target not in edge for edge in tree_edges])):
-            return KgpError(timestamp_js, "before instanciation", code=4, allow_cross_origin=config["ALLOW_CROSS_ORIGIN"])
+            return KgpError(timestamp_js, "before instanciation", code=4, allow_cross_origin=current_app.config["ALLOW_CROSS_ORIGIN"])
 
         # Create the SequencedFamilyTree
         family_tree = kgp.SequencedFamilyTree(tree_edges,
@@ -81,21 +80,21 @@ def privacy_score() -> KgpResponse:
                                           tree_target,
                                           family_nodes)
         
-        if (config["ENGINE_VERBOSE"]):
-            config["LOGGER"].info("Number of nodes in minimized tree: "+str(len(family_tree.inference_network.nodes())))
-            config["LOGGER"].info("Number of sequenced nodes in minimized tree: "+str(len(family_tree.sequenced_relatives())))
+        if (current_app.config["ENGINE_VERBOSE"]):
+            current_app.config["LOGGER"].info("Number of nodes in minimized tree: "+str(len(family_tree.inference_network.nodes())))
+            current_app.config["LOGGER"].info("Number of sequenced nodes in minimized tree: "+str(len(family_tree.sequenced_relatives())))
 
 
-        db_config = config["DATABASE_CONFIG"] if config["ENGINE_USE_CACHE"] else None
-        with db.connect_db(db_config, config["LOGGER"]) as db_connexion:
+        db_config = current_app.config["DATABASE_CONFIG"] if current_app.config["ENGINE_USE_CACHE"] else None
+        with db.connect_db(db_config) as db_connexion:
 
-            if (config["ENGINE_VERBOSE"]):
-                if not config["ENGINE_USE_CACHE"]:
-                    config["LOGGER"].info("Cache not used in this session")
+            if (current_app.config["ENGINE_VERBOSE"]):
+                if not current_app.config["ENGINE_USE_CACHE"]:
+                    current_app.config["LOGGER"].info("Cache not used in this session")
                 elif db_connexion:
-                    config["LOGGER"].info("Successful connexion to database")
+                    current_app.config["LOGGER"].info("Successful connexion to database")
                 else:
-                    config["LOGGER"].warning('Connexion to database failed with config["ENGINE_USE_CACHE"]=True. Continuing without db.')
+                    current_app.config["LOGGER"].warning('Connexion to database failed with current_app.config["ENGINE_USE_CACHE"]=True. Continuing without db.')
 
             # insert the request in database
             if db_connexion:
@@ -122,10 +121,10 @@ def privacy_score() -> KgpResponse:
                     tree_id = db.insert_new_tree(db_connexion, family_tree.serialize(), family_tree.signature,len(family_tree.sequenced_relatives()))
 
 
-            if (config["ENGINE_VERBOSE"]):
+            if (current_app.config["ENGINE_VERBOSE"]):
                 if db_connexion:
-                    config["LOGGER"].info("privacy_metrics from database:")
-                    config["LOGGER"].info(privacy_metrics)
+                    current_app.config["LOGGER"].info("privacy_metrics from database:")
+                    current_app.config["LOGGER"].info(privacy_metrics)
 
 
             # Check that there are at least 2 values in cache
@@ -137,33 +136,33 @@ def privacy_score() -> KgpResponse:
                 score_in_cache = min_two_values_in_cache
             else:
                 privacy_metrics=[]
-            if (config["ENGINE_VERBOSE"]):
-                config["LOGGER"].info("score_in_cache="+str(score_in_cache)+", calculated_mafs="+str(calculated_mafs))
+            if (current_app.config["ENGINE_VERBOSE"]):
+                current_app.config["LOGGER"].info("score_in_cache="+str(score_in_cache)+", calculated_mafs="+str(calculated_mafs))
 
             # if score not in cache -> insert empty scores
             values_id = dict()
             if db_connexion and not score_in_cache:
-                values_id = db.insert_null_privacy_metrics(db_connexion, request_id, config["ENGINE_MAFS_ALL"], tree_id)
+                values_id = db.insert_null_privacy_metrics(db_connexion, request_id, current_app.config["ENGINE_MAFS_ALL"], tree_id)
             if not values_id:
                 values_id = dict()
             # if too many sequenced nodes in minimized tree -> return error
-            if(len(family_tree.sequenced_relatives())> config["ENGINE_MAX_SEQUENCED_NODES"]):
-                return KgpError(timestamp_js, family_tree.signature, code=3, allow_cross_origin=config["ALLOW_CROSS_ORIGIN"])
+            if(len(family_tree.sequenced_relatives())> current_app.config["ENGINE_MAX_SEQUENCED_NODES"]):
+                return KgpError(timestamp_js, family_tree.signature, code=3, allow_cross_origin=current_app.config["ALLOW_CROSS_ORIGIN"])
 
             # if too many nodes in minimized tree -> return error
-            if(len(family_tree.inference_network.nodes())>config["ENGINE_MAX_NODES"]):
-                return KgpError(timestamp_js, family_tree.signature, code=7, allow_cross_origin=config["ALLOW_CROSS_ORIGIN"])
+            if(len(family_tree.inference_network.nodes())>current_app.config["ENGINE_MAX_NODES"]):
+                return KgpError(timestamp_js, family_tree.signature, code=7, allow_cross_origin=current_app.config["ALLOW_CROSS_ORIGIN"])
 
             # calculate
             if not score_in_cache:
-                mafs = [maf for maf in config["ENGINE_MAFS_IMMEDIATE"] if maf not in calculated_mafs]
+                mafs = [maf for maf in current_app.config["ENGINE_MAFS_IMMEDIATE"] if maf not in calculated_mafs]
                 # parallelize
-                if config["ENGINE_PARALLELIZE"]:
+                if current_app.config["ENGINE_PARALLELIZE"]:
                     with Pool(4) as pool:
                         privacy_metrics = privacy_metrics +\
                                           pool.starmap(compute_and_save_privacy_metrics_with_timeout,
                                                        [(family_tree, maf, values_id.get(maf),
-                                                         config["ENGINE_DEFAULT_TIMEOUT"]) for maf in
+                                                         current_app.config["ENGINE_DEFAULT_TIMEOUT"]) for maf in
                                                         mafs])
                 # non-parallel version
                 else:
@@ -173,7 +172,7 @@ def privacy_score() -> KgpResponse:
             # timeout is handled separately in each thread -> if None in any of the result, there was a timeout...
             computation_not_finished = any([None in pm for pm in privacy_metrics])
             if computation_not_finished:
-                return KgpError(timestamp_js, family_tree.signature, code=1, allow_cross_origin=config["ALLOW_CROSS_ORIGIN"])
+                return KgpError(timestamp_js, family_tree.signature, code=1, allow_cross_origin=current_app.config["ALLOW_CROSS_ORIGIN"])
 
             sft_cache = {maf: (mean_entropy_posterior, mee) for maf, mean_entropy_posterior, mee, ct in privacy_metrics}
             family_tree.cache = sft_cache
@@ -181,8 +180,8 @@ def privacy_score() -> KgpResponse:
 
             # calculate & format execution time
             execution_time = time.time() - execution_time
-            if (config["ENGINE_VERBOSE"]):
-                config["LOGGER"].info("whole execution time=" + str(execution_time))
+            if (current_app.config["ENGINE_VERBOSE"]):
+                current_app.config["LOGGER"].info("whole execution time=" + str(execution_time))
 
             if(math.isnan(privacy_score) or math.isinf(privacy_score) or privacy_score<0):
               raise Exception("privacy_score is NaN, Inf or negative: not a valid result.")
@@ -193,18 +192,18 @@ def privacy_score() -> KgpResponse:
                 privacy_score,
                 score_in_cache,
                 execution_time,
-                allow_cross_origin=config["ALLOW_CROSS_ORIGIN"]
+                allow_cross_origin=current_app.config["ALLOW_CROSS_ORIGIN"]
             )
     except Exception:
         error_identifier = randint(0,10**9)
-        config["LOGGER"].error("\n\nERROR in privacy_score(), error code %d" % error_identifier)
-        config["LOGGER"].error(traceback.format_exc())
-        config["LOGGER"].error("\n\nrequest parameters leading to error:")
-        config["LOGGER"].error(parameters if parameters else "before instanciation")
+        current_app.config["LOGGER"].error("\n\nERROR in privacy_score(), error code %d" % error_identifier)
+        current_app.config["LOGGER"].error(traceback.format_exc())
+        current_app.config["LOGGER"].error("\n\nrequest parameters leading to error:")
+        current_app.config["LOGGER"].error(parameters if parameters else "before instanciation")
         return KgpError(
             timestamp_js if timestamp_js else "before instanciation",
             family_tree.signature if family_tree else "before instanciation",
             code=2,
             extras={"error_identifier": error_identifier},
-            allow_cross_origin=config["ALLOW_CROSS_ORIGIN"]
+            allow_cross_origin=current_app.config["ALLOW_CROSS_ORIGIN"]
         )

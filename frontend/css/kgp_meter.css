@@ -1,0 +1,406 @@
+
+
+/* =================================== Main components =================================== */
+
+body{
+  font-size: 16px;
+}
+
+#ftree-container{
+  font: sans-serif;
+  width:100%;
+}
+#ftree-builder{
+  /*border:2px;
+  width: 1200px;
+  height: 1200px;*/
+  float:left;
+}
+/*#privacy-bar-container{
+  float:left;
+  width:100px;
+  height:600px;
+  /*background-color: orange;*
+}*/
+
+.link{
+  stroke:lightgrey;
+  stroke-width:0.1em;
+  shape-rendering: crispEdges;
+}
+.highlight-link{
+  stroke:grey;
+  stroke-width:0.2em;
+}
+.highlight-fam{
+  fill:grey;
+}
+
+
+.svg-button-fas{
+  fill:grey;/*#a8a8a8;*/
+  font-size: 20px;
+  opacity:0.5;
+}
+.svg-button-fas:hover{
+  fill:#404040;
+  opacity:1;
+}
+
+
+/* ================ Popup response box ================ */
+
+#kgp-response-container{
+  height: 3em;
+  text-align: center;
+}
+
+#kgp-response-container .alert{
+  display: inline-block;
+  padding: 0.5em;
+  padding-top: 0.4em;
+  height: 2em;
+}
+
+#kgp-response-container .kgp-alert-content{
+  font-size: 75%;
+}
+/* ================ explainer box ================ */
+
+#kgp-explainer-container{
+height: 5em;
+text-align: justify;
+}
+
+#kgp-explainer-container .fa-lightbulb{
+font-size:2em;
+display:block;
+float:left;
+margin-top:0.2em;
+margin-right:10px;
+}
+
+
+/* =================================== Nodes/person =================================== */
+
+.nodeg.hidden {
+  visibility:hidden;
+}
+
+.node-name{
+  font: 12px sans-serif;
+  width:80px;
+  height:2em;
+  text-align: center;
+  background: transparent;
+  border: none;
+  resize: none;
+}
+/* remove useless dashed border around contenteditable div*/
+[contenteditable="true"]:focus{
+  border:none;
+  outline:none;
+}
+
+.you .node-name:first-child:before{
+  font-family: "Font Awesome 5 Free";
+  content: "\f007";
+  padding-right: 0.2em;
+  font-size: 100%;
+}
+
+.you .node-name{
+  font-weight: bold;
+
+}
+
+/* ========= Node color ========= */
+/*.man {fill: #4599ff;}*/
+.man {
+  fill: #0099ff;
+}
+.woman {
+  fill: #ff3399;
+}/*#e60073;}
+/*.woman {fill: #ff8c45;}
+/*.man {fill: #75b303;}
+.woman {fill: #b30065;}
+/*.man {fill: #0585e1;}
+.woman {fill: #f7786b;}
+/*.man {fill: #63b68f;}
+.woman {fill: #ff6f69;}*/
+/*.man {
+  fill: #63b68f;/*#96ceb4;/*#99d6ff;/*#8cd9b3;/*#99e6e6;/*lightgrey;/*lightblue;
+}
+.woman {
+  fill: #ff6f69;/*#ff99cc;/*#ffb380;/*#ffb3ff;/*#ffb380;/*lightgrey;/*lightblue;
+}*/
+#you-circle{
+  fill:none;
+  stroke-width:0px;
+  stroke: black;/*#33cc33;/*#00cc99;/* #00e673;/*#00cc66;/*#9fff80;/*lightgrey;/*lightblue;*/
+}
+
+
+
+/* ========= Node logo (DNA or target) ========= */
+
+.you-logo {
+  fill:#202020;
+  font-size: 20px;
+}
+.fas.fa-dna.dna-logo {
+  fill:#202020;
+}
+.fas.fa-dna.dna-logo.invisible-dna {
+  fill: lightgrey;
+  opacity:0.5;
+}
+.fas.fa-crosshairs {
+  opacity:0.7;
+  color: black;
+}
+.node-logo {
+  opacity:0.7;
+}
+.node-logo-large {
+  font-size: 36px;
+}
+.node-logo-medium {
+  font-size: 24px;
+}
+.node-logo-small {
+  font-size: 12px;
+}
+
+
+/* ========= buttons (delete node, toggle DNA, etc...) ========= */
+.node-button-circle{
+  fill: lightgrey;
+  opacity:0.5;
+}
+.node-button{
+  font-size: 20px;
+}
+
+.button-with-tooltip foreignObject.tooltip div {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  /*background-color:red;*/
+}
+.node-button-fas{
+  fill:#404040;
+  font-size: 20px;
+}
+
+/* ========= add-relatives button ========= */
+
+.add-relatives-list{
+  /*float: left;*/
+  margin:1px;
+  width:90%;
+  border-radius: 5px;
+  /*box-shadow: 0px 0px 0px 4px #888888;
+  /*background-color:lightgreen;*/
+}
+.add-relatives-list span{
+  /*display:block;*/
+  width:100%;
+  /*height:14px;*/
+  float: left;
+  font: 12px sans-serif;
+  padding: 6px 0px 6px 10px;
+  text-align:left;
+  background: rgba(243, 243, 243, 0.9);
+  border-top: 1px solid darkgrey;
+  border-right: 1px solid darkgrey;
+  border-left: 1px solid darkgrey;
+}
+.add-relatives-list span:hover{
+  /*display:block;*/
+  background: rgba(211, 211, 211, 0.9);
+}
+.add-relatives-list span:first-child{
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+.add-relatives-list span:last-child{
+  border-bottom: 1px solid darkgrey;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+
+
+/* ========= tooltips ========= */
+
+
+.button-with-tooltip .tooltip{
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.button-with-tooltip:hover .tooltip{
+  visibility: visible;
+  opacity: 1;
+}
+/*.tooltip div{
+  background-color: yellowgreen;
+}*/
+
+.tooltip .tooltip-text{
+  background-color: rgba(231,231,231,0.85);
+  border-radius: 5px;
+  display:inline-block;
+  padding:4px;
+}
+
+.confirm-div{
+  background-color:red;
+  margin-top:25px;
+}
+
+
+/* =================================== survey =================================== */
+
+label{
+  font-weight: normal;
+  margin-right: 1em;
+}
+
+#policy-survey{
+  display: inline-block;
+  text-align: justify;
+  font-style: italic;
+  font-size: 13px;
+  margin-top: 1em;
+}
+
+#prior-knowledge{/*:first-child{
+/*margin-left: 50px;*/
+text-align: center;
+}
+
+#survey-title{
+margin-left:50px;
+}
+
+#survey-title i{
+margin-right:5px;
+}
+
+.survey-answer{
+  /* margin-bottom: 1em; */
+  margin-left: 35px;
+  margin-right: 35px;
+  font-size: 15px;
+  font-style: italic;
+}
+
+#survey-content{
+width: 850px;
+}
+
+.survey-step{
+display:none;
+}
+
+.survey-step.survey-step-active{
+display:block;
+}
+
+#survey-launch-button{
+margin-top: 10px;
+}
+
+.survey-question .question{
+margin-top: 10px;
+margin-left: 35px;
+margin-right: 35px;
+margin-bottom:10px;
+text-align: justify;
+}
+
+#buttons-survey{
+margin: 0;
+}
+#buttons-survey .margin35{
+  margin-right:35px;
+}
+
+#survey-comment-text{
+  max-width: 100%;
+  min-width: 100%;
+  height: 7em;
+  min-height: 7em;
+}
+/*#survey-content .table tr{
+border: 0px;
+}
+#survey-content .table tr:first-child{
+border-left: 0px;
+}
+#survey-content .table tr:last-child{
+border-right: 0px;
+}*/
+
+/* =================================== tutorial =================================== */
+
+.modal-title{
+  margin-left: 35px;
+  margin-bottom: -15px;
+  margin-top: 0px;
+}
+
+.tuto-content{
+  width: 700px;
+  height: 650px;
+}
+
+.modal-header{
+  border-bottom: 0px solid white;
+}
+.modal-footer{
+  border-top: 0px solid white;
+}
+#tuto-step{
+  display:block;
+}
+#tuto-text{
+  margin-left: 35px;
+  margin-right: 35px;
+  height: 95px;
+}
+
+.tuto-figure{
+  text-align: center;
+  width: 100%;
+}
+
+.tuto-puce{
+  height:10px;
+  width:10px;
+  border-radius: 5px;
+  background-color: red;
+  cursor:pointer;
+}
+.modal-header .close{
+  margin-top:-10px;
+  font-size:30px;
+}
+
+/* video: hide controls*/
+video::-webkit-media-controls {
+  display: none;
+}
+
+/* =================================== debugging  =================================== */
+
+/* Debugging: see node id*/
+.nodeg .node-id {
+  opacity:0;
+}
+.nodeg:hover .node-id {
+  opacity:1;
+}

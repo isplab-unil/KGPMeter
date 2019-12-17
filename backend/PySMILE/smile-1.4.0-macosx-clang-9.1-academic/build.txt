@@ -1,0 +1,9 @@
+SMILE build information:
+product edition: ACADEMIC
+library version: 1.4.0
+release date: 2019-07-31
+commit: 29fb5566834c
+compiler version: Apple LLVM version 9.1.0 (clang-902.0.39.2)
+compiler flags: -DNDEBUG -O3 -ffast-math -fPIC
+built on: Wed, 07 Aug 2019 15:11:09 +0000
+operating system: Darwin x86_64

@@ -33,7 +33,7 @@ from .NeticaFamilyTree import NeticaFamilyTree
 
 logging.getLogger("neticaPy.netica").setLevel(logging.WARNING)
 
-class SequencedFamilyTree(BayesianModel, Hashable):
+class SequencedFamilyTree(Hashable):
 
     relation_map = {
         # great grand parent generation
@@ -149,26 +149,26 @@ class SequencedFamilyTree(BayesianModel, Hashable):
         :param minimize: whether minimization needs to be performed on this tree.
                Used by SequencedFamilyTree.unserialize()
         """
-        super(SequencedFamilyTree, self).__init__(deepcopy(family_tree_edges))
         # create Bayesian network
+        self.family_tree = BayesianModel(deepcopy(family_tree_edges))
         self._inference_network = False
         # check requirements
         if (len(family_tree_edges) == 0):
             self._add_node(target)
-        assert all(n!="" for n in self.nodes())
-        assert (target in self.nodes())
+        assert all(n!="" for n in self.nodes)
+        assert (target in self.nodes)
         assert (target not in sequenced_relatives)
-        for n in sequenced_relatives: assert (n in self.nodes())
-        for n in family_nodes: assert (n in self.nodes())
+        for n in sequenced_relatives: assert (n in self.nodes)
+        for n in family_nodes: assert (n in self.nodes)
         # TODO: assert that the list of edges indeed describes a family tree: F node: pred <= 2, I node: pred <= 1, succ <=1, NO CYCLES
 
         self.target = target
         # flag sequenced and family nodes with networkx properly
-        for n in self.nodes():
-            self.set_sequenced(n, n in sequenced_relatives)
+        for n in self.nodes:
+            self._set_sequenced(n, n in sequenced_relatives)
 
-        for n in self.nodes():
-            self.set_family_node(n, n in family_nodes)
+        for n in self.nodes:
+            self._set_family_node(n, n in family_nodes)
 
         # remove useless nodes and add back missing parents
         if minimize:
@@ -220,7 +220,7 @@ class SequencedFamilyTree(BayesianModel, Hashable):
         :return: a string faithfully representing the minimal tree of this SequencedFamilyTree.
         """
         serialization = {
-            "family_tree_edges": self.edges(),
+            "family_tree_edges": self.edges,
             "sequenced_relatives": self.sequenced_relatives(),
             "target": self.target,
             "family_nodes": self.family_nodes()
@@ -246,46 +246,60 @@ class SequencedFamilyTree(BayesianModel, Hashable):
     def inference_network(self, value):
         warnings.warn("SequencedFamilyTree.inference_network setter: non-mutable parameter, new value ignored")
 
+    @property
+    def nodes(self):
+        return self.family_tree.nodes()
+    @nodes.setter
+    def nodes(self, value):
+        warnings.warn("SequencedFamilyTree.nodes setter: non-mutable parameter, new value ignored")
+
+    @property
+    def edges(self):
+        return self.family_tree.edges()
+    @edges.setter
+    def edges(self, value):
+        warnings.warn("SequencedFamilyTree.edges setter: non-mutable parameter, new value ignored")
+
     # TODO: convert attribute name strings as constant strings
     def is_sequenced(self, node) -> bool:
-        assert node in self.nodes()
-        return nx.get_node_attributes(self, "sequencedDNA")[node]
+        assert node in self.nodes
+        return nx.get_node_attributes(self.family_tree, "sequencedDNA")[node]
 
-    def set_sequenced(self, node, sequencedDNA) -> None:
-        assert node in self.nodes() and (not self.is_family_node(node) or not sequencedDNA)
-        nx.set_node_attributes(self, values={node: sequencedDNA}, name="sequencedDNA")
+    def _set_sequenced(self, node, sequencedDNA) -> None:
+        assert node in self.nodes and (not self.is_family_node(node) or not sequencedDNA)
+        nx.set_node_attributes(self.family_tree, values={node: sequencedDNA}, name="sequencedDNA")
 
     def sequenced_relatives(self) -> List[str]:
-        return [n for n, seq in nx.get_node_attributes(self, "sequencedDNA").items() if seq]
+        return [n for n, seq in nx.get_node_attributes(self.family_tree, "sequencedDNA").items() if seq]
 
     def is_family_node(self, node) -> bool:
-        assert node in self.nodes()
-        return nx.get_node_attributes(self, "family_node").get(node)
+        assert node in self.nodes
+        return nx.get_node_attributes(self.family_tree, "family_node").get(node)
 
-    def set_family_node(self, node, is_family_node) -> None:
-        assert node in self.nodes()
-        nx.set_node_attributes(self, values={node: is_family_node}, name="family_node")
+    def _set_family_node(self, node, is_family_node) -> None:
+        assert node in self.nodes
+        nx.set_node_attributes(self.family_tree, values={node: is_family_node}, name="family_node")
 
     def family_nodes(self) -> List[str]:
-        return [n for n, seq in nx.get_node_attributes(self, "family_node").items() if seq]
+        return [n for n, seq in nx.get_node_attributes(self.family_tree, "family_node").items() if seq]
 
-    def generate_new_node_id(self):
-        return max(list(self.nodes()), key=len)+"n"
+    def _generate_new_node_id(self):
+        return max(list(self.nodes), key=len)+"n"
 
     def _add_node(self, node, weight=None, sequencedDNA=False, family_node=False):
         """Adds a node to the SequencedFamilyTree with its proper sequencedDNA and family_node attributes
 
         internal method, a family tree should be immutable once created"""
-        super(SequencedFamilyTree, self).add_node(node, weight)
-        self.set_sequenced(node, sequencedDNA)
-        self.set_family_node(node, family_node)
+        self.family_tree.add_node(node, weight)
+        self._set_sequenced(node, sequencedDNA)
+        self._set_family_node(node, family_node)
 
     def _create_inference_network(self) -> BayesianModel:
-        bayesian_network = BayesianModel(self.edges())
+        bayesian_network = BayesianModel(self.edges)
         bayesian_network.add_node(self.target)
         for fn in self.family_nodes():
-            if len(bayesian_network.successors(fn))==0:
-                bayesian_network.add_edge(fn,self.generate_new_node_id())
+            if len(list(bayesian_network.successors(fn)))==0:
+                bayesian_network.add_edge(fn,self._generate_new_node_id())
             bayesian_network.add_edges_from([(pred, succ) for pred in bayesian_network.predecessors(fn) for succ in bayesian_network.successors(fn)])
             bayesian_network.remove_node(fn)
         return bayesian_network
@@ -302,7 +316,7 @@ class SequencedFamilyTree(BayesianModel, Hashable):
                 nodes_to_remove.add(node)
 
         for node in nodes_to_remove:
-            self.remove_node(node)
+            self.family_tree.remove_node(node)
         return nodes_to_remove
 
     def _remove_non_sequenced_leaf_nodes(self):
@@ -312,16 +326,16 @@ class SequencedFamilyTree(BayesianModel, Hashable):
         sequenced_relatives = self.sequenced_relatives()
         nodes_to_keep = set(sequenced_relatives)
         nodes_to_keep.add(self.target)
-        undirected_self = self.to_undirected()
+        undirected_self = self.family_tree.to_undirected()
         for sn in sequenced_relatives:
             # all_simple paths returns a generator of lists -> call next() to get the first one
             # (there is only one path as, at this point, the SequencedFamilyTree is a graph theory tree too)
             sp = next(nx.all_simple_paths(undirected_self, sn, self.target))
             nodes_to_keep.update(sp)
-        nodes_to_remove = set([n for n in list(self.nodes()) if n not in nodes_to_keep])
+        nodes_to_remove = set([n for n in list(self.nodes) if n not in nodes_to_keep])
 
         for n in nodes_to_remove:
-            self.remove_node(n)
+            self.family_tree.remove_node(n)
         return nodes_to_remove
 
     def _add_missing_parents(self):
@@ -332,11 +346,11 @@ class SequencedFamilyTree(BayesianModel, Hashable):
         """
         added_parents = []
         for fn in self.family_nodes():
-            for i in range(2 - len(list(self.predecessors(fn)))):
-                new_parent = self.generate_new_node_id()
+            for i in range(2 - len(list(self.family_tree.predecessors(fn)))):
+                new_parent = self._generate_new_node_id()
                 added_parents.append((new_parent, fn))
                 self._add_node(new_parent)
-                self.add_edge(new_parent, fn)
+                self.family_tree.add_edge(new_parent, fn)
         return added_parents
 
     def _signature(self, root, origin=None):
@@ -344,8 +358,8 @@ class SequencedFamilyTree(BayesianModel, Hashable):
 
         :return: a string uniquely representing this tree
         """
-        preds = sorted([self._signature(n, root) for n in self.predecessors(root) if origin is None or n != origin])
-        succs = sorted([self._signature(n, root) for n in self.successors(root) if origin is None or n != origin])
+        preds = sorted([self._signature(n, root) for n in self.family_tree.predecessors(root) if origin is None or n != origin])
+        succs = sorted([self._signature(n, root) for n in self.family_tree.successors(root) if origin is None or n != origin])
         seq = self.is_sequenced(root)
         # bm.nodes[root]["sequencedDNA"] if "sequencedDNA" in bm.nodes[root] else ""
         return 'N(%s|%s|%s)' % (str(seq), ','.join(preds), ','.join(succs))
@@ -356,7 +370,8 @@ class SequencedFamilyTree(BayesianModel, Hashable):
     def copy(self):
         return deepcopy(self)
 
-    def to_netica_net(self, maf):
+    def _to_netica_net(self, maf):
+        assert maf>=0 and maf <= 0.5
 
         #TODO : ASCIIFY PROPERLY: REPRESENT THEM IN HEXADECIMAL/base 64
         def bytify(str):
@@ -387,7 +402,7 @@ class SequencedFamilyTree(BayesianModel, Hashable):
         for node, netica_node in nodes.items():
             # todo calculate b"AA, Aa, aa"
             netica.setnodestatenames(netica_node, b"AA, Aa, aa")
-            parents = self.inference_network.predecessors(node)
+            parents = list(self.inference_network.predecessors(node))
             # no parents
             if len(parents) == 0:
                 netica.setnodeprobs(netica_node, [], MendelianInheritanceCPD.prior(maf))
@@ -430,8 +445,9 @@ class SequencedFamilyTree(BayesianModel, Hashable):
                     "exp_error": float
                 }
         """
+        assert maf>=0 and maf <= 0.5
 
-        with self.to_netica_net(maf) as netica_net:
+        with self._to_netica_net(maf) as netica_net:
             result = []  # list used only for detailed results
             evidence = {}  # dict to contain observed evidence in each case
             # using lists for reference
@@ -518,29 +534,49 @@ class SequencedFamilyTree(BayesianModel, Hashable):
             else:
                 return mean_entropy_posterior[0], mean_exp_error[0]
 
-    def get_privacy_metrics(self, maf):
-        """Returns a tuple with (mean posterior entropy, mean expected error) from cache if possible and by computing it otherwise"""
-        return self.cache[maf] if maf in self.cache else self.compute_privacy_metrics(maf)
+    def get_privacy_metrics(self, maf, detailed_results: bool = False):
+        """Returns a tuple with (mean posterior entropy, mean expected error) from cache if possible and by computing it otherwise.
 
-    def compute_normalized_entropy(self, maf):
+        If detailed_results=True, it doesn't use cache."""
+        assert maf>=0 and maf <= 0.5
+        if not detailed_results:
+            return self.cache[maf] if maf in self.cache else self.compute_privacy_metrics(maf)
+        else:
+            return self.compute_privacy_metrics(maf, detailed_results)
+
+    def compute_normalized_entropy(self, maf, detailed_results: bool = False):
         """Computes normalized entropy correctly, handling lim maf->0 correctly
 
         It mainly handles the edge-case lim maf->0:
         - normalized entropy->0 if any sequenced individual reveals information
         - normalized entropy->1 if no sequenced individual reveals information
         """
+        assert maf>=0 and maf <= 0.5
+        normalized_entropy = float('nan')
         if len(self.sequenced_relatives())==0:
-            return 1
-        if math.isclose(maf, 0.0, abs_tol=ABSOLUTE_EQUALITY_TOLERANCE):
-            return 0
-        posterior_entropy = self.get_privacy_metrics(maf)[0]
+            normalized_entropy = 1
+        elif math.isclose(maf, 0.0, abs_tol=ABSOLUTE_EQUALITY_TOLERANCE):
+            normalized_entropy = 0
+        privacy_metrics = self.get_privacy_metrics(maf, detailed_results)
         prior_entropy = entropy(MendelianInheritanceCPD.prior(maf)).tolist()
-        return posterior_entropy / prior_entropy
+        if not detailed_results:
+            if not math.isnan(normalized_entropy):
+                return normalized_entropy
+            normalized_entropy = privacy_metrics[0] / prior_entropy
+            return normalized_entropy
+        else:
+            for case in privacy_metrics:
+                if not math.isnan(normalized_entropy):
+                    case["normalized_entropy"] = normalized_entropy
+                else:
+                    case["normalized_entropy"] = case["entropy_posterior"] / prior_entropy
+            return privacy_metrics
 
     def snps_privacy_score(self, mafs_to_compute:List[float], mafs_to_interpolate = None):
         mafs_to_compute = sorted(mafs_to_compute)
         norm_post_entropies = [self.compute_normalized_entropy(maf) for maf in mafs_to_compute]
         if mafs_to_interpolate:
+            assert all(maf>=0 and maf <= 0.5 for maf in mafs_to_interpolate)
             return np.mean(np.interp(mafs_to_interpolate, mafs_to_compute, norm_post_entropies))
         else:
             return np.mean(norm_post_entropies)

@@ -7,9 +7,10 @@ mkdir -p lib
 gcc Netica_API_504/src/NeticaEx.c -c -I Netica_API_504/src -L Netica_API_504/lib -o lib/NeticaEx.o
 g++ -shared Netica_API_504/lib/libnetica.a lib/NeticaEx.o -o lib/libnetica.so
 
+echo "KGP Meter notes: on mac OS X, the compilation usually terminates with some warning(s), you can ignore them."
+
 echo "done compiling, removing files"
 rm NeticaAPI_Mac.zip
-rm -r Netica_API_504/
 
 
 

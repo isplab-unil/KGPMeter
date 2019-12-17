@@ -8,7 +8,6 @@ gcc -std=gnu11 -O2 -g -fPIC -pipe -I Netica_API_504/lib/64bit/ Netica_API_504/sr
 
 echo "done compiling, removing files"
 rm NeticaAPI_Linux.zip
-rm -r Netica_API_504/
 
 
 
