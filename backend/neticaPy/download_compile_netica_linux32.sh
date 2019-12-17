@@ -4,7 +4,7 @@ curl -O https://www.norsys.com/downloads/NeticaAPI_Linux.zip
 unzip NeticaAPI_Linux.zip
 echo "compiling..."
 mkdir -p lib
-gcc -std=gnu11 -O2 -g -fPIC -pipe -I $1/lib/ $1/src/NeticaEx.c $1/lib/libnetica.a -shared -o lib/libnetica.so -lm -lpthread -lstdc++
+gcc -std=gnu11 -O2 -g -fPIC -pipe -I Netica_API_504/lib/ Netica_API_504/src/NeticaEx.c Netica_API_504/lib/libnetica.a -shared -o lib/libnetica.so -lm -lpthread -lstdc++
 
 echo "done compiling, removing files"
 rm NeticaAPI_Linux.zip
