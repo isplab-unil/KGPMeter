@@ -153,7 +153,7 @@ class KinGenomicPrivacyMeter{
     //console.log("LOADING family tree, ftl = ", ftl, ", targetId = ",targetId, ", saveDate = ",saveDate)
     if(Boolean(ftl) & (saveDate+2*3600*1000>=+new Date()) ){
       ftl = familyTreeClass.unserialize(ftl)
-      kgp.target = targetId? ftl.nodes[targetId] : null
+      self.target = targetId? ftl.nodes[targetId] : null
       return ftl
     }
     return null
@@ -714,9 +714,9 @@ class FamilyTreeArtist{
       ftree.deleteNode(node.id,kgp.youNodeId)
       self.nodeButtons.hide()
       kgpMeterScoreRequestHandler.requestScore(
-        kgp.target?kgp.target.id:"",
+        self.kgp.target?kgp.target.id:"",
         ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
-        kgp.userId, kgp.userSource, i18n.lng)
+        self.kgp.userId, self.kgp.userSource, i18n.lng)
       familyTreeArtist.update()
       self.kgp.saveFamilyTreeToLocalStorage()
     }
@@ -737,9 +737,9 @@ class FamilyTreeArtist{
       toggleDnaButtonText(node)
       d3.select("#"+FamilyTreeArtist.nodeGroupId(node.id)+" .dna-logo").classed("invisible-dna", !node.sequencedDNA)
       kgpMeterScoreRequestHandler.requestScore(
-        kgp.target?kgp.target.id:"",
+        self.kgp.target?kgp.target.id:"",
         ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
-        kgp.userId, kgp.userSource, i18n.lng)
+        self.kgp.userId, self.kgp.userSource, i18n.lng)
         self.kgp.saveFamilyTreeToLocalStorage()
   
     }
@@ -811,7 +811,7 @@ class FamilyTreeArtist{
             .attr(i18n.keyAttr,"node-name-"+relative)
             .on("click",function(node){
               let relativeNode = addRelative(node)
-              relativeNode.i18nName = kgp.relationToYou(node.i18nName,relative)
+              relativeNode.i18nName = self.kgp.relationToYou(node.i18nName,relative)
               familyTreeArtist.update(node)
               self.nodeButtons.hide()
               addRelativeHitbox.remove()

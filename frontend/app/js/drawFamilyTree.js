@@ -185,7 +185,7 @@ var KinGenomicPrivacyMeter = function () {
       //console.log("LOADING family tree, ftl = ", ftl, ", targetId = ",targetId, ", saveDate = ",saveDate)
       if (Boolean(ftl) & saveDate + 2 * 3600 * 1000 >= +new Date()) {
         ftl = familyTreeClass.unserialize(ftl);
-        kgp.target = targetId ? ftl.nodes[targetId] : null;
+        self.target = targetId ? ftl.nodes[targetId] : null;
         return ftl;
       }
       return null;
@@ -823,7 +823,7 @@ var FamilyTreeArtist = function () {
                   _addAddRelativeSpan = function _addAddRelativeSpan(relative, addRelative) {
                     addRelativeDiv.append("span").attr(i18n.keyAttr, "node-name-" + relative).on("click", function (node) {
                       var relativeNode = addRelative(node);
-                      relativeNode.i18nName = kgp.relationToYou(node.i18nName, relative);
+                      relativeNode.i18nName = self.kgp.relationToYou(node.i18nName, relative);
                       familyTreeArtist.update(node);
                       self.nodeButtons.hide();
                       addRelativeHitbox.remove();
@@ -907,11 +907,11 @@ var FamilyTreeArtist = function () {
       function removeNode(node) {
         ftree.deleteNode(node.id, kgp.youNodeId);
         self.nodeButtons.hide();
-        kgpMeterScoreRequestHandler.requestScore(kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+        kgpMeterScoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
           return n.sequencedDNA;
         }).map(function (n) {
           return n.id;
-        }), kgp.userId, kgp.userSource, i18n.lng);
+        }), self.kgp.userId, self.kgp.userSource, i18n.lng);
         familyTreeArtist.update();
         self.kgp.saveFamilyTreeToLocalStorage();
       }
@@ -929,11 +929,11 @@ var FamilyTreeArtist = function () {
         node.sequencedDNA = !node.sequencedDNA;
         toggleDnaButtonText(node);
         d3.select("#" + FamilyTreeArtist.nodeGroupId(node.id) + " .dna-logo").classed("invisible-dna", !node.sequencedDNA);
-        kgpMeterScoreRequestHandler.requestScore(kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+        kgpMeterScoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
           return n.sequencedDNA;
         }).map(function (n) {
           return n.id;
-        }), kgp.userId, kgp.userSource, i18n.lng);
+        }), self.kgp.userId, self.kgp.userSource, i18n.lng);
         self.kgp.saveFamilyTreeToLocalStorage();
       }
       var toggleDNAbutton = self.nodeButtons.addButton("toggle-dna", 25, 50, "\uF471+", "170px", "70px", "hint-sequence-node").on("click.sequenced-dna", toggleDNA);
