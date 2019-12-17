@@ -57,8 +57,6 @@ kgp = new KinGenomicPrivacyMeter(
   i18n
 )
 
-// ==================== LOAD initial GEDCOM FROM SERVER ====================
-
 
 //initSurvey()
 

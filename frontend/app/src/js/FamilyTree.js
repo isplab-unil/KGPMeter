@@ -16,7 +16,7 @@ class FamilyTree{
       if(n.tag==="FAM"){
         n.name+= " "+(n.husb? n.husb.name:"")+","+(n.wife?n.wife.name:"")
       }
-      addSpouseMethod(n)
+      FamilyTree.addSpouseMethod(n)
     })
 
     //compute nodes positions
@@ -200,7 +200,7 @@ class FamilyTree{
   addFamily(wife, husb, child){
     //console.log("addFamily")
     let node = {
-      id:toGedcomId(this.minFreeFamId++,"F"),
+      id: FamilyTree.gedcomId(this.minFreeFamId++,"F"),
       tag:"FAM",
       wife: this.getNode(wife),
       husb: this.getNode(husb),
@@ -215,14 +215,14 @@ class FamilyTree{
   addIndividual(name,famc,fams,sex){
     //console.log("addIndividual")
     let node = {
-      id:toGedcomId(this.minFreeIndivId++),
+      id:FamilyTree.gedcomId(this.minFreeIndivId++),
       tag:"INDI",
       name:name,
       famc:this.getNode(famc),
       fams:[fams].map(this.getNode).filter(x=>x!=undefined),
       sex:sex
     }
-    addSpouseMethod(node)
+    FamilyTree.addSpouseMethod(node)
     this.nodes[node.id]=node
 
     return node;
@@ -343,6 +343,25 @@ class FamilyTree{
   }
   cleanFamsArrays(){
     _.forEach(this.nodes, node => node.fams?node.fams = node.fams.filter(Boolean):node.fams)
+  }
+
+  static gedcomId(idnb,type="I"){
+    return "@"+type+idnb+"@"
+  }
+
+  static addSpouseMethod(n){
+    n.spouse = function(famsIndex=0){
+      // only if desired fams exists...
+      if( this.fams && this.fams.length>famsIndex){
+        let fams = this.fams[famsIndex]
+        // only if both spouses... present
+        if(fams.wife&&fams.husb){
+          // ...can we find the spouse
+          return this.id==fams.wife.id? fams.husb : fams.wife
+        }
+      }
+      return undefined;
+    }
   }
 }
 

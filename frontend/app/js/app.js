@@ -86,9 +86,6 @@ i18n.observe(document);
 //constructor(api_base_url, svgId, youNodeId, i18n, maxFamilyTreeDepth=5, cookieLocalStoragePrefix="kgpmeter-"){
 kgp = new KinGenomicPrivacyMeter("", "svg-kin-genomics-privacy-app", "@I1@", i18n);
 
-// ==================== LOAD initial GEDCOM FROM SERVER ====================
-
-
 //initSurvey()
 
 ftree = loadFamilyTreeFromLocalStorage();

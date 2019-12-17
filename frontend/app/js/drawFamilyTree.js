@@ -148,7 +148,7 @@ var KinGenomicPrivacyMeter = function () {
       // smoothly transition back to original position
       familyTreeArtist.update(false, transitionDuration);
 
-      // once this is done (after 800ms), reset the empty ftree from GEDCOM data
+      // once this is done (after 800ms), reset to the empty ftree
       setTimeout(function () {
         ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree();
         d3.select("#familytree-g").remove();
@@ -1067,6 +1067,13 @@ function loadFamilyTreeFromLocalStorage() {
   return null;
 }
 
+function detectIE11() {
+  if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > -1) {
+    return true;
+  }
+  return false;
+}
+
 /** block IE if detected, not the same as mobile as foreignObject not supported */
 function IEBlock() {
   if (detectIE11()) {
@@ -1074,6 +1081,13 @@ function IEBlock() {
 
     privacyBackendStatus.displayDanger("IE-block-error", 10000000000);
   }
+}
+
+function detectMobile() {
+  if (navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i)) {
+    return true;
+  }
+  return false;
 }
 
 /** Block mobile browsers when detected, not the same as IE as foreignObject allows text to wrap in multiple lines on small screens. */
