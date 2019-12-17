@@ -52,7 +52,7 @@ var KinGenomicPrivacyMeter = function () {
     this.privacyScoreApiEndpoint = this.api_base_url + "/privacy-score";
     this.surveyApiEndpoint = this.api_base_url + "/survey";
 
-    kgpsurvey = new KgpSurvey(this.surveyApiEndpoint, this.userId, this.i18n);
+    this.kgpsurvey = new KgpSurvey(this.surveyApiEndpoint, this.userId, this.i18n);
 
     // privacy bar
     var privacyBarWidth = 30;
@@ -60,24 +60,24 @@ var KinGenomicPrivacyMeter = function () {
     this.privacyBar = new PrivacyBar(this.svg.attr("id"), "privacy-bar-g", this.svgWidth - privacyBarWidth - privacyBarStrokeWidth, 30, 30, 400, 5, d3.interpolateRgbBasis(["rgb(255,0,0)", "rgb(255,125,0)", "rgb(255,255,0)", "rgb(0,195,0)"]), self.i18n);
 
     // privacy worded score
-    privacyWordedScore = new PrivacyWordedScore(this.privacyBar.g.attr("id"), "privacy-bar-title", "privacy-bar-element", this.privacyBar.width, -16, 20, this.privacyBar.colorScale, self.i18n, "privacy-bar-title");
+    this.privacyWordedScore = new PrivacyWordedScore(this.privacyBar.g.attr("id"), "privacy-bar-title", "privacy-bar-element", this.privacyBar.width, -16, 20, this.privacyBar.colorScale, self.i18n, "privacy-bar-title");
 
     // backend status
-    privacyBackendStatus = new PrivacyBackendStatus("kgp-response-container", self.i18n);
+    this.privacyBackendStatus = new PrivacyBackendStatus("kgp-response-container", self.i18n);
 
     // explainer
-    privacyScoreNumberExplainer = new PrivacyScoreNumberExplainer("kgp-explainer-container", self.i18n, "explainer-text");
+    this.privacyScoreNumberExplainer = new PrivacyScoreNumberExplainer("kgp-explainer-container", self.i18n, "explainer-text");
 
     // request handler
-    kgpMeterScoreRequestHandler = new KgpMeterScoreRequestHandler(this.privacyScoreApiEndpoint);
+    this.scoreRequestHandler = new KgpMeterScoreRequestHandler(this.privacyScoreApiEndpoint);
     // update privacyMetric
-    kgpMeterScoreRequestHandler.addListener(function (kgpPromise) {
+    this.scoreRequestHandler.addListener(function (kgpPromise) {
       kgpPromise.then(function (kgpSuccess) {
         return self.privacyMetric = kgpSuccess.result.privacy_metric;
       }, function () {});
     });
     // update cursor
-    kgpMeterScoreRequestHandler.addListener(function (kgpPromise) {
+    this.scoreRequestHandler.addListener(function (kgpPromise) {
       $("body").css({ 'cursor': 'progress' });
       kgpPromise.then(function (kgpSuccess) {
         return $("body").css({ 'cursor': 'auto' });
@@ -86,35 +86,35 @@ var KinGenomicPrivacyMeter = function () {
       });
     });
     // ...other listeners
-    kgpMeterScoreRequestHandler.addListener(function () {
+    this.scoreRequestHandler.addListener(function () {
       var _self$privacyBar;
 
       return (_self$privacyBar = self.privacyBar).await.apply(_self$privacyBar, arguments);
     });
-    kgpMeterScoreRequestHandler.addListener(function () {
-      var _privacyWordedScore;
+    this.scoreRequestHandler.addListener(function () {
+      var _self$privacyWordedSc;
 
-      return (_privacyWordedScore = privacyWordedScore).await.apply(_privacyWordedScore, arguments);
+      return (_self$privacyWordedSc = self.privacyWordedScore).await.apply(_self$privacyWordedSc, arguments);
     });
-    kgpMeterScoreRequestHandler.addListener(function () {
-      var _privacyBackendStatus;
+    this.scoreRequestHandler.addListener(function () {
+      var _self$privacyBackendS;
 
-      return (_privacyBackendStatus = privacyBackendStatus).await.apply(_privacyBackendStatus, arguments);
+      return (_self$privacyBackendS = self.privacyBackendStatus).await.apply(_self$privacyBackendS, arguments);
     });
-    kgpMeterScoreRequestHandler.addListener(function () {
-      var _privacyScoreNumberEx;
+    this.scoreRequestHandler.addListener(function () {
+      var _self$privacyScoreNum;
 
-      return (_privacyScoreNumberEx = privacyScoreNumberExplainer).await.apply(_privacyScoreNumberEx, arguments);
+      return (_self$privacyScoreNum = self.privacyScoreNumberExplainer).await.apply(_self$privacyScoreNum, arguments);
     });
-    kgpMeterScoreRequestHandler.addListener(function () {
-      var _kgpsurvey;
+    this.scoreRequestHandler.addListener(function () {
+      var _self$kgpsurvey;
 
-      return (_kgpsurvey = kgpsurvey).await.apply(_kgpsurvey, arguments);
+      return (_self$kgpsurvey = self.kgpsurvey).await.apply(_self$kgpsurvey, arguments);
     });
 
     // new user: send init request
     if (new_user) {
-      kgpMeterScoreRequestHandler.requestScore("i1", [["i1", "f1"], ["f1", "i2"]], [], this.userId, this.userSource, self.i18n.lng, true // silent request
+      this.scoreRequestHandler.requestScore("i1", [["i1", "f1"], ["f1", "i2"]], [], this.userId, this.userSource, self.i18n.lng, true // silent request
       );
     }
 
@@ -140,7 +140,7 @@ var KinGenomicPrivacyMeter = function () {
       this.selectTarget(this.target, true);
     }
     if (savedFtree) {
-      kgpMeterScoreRequestHandler.requestScore(self.target ? self.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+      this.scoreRequestHandler.requestScore(self.target ? self.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
         return n.sequencedDNA;
       }).map(function (n) {
         return n.id;
@@ -172,9 +172,9 @@ var KinGenomicPrivacyMeter = function () {
       resp = null;
       this.privacyBar.elements.transition(200).attr("opacity", 1);
       this.privacyBar.update(1);
-      privacyBackendStatus.hide();
-      privacyWordedScore.hide();
-      privacyScoreNumberExplainer.hide();
+      this.privacyBackendStatus.hide();
+      this.privacyWordedScore.hide();
+      this.privacyScoreNumberExplainer.hide();
 
       // smoothly transition back to original position
       this.familyTreeArtist.update(false, transitionDuration);
@@ -236,7 +236,7 @@ var KinGenomicPrivacyMeter = function () {
         var oldTarget = self.target;
         this.target = newTarget;
         this.familyTreeArtist.setAsTarget(newTarget, oldTarget);
-        kgpMeterScoreRequestHandler.requestScore(self.target ? self.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+        this.scoreRequestHandler.requestScore(self.target ? self.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
           return n.sequencedDNA;
         }).map(function (n) {
           return n.id;
@@ -270,13 +270,13 @@ var KinGenomicPrivacyMeter = function () {
       this.updateSvgWidth();
       // redraw tree&privacy bar
       this.privacyBar.init(self.svgWidth - this.privacyBar.width - this.privacyBar.strokeWidth, this.privacyBar.y, 0);
-      privacyWordedScore.init();
-      privacyWordedScore.hide();
+      this.privacyWordedScore.init();
+      this.privacyWordedScore.hide();
       this.trashButton.init();
 
       if (self.target) {
         this.privacyBar.update(this.privacyMetric, 0);
-        privacyWordedScore.update(this.privacyMetric, 0);
+        this.privacyWordedScore.update(this.privacyMetric, 0);
       }
       this.familyTreeArtist.init(0);
       this.mobileBlock();
@@ -335,7 +335,7 @@ var KinGenomicPrivacyMeter = function () {
       if (detectIE11()) {
         self.svg.append("rect").attr("width", self.svgWidth).attr("height", self.svgHeight).attr("fill", "white").attr("opacity", "0.8");
 
-        privacyBackendStatus.displayDanger("IE-block-error", 10000000000);
+        this.privacyBackendStatus.displayDanger("IE-block-error", 10000000000);
       }
     }
 
@@ -350,7 +350,7 @@ var KinGenomicPrivacyMeter = function () {
 
         self.svg.append("foreignObject").attr("y", self.svgHeight / 4).attr("width", self.svgWidth).attr("height", self.svgHeight).append("xhtml:div").attr("style", "max:width:100%;").attr("data-i18n", "mobile-block");
 
-        privacyBackendStatus.displayDanger("mobile-block", 10000000000);
+        this.privacyBackendStatus.displayDanger("mobile-block", 10000000000);
       }
     }
 

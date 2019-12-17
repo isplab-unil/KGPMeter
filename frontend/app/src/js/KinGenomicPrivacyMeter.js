@@ -46,7 +46,7 @@ class KinGenomicPrivacyMeter{
     this.privacyScoreApiEndpoint = this.api_base_url+"/privacy-score"
     this.surveyApiEndpoint = this.api_base_url+"/survey"
 
-    kgpsurvey = new KgpSurvey(this.surveyApiEndpoint, this.userId, this.i18n)
+    this.kgpsurvey = new KgpSurvey(this.surveyApiEndpoint, this.userId, this.i18n)
 
     // privacy bar
     let privacyBarWidth = 30
@@ -61,7 +61,7 @@ class KinGenomicPrivacyMeter{
     )
 
     // privacy worded score
-    privacyWordedScore = new PrivacyWordedScore(
+    this.privacyWordedScore = new PrivacyWordedScore(
       this.privacyBar.g.attr("id"),
       "privacy-bar-title",
       "privacy-bar-element", 
@@ -72,37 +72,37 @@ class KinGenomicPrivacyMeter{
     )
 
     // backend status
-    privacyBackendStatus = new PrivacyBackendStatus("kgp-response-container", self.i18n)
+    this.privacyBackendStatus = new PrivacyBackendStatus("kgp-response-container", self.i18n)
 
     // explainer
-    privacyScoreNumberExplainer = new PrivacyScoreNumberExplainer("kgp-explainer-container", self.i18n, "explainer-text")
+    this.privacyScoreNumberExplainer = new PrivacyScoreNumberExplainer("kgp-explainer-container", self.i18n, "explainer-text")
 
     // request handler
-    kgpMeterScoreRequestHandler = new KgpMeterScoreRequestHandler(this.privacyScoreApiEndpoint)
+    this.scoreRequestHandler = new KgpMeterScoreRequestHandler(this.privacyScoreApiEndpoint)
     // update privacyMetric
-    kgpMeterScoreRequestHandler.addListener(kgpPromise => {
+    this.scoreRequestHandler.addListener(kgpPromise => {
       kgpPromise.then(
         kgpSuccess => self.privacyMetric = kgpSuccess.result.privacy_metric,
         ()=>{}
       )
     })
     // update cursor
-    kgpMeterScoreRequestHandler.addListener(kgpPromise => {
+    this.scoreRequestHandler.addListener(kgpPromise => {
       $("body").css({'cursor':'progress'})
       kgpPromise.then(
         kgpSuccess => $("body").css({'cursor':'auto'}),
         kgpError => $("body").css({'cursor':'auto'}))
     })
     // ...other listeners
-    kgpMeterScoreRequestHandler.addListener((...args) => self.privacyBar.await(...args))
-    kgpMeterScoreRequestHandler.addListener((...args) => privacyWordedScore.await(...args))
-    kgpMeterScoreRequestHandler.addListener((...args) => privacyBackendStatus.await(...args))
-    kgpMeterScoreRequestHandler.addListener((...args) => privacyScoreNumberExplainer.await(...args))
-    kgpMeterScoreRequestHandler.addListener((...args) => kgpsurvey.await(...args))
+    this.scoreRequestHandler.addListener((...args) => self.privacyBar.await(...args))
+    this.scoreRequestHandler.addListener((...args) => self.privacyWordedScore.await(...args))
+    this.scoreRequestHandler.addListener((...args) => self.privacyBackendStatus.await(...args))
+    this.scoreRequestHandler.addListener((...args) => self.privacyScoreNumberExplainer.await(...args))
+    this.scoreRequestHandler.addListener((...args) => self.kgpsurvey.await(...args))
     
     // new user: send init request
     if(new_user){
-      kgpMeterScoreRequestHandler.requestScore(
+      this.scoreRequestHandler.requestScore(
         "i1",
         [["i1","f1"],["f1","i2"]], [],
         this.userId, this.userSource, self.i18n.lng,
@@ -128,7 +128,7 @@ class KinGenomicPrivacyMeter{
       this.selectTarget(this.target, true)
     }
     if(savedFtree){
-      kgpMeterScoreRequestHandler.requestScore(
+      this.scoreRequestHandler.requestScore(
         self.target?self.target.id:"",
         ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
         self.userId, self.userSource, i18n.lng
@@ -153,9 +153,9 @@ class KinGenomicPrivacyMeter{
     resp = null
     this.privacyBar.elements.transition(200).attr("opacity",1)
     this.privacyBar.update(1)
-    privacyBackendStatus.hide()
-    privacyWordedScore.hide()
-    privacyScoreNumberExplainer.hide()
+    this.privacyBackendStatus.hide()
+    this.privacyWordedScore.hide()
+    this.privacyScoreNumberExplainer.hide()
 
     // smoothly transition back to original position
     this.familyTreeArtist.update(false, transitionDuration)
@@ -201,7 +201,7 @@ class KinGenomicPrivacyMeter{
       let oldTarget = self.target
       this.target = newTarget
       this.familyTreeArtist.setAsTarget(newTarget, oldTarget)
-      kgpMeterScoreRequestHandler.requestScore(
+      this.scoreRequestHandler.requestScore(
         self.target?self.target.id:"",
         ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
         self.userId, self.userSource, i18n.lng
@@ -227,13 +227,13 @@ class KinGenomicPrivacyMeter{
     this.updateSvgWidth()
     // redraw tree&privacy bar
     this.privacyBar.init( self.svgWidth - this.privacyBar.width - this.privacyBar.strokeWidth, this.privacyBar.y, 0)
-    privacyWordedScore.init()
-    privacyWordedScore.hide()
+    this.privacyWordedScore.init()
+    this.privacyWordedScore.hide()
     this.trashButton.init()
 
     if(self.target){
       this.privacyBar.update(this.privacyMetric, 0)
-      privacyWordedScore.update(this.privacyMetric, 0)
+      this.privacyWordedScore.update(this.privacyMetric, 0)
     }
     this.familyTreeArtist.init(0)
     this.mobileBlock()
@@ -297,7 +297,7 @@ class KinGenomicPrivacyMeter{
           .attr("fill","white")
           .attr("opacity","0.8")
 
-      privacyBackendStatus.displayDanger("IE-block-error",10000000000)
+      this.privacyBackendStatus.displayDanger("IE-block-error",10000000000)
     }
   }
 
@@ -319,7 +319,7 @@ class KinGenomicPrivacyMeter{
           .attr("style","max:width:100%;")
           .attr("data-i18n","mobile-block")
       
-      privacyBackendStatus.displayDanger("mobile-block",10000000000)
+      this.privacyBackendStatus.displayDanger("mobile-block",10000000000)
     }
   }
 

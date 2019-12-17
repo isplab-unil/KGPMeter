@@ -300,7 +300,7 @@ class FamilyTreeArtist{
     function removeNode(node){
       ftree.deleteNode(node.id,kgp.youNodeId)
       self.nodeButtons.hide()
-      kgpMeterScoreRequestHandler.requestScore(
+      self.kgp.scoreRequestHandler.requestScore(
         self.kgp.target?kgp.target.id:"",
         ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
         self.kgp.userId, self.kgp.userSource, i18n.lng
@@ -324,7 +324,7 @@ class FamilyTreeArtist{
       node.sequencedDNA = !node.sequencedDNA
       toggleDnaButtonText(node)
       d3.select("#"+FamilyTreeArtist.nodeGroupId(node.id)+" .dna-logo").classed("invisible-dna", !node.sequencedDNA)
-      kgpMeterScoreRequestHandler.requestScore(
+      self.kgp.scoreRequestHandler.requestScore(
         self.kgp.target?kgp.target.id:"",
         ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
         self.kgp.userId, self.kgp.userSource, i18n.lng)

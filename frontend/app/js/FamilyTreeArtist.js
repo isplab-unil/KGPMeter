@@ -453,7 +453,7 @@ var FamilyTreeArtist = function () {
       function removeNode(node) {
         ftree.deleteNode(node.id, kgp.youNodeId);
         self.nodeButtons.hide();
-        kgpMeterScoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+        self.kgp.scoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
           return n.sequencedDNA;
         }).map(function (n) {
           return n.id;
@@ -475,7 +475,7 @@ var FamilyTreeArtist = function () {
         node.sequencedDNA = !node.sequencedDNA;
         toggleDnaButtonText(node);
         d3.select("#" + FamilyTreeArtist.nodeGroupId(node.id) + " .dna-logo").classed("invisible-dna", !node.sequencedDNA);
-        kgpMeterScoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+        self.kgp.scoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
           return n.sequencedDNA;
         }).map(function (n) {
           return n.id;
