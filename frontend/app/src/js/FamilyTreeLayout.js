@@ -45,8 +45,7 @@ class FamilyTreeLayout extends FamilyTree{
    */
   static unserialize(serializedFtreeLayout){
     serializedFtreeLayout = JSON.parse(serializedFtreeLayout)
-    let ftree = new FamilyTreeLayout(FamilyTree.unserializeParseNodes(serializedFtreeLayout),serializedFtreeLayout.centerNodeId)
-    return ftree
+    return new FamilyTreeLayout(FamilyTree.unserializeParseNodes(serializedFtreeLayout),serializedFtreeLayout.centerNodeId)
   }
 
   /**
@@ -69,7 +68,7 @@ class FamilyTreeLayout extends FamilyTree{
   computeLayout(){
 
     let nodes = this.nodesArray()
-    ftree._computeDepths(nodes[0])
+    this._computeDepths(nodes[0])
         
     let indiNodes = nodes.filter(n=>n.tag=="INDI")
     let dummyNodeId = 0

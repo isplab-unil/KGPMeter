@@ -597,8 +597,7 @@ var FamilyTree = function () {
     key: "unserialize",
     value: function unserialize(serializedFtree) {
       serializedFtree = JSON.parse(serializedFtree);
-      var ftree = new FamilyTree(FamilyTree.unserializeParseNodes(serializedFtree));
-      return ftree;
+      return new FamilyTree(FamilyTree.unserializeParseNodes(serializedFtree));
     }
   }, {
     key: "gedcomId",
