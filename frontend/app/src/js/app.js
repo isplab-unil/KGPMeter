@@ -21,13 +21,13 @@ let gedData = 0
 
 // FTA
 let familyTreeArtist
-// privacy_bar
+// privacy_bar.js
 let privacyBar
 let privacyWordedScore
 let privacyBackendStatus
 let privacyScoreNumberExplainer
 let kgpMeterScoreRequestHandler
-// surveys
+// surveys.js
 let kgpsurvey;
 
 // languageLoader and i18n object: Internationalisation

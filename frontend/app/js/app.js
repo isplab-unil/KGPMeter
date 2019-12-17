@@ -67,13 +67,13 @@ var gedData = 0;
 
 // FTA
 var familyTreeArtist = void 0;
-// privacy_bar
+// privacy_bar.js
 var privacyBar = void 0;
 var privacyWordedScore = void 0;
 var privacyBackendStatus = void 0;
 var privacyScoreNumberExplainer = void 0;
 var kgpMeterScoreRequestHandler = void 0;
-// surveys
+// surveys.js
 var kgpsurvey = void 0;
 
 // languageLoader and i18n object: Internationalisation
