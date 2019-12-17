@@ -87,14 +87,14 @@ var KgpSurvey = function () {
 
   _createClass(KgpSurvey, [{
     key: "checkSurveyLaunchConditions",
-    value: function checkSurveyLaunchConditions() {
+    value: function checkSurveyLaunchConditions(target) {
       var nodes = ftree.nodesArray().filter(function (n) {
         return !n.id.match(/f|F/);
       });
       this.twoNodesAdded = nodes.length >= 3;
       //let oneNodeSequenced = nodes.filter(n => n.sequencedDNA).length >= 1
       this.threeRequestsAsked = this.signaturesRequestedTrees.size >= 3;
-      this.oneTarget = Boolean(kgp.target);
+      this.oneTarget = Boolean(target);
       this.surveyNotStarted = !this.getSurveyStatus();
       //console.log("twoNodesAdded=",twoNodesAdded,", threeRequestsAsked=",threeRequestsAsked,", oneTarget=",oneTarget,", !surveyStarted", !surveyStarted)
 
@@ -130,7 +130,7 @@ var KgpSurvey = function () {
           _this.timestampFirstRequest = kgpSuccess.timestamp_js;
         }
         // if launch conditions filled: launch survey (after required timeout)
-        if (_this.checkSurveyLaunchConditions()) {
+        if (_this.checkSurveyLaunchConditions(request.family_tree.target)) {
           var now = +new Date();
           var timeSinceFirstRequest = now - _this.timestampFirstRequest;
           var timeout = void 0;

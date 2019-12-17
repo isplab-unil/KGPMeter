@@ -73,12 +73,12 @@ class KgpSurvey{
   /**
    * Check that conditions to launch the survey are filled.
    */
-  checkSurveyLaunchConditions(){
+  checkSurveyLaunchConditions(target){
     let nodes = ftree.nodesArray().filter(n=>!n.id.match(/f|F/))
     this.twoNodesAdded = nodes.length >= 3
     //let oneNodeSequenced = nodes.filter(n => n.sequencedDNA).length >= 1
     this.threeRequestsAsked = this.signaturesRequestedTrees.size>=3
-    this.oneTarget = Boolean(kgp.target)
+    this.oneTarget = Boolean(target)
     this.surveyNotStarted = !this.getSurveyStatus()
     //console.log("twoNodesAdded=",twoNodesAdded,", threeRequestsAsked=",threeRequestsAsked,", oneTarget=",oneTarget,", !surveyStarted", !surveyStarted)
   
@@ -108,7 +108,7 @@ class KgpSurvey{
         this.timestampFirstRequest = kgpSuccess.timestamp_js
       }
       // if launch conditions filled: launch survey (after required timeout)
-      if(this.checkSurveyLaunchConditions()){
+      if(this.checkSurveyLaunchConditions(request.family_tree.target)){
         let now = +(new Date())
         let timeSinceFirstRequest = now - this.timestampFirstRequest
         let timeout;
