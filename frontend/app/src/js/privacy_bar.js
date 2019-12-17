@@ -1,11 +1,6 @@
 "use strict";
 
 
-let privacyBar
-let privacyWordedScore
-let privacyBackendStatus
-let privacyScoreNumberExplainer
-let kgpMeterScoreRequestHandler
 
 class PrivacyBar{
   constructor(

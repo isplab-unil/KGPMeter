@@ -1,6 +1,5 @@
 "use strict";
 
-let kgpsurvey;
 class KgpSurvey{
   constructor(api_endpoint, userId, i18n, launchWaitTimeBasis=60, launchWaitTimePoissonMean=90, launchWaitTimeMax = 300){
     this.api_endpoint = api_endpoint

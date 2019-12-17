@@ -19,7 +19,16 @@ let ftree = 0
 let resp;
 let gedData = 0
 
+// FTA
 let familyTreeArtist
+// privacy_bar
+let privacyBar
+let privacyWordedScore
+let privacyBackendStatus
+let privacyScoreNumberExplainer
+let kgpMeterScoreRequestHandler
+// surveys
+let kgpsurvey;
 
 // languageLoader and i18n object: Internationalisation
 let LANGUAGE_FILES_URL = "./i18n/"

@@ -4,8 +4,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var kgpsurvey = void 0;
-
 var KgpSurvey = function () {
   function KgpSurvey(api_endpoint, userId, i18n) {
     var launchWaitTimeBasis = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 60;

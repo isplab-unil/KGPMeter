@@ -65,7 +65,16 @@ var ftree = 0;
 var resp = void 0;
 var gedData = 0;
 
+// FTA
 var familyTreeArtist = void 0;
+// privacy_bar
+var privacyBar = void 0;
+var privacyWordedScore = void 0;
+var privacyBackendStatus = void 0;
+var privacyScoreNumberExplainer = void 0;
+var kgpMeterScoreRequestHandler = void 0;
+// surveys
+var kgpsurvey = void 0;
 
 // languageLoader and i18n object: Internationalisation
 var LANGUAGE_FILES_URL = "./i18n/";

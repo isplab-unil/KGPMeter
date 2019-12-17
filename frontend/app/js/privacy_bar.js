@@ -10,12 +10,6 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var privacyBar = void 0;
-var privacyWordedScore = void 0;
-var privacyBackendStatus = void 0;
-var privacyScoreNumberExplainer = void 0;
-var kgpMeterScoreRequestHandler = void 0;
-
 var PrivacyBar = function () {
   function PrivacyBar(parentId, id, x, y, width, height, r, colorScale, i18n) {
     var nbBoxes = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : 5;
