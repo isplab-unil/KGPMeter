@@ -21,7 +21,6 @@ let gedData = 0
 
 // FTA
 // privacy_bar.js
-let privacyBar
 let privacyWordedScore
 let privacyBackendStatus
 let privacyScoreNumberExplainer

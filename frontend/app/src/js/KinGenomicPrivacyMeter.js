@@ -51,7 +51,7 @@ class KinGenomicPrivacyMeter{
     // privacy bar
     let privacyBarWidth = 30
     let privacyBarStrokeWidth = 4
-    privacyBar = new PrivacyBar(
+    this.privacyBar = new PrivacyBar(
       this.svg.attr("id"),
       "privacy-bar-g",
       this.svgWidth - privacyBarWidth - privacyBarStrokeWidth, 30, 
@@ -62,11 +62,11 @@ class KinGenomicPrivacyMeter{
 
     // privacy worded score
     privacyWordedScore = new PrivacyWordedScore(
-      privacyBar.g.attr("id"),
+      this.privacyBar.g.attr("id"),
       "privacy-bar-title",
       "privacy-bar-element", 
-      privacyBar.width, -16, 20,
-      privacyBar.colorScale,
+      this.privacyBar.width, -16, 20,
+      this.privacyBar.colorScale,
       self.i18n,
       "privacy-bar-title"
     )
@@ -94,7 +94,7 @@ class KinGenomicPrivacyMeter{
         kgpError => $("body").css({'cursor':'auto'}))
     })
     // ...other listeners
-    kgpMeterScoreRequestHandler.addListener((...args) => privacyBar.await(...args))
+    kgpMeterScoreRequestHandler.addListener((...args) => self.privacyBar.await(...args))
     kgpMeterScoreRequestHandler.addListener((...args) => privacyWordedScore.await(...args))
     kgpMeterScoreRequestHandler.addListener((...args) => privacyBackendStatus.await(...args))
     kgpMeterScoreRequestHandler.addListener((...args) => privacyScoreNumberExplainer.await(...args))
@@ -151,8 +151,8 @@ class KinGenomicPrivacyMeter{
     self.privacyMetric = 1
     self.target = null
     resp = null
-    privacyBar.elements.transition(200).attr("opacity",1)
-    privacyBar.update(1)
+    this.privacyBar.elements.transition(200).attr("opacity",1)
+    this.privacyBar.update(1)
     privacyBackendStatus.hide()
     privacyWordedScore.hide()
     privacyScoreNumberExplainer.hide()
@@ -226,13 +226,13 @@ class KinGenomicPrivacyMeter{
     // resize svg
     this.updateSvgWidth()
     // redraw tree&privacy bar
-    privacyBar.init( self.svgWidth - privacyBar.width - privacyBar.strokeWidth, privacyBar.y, 0)
+    this.privacyBar.init( self.svgWidth - this.privacyBar.width - this.privacyBar.strokeWidth, this.privacyBar.y, 0)
     privacyWordedScore.init()
     privacyWordedScore.hide()
     this.trashButton.init()
 
     if(self.target){
-      privacyBar.update(this.privacyMetric, 0)
+      this.privacyBar.update(this.privacyMetric, 0)
       privacyWordedScore.update(this.privacyMetric, 0)
     }
     this.familyTreeArtist.init(0)

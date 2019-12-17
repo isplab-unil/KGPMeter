@@ -67,7 +67,6 @@ var gedData = 0;
 
 // FTA
 // privacy_bar.js
-var privacyBar = void 0;
 var privacyWordedScore = void 0;
 var privacyBackendStatus = void 0;
 var privacyScoreNumberExplainer = void 0;

@@ -57,10 +57,10 @@ var KinGenomicPrivacyMeter = function () {
     // privacy bar
     var privacyBarWidth = 30;
     var privacyBarStrokeWidth = 4;
-    privacyBar = new PrivacyBar(this.svg.attr("id"), "privacy-bar-g", this.svgWidth - privacyBarWidth - privacyBarStrokeWidth, 30, 30, 400, 5, d3.interpolateRgbBasis(["rgb(255,0,0)", "rgb(255,125,0)", "rgb(255,255,0)", "rgb(0,195,0)"]), self.i18n);
+    this.privacyBar = new PrivacyBar(this.svg.attr("id"), "privacy-bar-g", this.svgWidth - privacyBarWidth - privacyBarStrokeWidth, 30, 30, 400, 5, d3.interpolateRgbBasis(["rgb(255,0,0)", "rgb(255,125,0)", "rgb(255,255,0)", "rgb(0,195,0)"]), self.i18n);
 
     // privacy worded score
-    privacyWordedScore = new PrivacyWordedScore(privacyBar.g.attr("id"), "privacy-bar-title", "privacy-bar-element", privacyBar.width, -16, 20, privacyBar.colorScale, self.i18n, "privacy-bar-title");
+    privacyWordedScore = new PrivacyWordedScore(this.privacyBar.g.attr("id"), "privacy-bar-title", "privacy-bar-element", this.privacyBar.width, -16, 20, this.privacyBar.colorScale, self.i18n, "privacy-bar-title");
 
     // backend status
     privacyBackendStatus = new PrivacyBackendStatus("kgp-response-container", self.i18n);
@@ -87,9 +87,9 @@ var KinGenomicPrivacyMeter = function () {
     });
     // ...other listeners
     kgpMeterScoreRequestHandler.addListener(function () {
-      var _privacyBar;
+      var _self$privacyBar;
 
-      return (_privacyBar = privacyBar).await.apply(_privacyBar, arguments);
+      return (_self$privacyBar = self.privacyBar).await.apply(_self$privacyBar, arguments);
     });
     kgpMeterScoreRequestHandler.addListener(function () {
       var _privacyWordedScore;
@@ -170,8 +170,8 @@ var KinGenomicPrivacyMeter = function () {
       self.privacyMetric = 1;
       self.target = null;
       resp = null;
-      privacyBar.elements.transition(200).attr("opacity", 1);
-      privacyBar.update(1);
+      this.privacyBar.elements.transition(200).attr("opacity", 1);
+      this.privacyBar.update(1);
       privacyBackendStatus.hide();
       privacyWordedScore.hide();
       privacyScoreNumberExplainer.hide();
@@ -269,13 +269,13 @@ var KinGenomicPrivacyMeter = function () {
       // resize svg
       this.updateSvgWidth();
       // redraw tree&privacy bar
-      privacyBar.init(self.svgWidth - privacyBar.width - privacyBar.strokeWidth, privacyBar.y, 0);
+      this.privacyBar.init(self.svgWidth - this.privacyBar.width - this.privacyBar.strokeWidth, this.privacyBar.y, 0);
       privacyWordedScore.init();
       privacyWordedScore.hide();
       this.trashButton.init();
 
       if (self.target) {
-        privacyBar.update(this.privacyMetric, 0);
+        this.privacyBar.update(this.privacyMetric, 0);
         privacyWordedScore.update(this.privacyMetric, 0);
       }
       this.familyTreeArtist.init(0);
