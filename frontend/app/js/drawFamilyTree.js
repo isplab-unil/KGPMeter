@@ -485,7 +485,7 @@ var FamilyTreeArtist = function () {
         };
       }());
 
-      this.nodeButtons = createNodeButtons(this.svgg);
+      this.initNodeButtons();
 
       // hide on mouseleave
       this.nodeButtons.g.on("mouseleave.hide", function (d) {
@@ -772,6 +772,198 @@ var FamilyTreeArtist = function () {
 
       // change the logo
       d3.select("#" + FamilyTreeArtist.nodeGroupId(newTarget.id) + " .node-logo").attr("class", "fas fa-crosshairs crosshairs-logo node-logo node-logo-large").attr("x", "-18px").text("\uF05B");
+    }
+  }, {
+    key: "initNodeButtons",
+    value: function initNodeButtons() {
+
+      // TODO: this is not super clean, in the future improve the architecture of addRelativeMenu()
+      var addRelativeMenu = function () {
+        var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(node) {
+          var canAddChildren, canAddParents, canAddMother, canAddFather, spouseMissing, FOw, FOh, FOx, FOy, hitboxMargin, addRelativeHitbox, addRelativeFO, addRelativeDiv, _addAddRelativeSpan;
+
+          return regeneratorRuntime.wrap(function _callee3$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  _addAddRelativeSpan = function _addAddRelativeSpan(relative, addRelative) {
+                    addRelativeDiv.append("span").attr(i18n.keyAttr, "node-name-" + relative).on("click", function (node) {
+                      var relativeNode = addRelative(node);
+                      relativeNode.i18nName = kgp.relationToYou(node.i18nName, relative);
+                      familyTreeArtist.update(node);
+                      self.nodeButtons.hide();
+                      addRelativeHitbox.remove();
+                      saveFamilyTreeToLocalStorage();
+                    });
+                  };
+
+                  //fix: node doesn't propagate to circle
+                  node = self.nodeButtons.g.datum();
+                  removeAddRelativeMenu();
+
+                  // can only add children/parents if tree not too deep
+                  canAddChildren = node.depth < kgp.maxFamilyTreeDepth - 1;
+                  canAddParents = ftree.maxDepth < kgp.maxFamilyTreeDepth - 1 || node.depth != 0;
+                  canAddMother = (!node.famc || !node.famc.wife) && canAddParents;
+                  canAddFather = (!node.famc || !node.famc.husb) && canAddParents;
+                  spouseMissing = !node.fams || node.fams.length == 0 || !node.fams[0].husb || !node.fams[0].wife;
+                  // FO stands for foreignObject
+
+                  FOw = 100;
+                  FOh = ((canAddChildren ? 2 : 0) + canAddMother + canAddFather + spouseMissing) * 26;
+                  FOx = 20;
+                  FOy = -(FOh / 2);
+                  hitboxMargin = 20;
+
+                  // hitbox so that menu doesn't disappear unexpectedly
+
+                  addRelativeHitbox = addRelativeButton.append("path").classed("add-relatives-hitbox", true).attr("d", " M" + (FOx - 2 * hitboxMargin) + " " + -hitboxMargin + " L" + FOx + " " + (FOy - hitboxMargin) + " L" + (FOx + FOw + hitboxMargin) + " " + (FOy - hitboxMargin) + " L" + (FOx + FOw + hitboxMargin) + " " + (-FOy + hitboxMargin) + " L" + FOx + " " + (-FOy + hitboxMargin) + " L" + (FOx - 2 * hitboxMargin) + " " + hitboxMargin + " Z").attr("fill", "red").attr("opacity", 0);
+                  addRelativeFO = addRelativeButton.append("foreignObject").classed("add-relatives-fo", true).attr("x", FOx + "px").attr("y", FOy + "px").attr("width", FOw + 10 + "px").attr("height", FOh + 10 + "px");
+                  addRelativeDiv = addRelativeFO.append("xhtml:div").attr("style", "cursor:pointer;").classed("add-relatives-list", true).on("mouseleave.hitbox", removeAddRelativeMenu);
+
+
+                  if (canAddMother) {
+                    _addAddRelativeSpan("mother", function (d) {
+                      return ftree.addParent("", "F", d.id);
+                    }, true);
+                  }
+                  if (canAddFather) {
+                    _addAddRelativeSpan("father", function (d) {
+                      return ftree.addParent("", "M", d.id);
+                    }, true);
+                  }
+                  if (spouseMissing & node.sex == "M") {
+                    _addAddRelativeSpan("partner", function (d) {
+                      return ftree.addSpouse("", d.id);
+                    }, true);
+                  }
+                  if (spouseMissing & node.sex == "F") {
+                    _addAddRelativeSpan("partner", function (d) {
+                      return ftree.addSpouse("", d.id);
+                    }, true);
+                  }
+                  if (canAddChildren) {
+                    _addAddRelativeSpan("daughter", function (d) {
+                      return ftree.addChild("", "F", d.id, false);
+                    }, true);
+                  }
+                  if (canAddChildren) {
+                    _addAddRelativeSpan("son", function (d) {
+                      return ftree.addChild("", "M", d.id, false);
+                    }, true);
+                  }
+
+                case 22:
+                case "end":
+                  return _context3.stop();
+              }
+            }
+          }, _callee3, this);
+        }));
+
+        return function addRelativeMenu(_x17) {
+          return _ref3.apply(this, arguments);
+        };
+      }();
+
+      var self = this;
+      this.nodeButtons = new NodeButtonsGroup(this.svgg);
+
+      // ------------------------ remove node button ------------------------
+      function removeNode(node) {
+        ftree.deleteNode(node.id, kgp.youNodeId);
+        self.nodeButtons.hide();
+        kgpMeterScoreRequestHandler.requestScore(kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+          return n.sequencedDNA;
+        }).map(function (n) {
+          return n.id;
+        }), kgp.userId, kgp.userSource, i18n.lng);
+        familyTreeArtist.update();
+        saveFamilyTreeToLocalStorage();
+      }
+
+      self.nodeButtons.addButton("remove-node", 25, -50, "\uF506", "80px", "50px", "hint-delete-node").on("click.remove", removeNode);
+
+      // ------------------------ toggle DNA sequencing button ------------------------
+
+
+      // HOW TO HANDLE +-: d =>'\uf471'+(d.sequencedDNA?"-":"+") IN OLD CODE?
+      function toggleDnaButtonText(node) {
+        toggleDNAbutton.select("text").node().innerHTML = "\uF471" + (node.sequencedDNA ? "-" : "+");
+      }
+      function toggleDNA(node) {
+        node.sequencedDNA = !node.sequencedDNA;
+        toggleDnaButtonText(node);
+        d3.select("#" + FamilyTreeArtist.nodeGroupId(node.id) + " .dna-logo").classed("invisible-dna", !node.sequencedDNA);
+        kgpMeterScoreRequestHandler.requestScore(kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+          return n.sequencedDNA;
+        }).map(function (n) {
+          return n.id;
+        }), kgp.userId, kgp.userSource, i18n.lng);
+        saveFamilyTreeToLocalStorage();
+      }
+      var toggleDNAbutton = self.nodeButtons.addButton("toggle-dna", 25, 50, "\uF471+", "170px", "70px", "hint-sequence-node").on("click.sequenced-dna", toggleDNA);
+      self.nodeButtons.onWakeCallbacks.push(toggleDnaButtonText);
+
+      // ------------------------ set as target button ------------------------
+
+      self.nodeButtons.addButton("set-as-target", -50, 0, "\uF05B", "120px", "45px", "change-target", {
+        FAx: -10, FAy: 7,
+        tooltipx: "-144px"
+      }).on("click.set-as-target", function (n) {
+        return self.kgp.selectTarget(n);
+      });
+
+      // ------------------------ add relatives button ------------------------
+      var addRelativeButton = self.nodeButtons.addButton("add-relative", 50, 0, "\uF234", 0, 0, undefined, {
+        FAx: -10, FAy: 6,
+        tooltipx: 0, tooltipy: 0
+      });
+      addRelativeButton.select("circle").on("mouseover.addRelative", addRelativeMenu);
+      addRelativeButton.select("text").on("mouseover.addRelative", addRelativeMenu);
+      // correctly remove add relative menu on hide&wake
+      function removeAddRelativeMenu() {
+        //setTimeout(d => {
+        addRelativeButton.select(".add-relatives-fo").remove();
+        addRelativeButton.select(".add-relatives-hitbox").remove();
+        //},20)
+      }
+      self.nodeButtons.onHideCallbacks.push(removeAddRelativeMenu);
+      //self.nodeButtons.onWakeCallbacks.push(removeAddRelativeMenu)
+
+
+      // ------------------------ Toggle your sex Button ------------------------
+      function toggleYourSex(node) {
+        var circle = d3.select("#" + FamilyTreeArtist.nodeGroupId(node.id) + " .node-circle");
+
+        node.sex = node.sex == "M" ? "F" : "M";
+        var isWoman = node.sex == "F";
+        circle.classed("man", !isWoman);
+        circle.classed("woman", isWoman);
+        // exchange role in marriages
+        if (node.fams) {
+          node.fams.forEach(function (f) {
+            var h = f.husb;
+            f.husb = f.wife;
+            f.wife = h;
+          });
+        }
+        // take care of spouse
+        var spouse = node.spouse();
+        if (spouse) {
+          spouse.sex = spouse.sex == "M" ? "F" : "M";
+          isWoman = spouse.sex == "F";
+          var spouseCircle = d3.select("#" + FamilyTreeArtist.nodeGroupId(spouse.id) + " .node-circle");
+          spouseCircle.classed("man", !isWoman);
+          spouseCircle.classed("woman", isWoman);
+          //document.querySelector("#"+nodeGroupId(spouse.id)+" .node-name").setAttribute(i18n.keyAttr, isWoman? "node-name-woman":"node-name-man")
+        }
+        saveFamilyTreeToLocalStorage();
+      }
+      self.nodeButtons.addButton("change-sex", -25, 50, "\uF228", 80, 45, "hint-change-sex", {
+        FAx: -10, FAy: 6,
+        tooltipx: -104
+      }).on("click.change-sex", toggleYourSex);
     }
   }, {
     key: "generateToggleHighlightNodeLinks",
