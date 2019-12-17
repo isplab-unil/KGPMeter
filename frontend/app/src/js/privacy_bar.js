@@ -455,13 +455,7 @@ class PrivacyBackendStatus{
         }
         // error code 4
         else if(kgpError.code==4){
-          if(!kgp.target){
-            self.displayInfo("response-error-4",100000)
-          } else{
-            self.displaySuccess(1, 0, 0, 0)
-            console.error("kgpResponse error code 4 with kgp target??")
-            throw new Error("kgpResponse error code 4 with kgp target??")
-          }
+          self.displayInfo("response-error-4",100000)
         }
         // error code 5
         else if(kgpError.code==5){
