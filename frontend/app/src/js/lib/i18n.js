@@ -30,14 +30,14 @@ class Internationalisation{
    * @param {string} keyAttr the name of the html5 attribute to watch for keys, by default "data-i18n"
    * @param {string} dataAttr the name of the html5 attribute to watch for data, by default "data-i18n-data".
    */
-  constructor(supportedLanguages, languageLoader, lng=false, useLocalstorage=true, dynamic, keyAttr = "data-i18n", dataAttr = "data-i18n-data"){
+  constructor(supportedLanguages, languageLoader, lng=false, useLocalStorage=true, dynamic, keyAttr = "data-i18n", dataAttr = "data-i18n-data"){
     this.dynamic = dynamic? dynamic : {}
     this.keyAttr = keyAttr
     this.dataAttr = dataAttr
+    this.useLocalStorage = useLocalStorage
     this.supportedLanguages = supportedLanguages
     this.defaultLanguage = this.supportedLanguages[0]
     this.languageChangeCallbacks = []
-    this.useLocalstorage = useLocalstorage
     // take language from url (if lng param present): on all browsers but IE
     if(!(navigator.userAgent.indexOf('MSIE')!==-1 || navigator.appVersion.indexOf('Trident/') > -1)){ //not-IE detection
       let params = (new URL(document.location)).searchParams;
@@ -110,7 +110,7 @@ class Internationalisation{
     let text = this.translations[lng][key]
     //console.log("t(), text: ", text)
     if(formatter){
-      text = await formatter(text,data)
+      text = formatter(text,data)
     } else {
       for(let d of data){
         text = text.replace("{}",d)
@@ -153,14 +153,16 @@ class Internationalisation{
    * @param {string} lng language string identifier
    */
   async loadLanguage(lng){
-    let translation = this.loadLngFromLocalStorage(lng)
+    let translation = this.useLocalStorage? this.loadLngFromLocalStorage(lng) : false
     if(translation){
       this.translations[lng] = translation
     }
     else{
       this.translationsPromises[lng] = this.languageLoader(lng)
       this.translations[lng] = await this.translationsPromises[lng]
-      this.saveLngToLocalStorage(lng,this.translations[lng])
+      if(this.useLocalStorage){
+        this.saveLngToLocalStorage(lng)
+      }
     }
   }
 
@@ -186,7 +188,7 @@ class Internationalisation{
 
   loadLngFromLocalStorage(lng, transKey = "translation."+lng,saveDateKey="translation_save_date."+lng){
 
-    if(this.useLocalstorage){
+    if(this.useLocalStorage){
       let transDict = localStorage.getItem(transKey)
       let transDictSaveDate = +localStorage.getItem(saveDateKey)
       if(Boolean(transDict) & (transDictSaveDate+2*3600*1000>=+new Date()) ){
@@ -197,7 +199,7 @@ class Internationalisation{
   }
 
   saveLngToLocalStorage(lng, transDict, transKey = "translation."+lng,saveDateKey="translation_save_date."+lng){
-    if(this.useLocalstorage){
+    if(this.useLocalStorage){
       localStorage.setItem(transKey,JSON.stringify(transDict))
       localStorage.setItem(saveDateKey,+new Date())
     }
