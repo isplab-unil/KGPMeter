@@ -88,8 +88,7 @@ class FamilyTree{
    */
   static unserialize(serializedFtree){
     serializedFtree = JSON.parse(serializedFtree)
-    let ftree = new FamilyTree(FamilyTree.unserializeParseNodes(serializedFtree))
-    return ftree
+    return new FamilyTree(FamilyTree.unserializeParseNodes(serializedFtree))
   }
 
   nodesArray(){

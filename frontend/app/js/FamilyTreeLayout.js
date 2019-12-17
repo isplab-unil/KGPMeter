@@ -103,7 +103,7 @@ var FamilyTreeLayout = function (_FamilyTree) {
       var _this2 = this;
 
       var nodes = this.nodesArray();
-      ftree._computeDepths(nodes[0]);
+      this._computeDepths(nodes[0]);
 
       var indiNodes = nodes.filter(function (n) {
         return n.tag == "INDI";
@@ -313,8 +313,7 @@ var FamilyTreeLayout = function (_FamilyTree) {
     key: "unserialize",
     value: function unserialize(serializedFtreeLayout) {
       serializedFtreeLayout = JSON.parse(serializedFtreeLayout);
-      var ftree = new FamilyTreeLayout(FamilyTree.unserializeParseNodes(serializedFtreeLayout), serializedFtreeLayout.centerNodeId);
-      return ftree;
+      return new FamilyTreeLayout(FamilyTree.unserializeParseNodes(serializedFtreeLayout), serializedFtreeLayout.centerNodeId);
     }
   }]);
 

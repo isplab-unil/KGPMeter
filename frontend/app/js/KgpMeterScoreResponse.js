@@ -89,7 +89,7 @@ var KgpMeterScoreStale = function (_KgpMeterScoreRespons3) {
 
     var _this3 = _possibleConstructorReturn(this, (KgpMeterScoreStale.__proto__ || Object.getPrototypeOf(KgpMeterScoreStale)).call(this, "stale", kgpResp.timestamp_js, kgpResp.request, kgpResp.tree_signature, kgpResp.extras));
 
-    _this3.resp = kgpResp;
+    _this3.staleResp = kgpResp;
     return _this3;
   }
 

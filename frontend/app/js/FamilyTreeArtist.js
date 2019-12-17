@@ -370,7 +370,7 @@ var FamilyTreeArtist = function () {
                     addRelativeDiv.append("span").attr(i18n.keyAttr, "node-name-" + relative).on("click", function (node) {
                       var relativeNode = addRelative(node);
                       relativeNode.i18nName = self.kgp.relationToYou(node.i18nName, relative);
-                      familyTreeArtist.update(node);
+                      self.update(node);
                       self.nodeButtons.hide();
                       addRelativeHitbox.remove();
                       self.kgp.saveFamilyTreeToLocalStorage();
@@ -447,18 +447,18 @@ var FamilyTreeArtist = function () {
       }();
 
       var self = this;
-      this.nodeButtons = new NodeButtonsGroup(this.svgg);
+      this.nodeButtons = new NodeButtonsGroup(this.svgg, self.kgp.indiNodeSize.width);
 
       // ------------------------ remove node button ------------------------
       function removeNode(node) {
         ftree.deleteNode(node.id, kgp.youNodeId);
         self.nodeButtons.hide();
-        kgpMeterScoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+        self.kgp.scoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
           return n.sequencedDNA;
         }).map(function (n) {
           return n.id;
         }), self.kgp.userId, self.kgp.userSource, i18n.lng);
-        familyTreeArtist.update();
+        self.update();
         self.kgp.saveFamilyTreeToLocalStorage();
       }
 
@@ -475,7 +475,7 @@ var FamilyTreeArtist = function () {
         node.sequencedDNA = !node.sequencedDNA;
         toggleDnaButtonText(node);
         d3.select("#" + FamilyTreeArtist.nodeGroupId(node.id) + " .dna-logo").classed("invisible-dna", !node.sequencedDNA);
-        kgpMeterScoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+        self.kgp.scoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
           return n.sequencedDNA;
         }).map(function (n) {
           return n.id;

@@ -294,17 +294,18 @@ class FamilyTreeArtist{
 
   initNodeButtons(){
     let self = this
-    this.nodeButtons = new NodeButtonsGroup(this.svgg)
+    this.nodeButtons = new NodeButtonsGroup(this.svgg, self.kgp.indiNodeSize.width)
   
     // ------------------------ remove node button ------------------------
     function removeNode(node){
       ftree.deleteNode(node.id,kgp.youNodeId)
       self.nodeButtons.hide()
-      kgpMeterScoreRequestHandler.requestScore(
+      self.kgp.scoreRequestHandler.requestScore(
         self.kgp.target?kgp.target.id:"",
         ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
-        self.kgp.userId, self.kgp.userSource, i18n.lng)
-      familyTreeArtist.update()
+        self.kgp.userId, self.kgp.userSource, i18n.lng
+      )
+      self.update()
       self.kgp.saveFamilyTreeToLocalStorage()
     }
   
@@ -323,7 +324,7 @@ class FamilyTreeArtist{
       node.sequencedDNA = !node.sequencedDNA
       toggleDnaButtonText(node)
       d3.select("#"+FamilyTreeArtist.nodeGroupId(node.id)+" .dna-logo").classed("invisible-dna", !node.sequencedDNA)
-      kgpMeterScoreRequestHandler.requestScore(
+      self.kgp.scoreRequestHandler.requestScore(
         self.kgp.target?kgp.target.id:"",
         ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
         self.kgp.userId, self.kgp.userSource, i18n.lng)
@@ -399,7 +400,7 @@ class FamilyTreeArtist{
             .on("click",function(node){
               let relativeNode = addRelative(node)
               relativeNode.i18nName = self.kgp.relationToYou(node.i18nName,relative)
-              familyTreeArtist.update(node)
+              self.update(node)
               self.nodeButtons.hide()
               addRelativeHitbox.remove()
               self.kgp.saveFamilyTreeToLocalStorage()

@@ -16,19 +16,7 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
 let kgp
 
 let ftree = 0
-let resp;
-let gedData = 0
 
-// FTA
-let familyTreeArtist
-// privacy_bar.js
-let privacyBar
-let privacyWordedScore
-let privacyBackendStatus
-let privacyScoreNumberExplainer
-let kgpMeterScoreRequestHandler
-// surveys.js
-let kgpsurvey;
 
 // languageLoader and i18n object: Internationalisation
 let LANGUAGE_FILES_URL = "./i18n/"
@@ -70,29 +58,11 @@ kgp = new KinGenomicPrivacyMeter(
 
 //initSurvey()
 
-kgp.loadFamilyTreeFromLocalStorage()
-let savedFtree = Boolean(ftree)
-if(!savedFtree){
-  //console.log("NO FAMILY TREE IN STORAGE")
-  ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
-}
 
 
-familyTreeArtist = new FamilyTreeArtist(kgp, i18n,0)
-
-if(kgp.target){
-  kgp.selectTarget(kgp.target, true)
-}
 
 kgp.mobileBlock()
 kgp.IEBlock()
-if(savedFtree){
-  kgpMeterScoreRequestHandler.requestScore(
-    kgp.target?kgp.target.id:"",
-    ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
-    kgp.userId, kgp.userSource, i18n.lng
-  )
-}
 
 
 // =================================== TEST iframe to parent communication and vice-versa ===================================
