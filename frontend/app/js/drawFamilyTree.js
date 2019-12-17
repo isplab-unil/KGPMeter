@@ -253,7 +253,8 @@ var KinGenomicPrivacyMeter = function () {
         privacyWordedScore.update(this.privacyMetric, 0);
       }
       familyTreeArtist.init(0);
-      mobileBlock();
+      this.mobileBlock();
+      this.IEBlock();
     }
 
     /** Returns the family relation to center node ("you") of target relation
@@ -297,6 +298,46 @@ var KinGenomicPrivacyMeter = function () {
       button.append("foreignObject").attr("x", tooltipX).attr("y", tooltipY).attr("width", tooltipWidth).attr("height", tooltipHeight).classed("tooltip", true).append("xhtml:div").append("span").classed("tooltip-text", true).attr(this.i18n.keyAttr, i18nKey);
 
       return button;
+    }
+
+    /** block IE if detected, not the same as mobile as foreignObject not supported */
+
+  }, {
+    key: "IEBlock",
+    value: function IEBlock() {
+      var self = this;
+      if (detectIE11()) {
+        self.svg.append("rect").attr("width", self.svgWidth).attr("height", self.svgHeight).attr("fill", "white").attr("opacity", "0.8");
+
+        privacyBackendStatus.displayDanger("IE-block-error", 10000000000);
+      }
+    }
+
+    /** Block mobile browsers when detected, not the same as IE as foreignObject allows text to wrap in multiple lines on small screens. */
+
+  }, {
+    key: "mobileBlock",
+    value: function mobileBlock() {
+      var self = this;
+      if (detectMobile()) {
+        self.svg.append("rect").attr("width", self.svgWidth).attr("height", self.svgHeight).attr("fill", "white").attr("opacity", "0.8");
+
+        self.svg.append("foreignObject").attr("y", self.svgHeight / 4).attr("width", self.svgWidth).attr("height", self.svgHeight).append("xhtml:div").attr("style", "max:width:100%;").attr("data-i18n", "mobile-block");
+
+        privacyBackendStatus.displayDanger("mobile-block", 10000000000);
+      }
+    }
+
+    /** Debugging: show node ids on hover */
+
+  }, {
+    key: "showNodesIds",
+    value: function showNodesIds() {
+      self.svgg.selectAll(".nodeg").append('text').text(function (d) {
+        return d.id;
+      })
+      //.attr("class","node-id")
+      .attr("transform", "translate(" + -50 + ",0)");
     }
 
     /** Creates a depth 2 dictionary to encode relationships in a family
@@ -448,19 +489,6 @@ var KinGenomicPrivacyMeter = function () {
 // ****************************************************************************************************
 
 
-/** adds a 100ms without resize to window.onresize() before executing func (to avoid redraws every msec) */
-
-
-function onWindowResize(func) {
-  var timeout = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
-
-  var doit = void 0;
-  window.onresize = function () {
-    clearTimeout(doit);
-    doit = setTimeout(func, timeout);
-  };
-}
-
 // ****************************************************************************************************
 
 var familyTreeArtist = void 0;
@@ -519,7 +547,7 @@ var FamilyTreeArtist = function () {
           }, _callee, this);
         }));
 
-        return function (_x21) {
+        return function (_x20) {
           return _ref.apply(this, arguments);
         };
       }());
@@ -770,7 +798,7 @@ var FamilyTreeArtist = function () {
           }, _callee2, this);
         }));
 
-        return function (_x23) {
+        return function (_x22) {
           return _ref2.apply(this, arguments);
         };
       }());
@@ -900,7 +928,7 @@ var FamilyTreeArtist = function () {
           }, _callee3, this);
         }));
 
-        return function addRelativeMenu(_x24) {
+        return function addRelativeMenu(_x23) {
           return _ref3.apply(this, arguments);
         };
       }();
@@ -1067,51 +1095,6 @@ var FamilyTreeArtist = function () {
 
   return FamilyTreeArtist;
 }();
-
-/** Debugging: show node ids on hover */
-
-
-function showNodesIds() {
-  kgp.svgg.selectAll(".nodeg").append('text').text(function (d) {
-    return d.id;
-  })
-  //.attr("class","node-id")
-  .attr("transform", "translate(" + -50 + ",0)");
-}
-
-function detectIE11() {
-  if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > -1) {
-    return true;
-  }
-  return false;
-}
-
-/** block IE if detected, not the same as mobile as foreignObject not supported */
-function IEBlock() {
-  if (detectIE11()) {
-    kgp.svg.append("rect").attr("width", kgp.svgWidth).attr("height", kgp.svgHeight).attr("fill", "white").attr("opacity", "0.8");
-
-    privacyBackendStatus.displayDanger("IE-block-error", 10000000000);
-  }
-}
-
-function detectMobile() {
-  if (navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i)) {
-    return true;
-  }
-  return false;
-}
-
-/** Block mobile browsers when detected, not the same as IE as foreignObject allows text to wrap in multiple lines on small screens. */
-function mobileBlock() {
-  if (detectMobile()) {
-    kgp.svg.append("rect").attr("width", kgp.svgWidth).attr("height", kgp.svgHeight).attr("fill", "white").attr("opacity", "0.8");
-
-    kgp.svg.append("foreignObject").attr("y", kgp.svgHeight / 4).attr("width", kgp.svgWidth).attr("height", kgp.svgHeight).append("xhtml:div").attr("style", "max:width:100%;").attr("data-i18n", "mobile-block");
-
-    privacyBackendStatus.displayDanger("mobile-block", 10000000000);
-  }
-}
 
 var TrashButton = function () {
   function TrashButton(domId, kgp) {

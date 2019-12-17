@@ -206,7 +206,8 @@ class KinGenomicPrivacyMeter{
       privacyWordedScore.update(this.privacyMetric, 0)
     }
     familyTreeArtist.init(0)
-    mobileBlock()
+    this.mobileBlock()
+    this.IEBlock()
   }
 
   /** Returns the family relation to center node ("you") of target relation
@@ -254,6 +255,51 @@ class KinGenomicPrivacyMeter{
         .attr(this.i18n.keyAttr,i18nKey)
 
     return button
+  }
+
+  /** block IE if detected, not the same as mobile as foreignObject not supported */
+  IEBlock(){
+    let self = this
+    if(detectIE11()){
+      self.svg.append("rect")
+          .attr("width",self.svgWidth)
+          .attr("height",self.svgHeight)
+          .attr("fill","white")
+          .attr("opacity","0.8")
+
+      privacyBackendStatus.displayDanger("IE-block-error",10000000000)
+    }
+  }
+
+  /** Block mobile browsers when detected, not the same as IE as foreignObject allows text to wrap in multiple lines on small screens. */
+  mobileBlock(){
+    let self = this
+    if(detectMobile()){
+      self.svg.append("rect")
+          .attr("width",self.svgWidth)
+          .attr("height",self.svgHeight)
+          .attr("fill","white")
+          .attr("opacity","0.8")
+      
+      self.svg.append("foreignObject")
+          .attr("y",self.svgHeight/4)
+          .attr("width",self.svgWidth)
+          .attr("height",self.svgHeight)
+        .append("xhtml:div")
+          .attr("style","max:width:100%;")
+          .attr("data-i18n","mobile-block")
+      
+      privacyBackendStatus.displayDanger("mobile-block",10000000000)
+    }
+  }
+
+  /** Debugging: show node ids on hover */
+  showNodesIds(){
+    self.svgg.selectAll(".nodeg")
+      .append('text')
+        .text(d => d.id)
+        //.attr("class","node-id")
+        .attr("transform","translate("+-50+",0)");
   }
 
   /** Creates a depth 2 dictionary to encode relationships in a family
@@ -402,15 +448,6 @@ class KinGenomicPrivacyMeter{
 
 
 
-
-/** adds a 100ms without resize to window.onresize() before executing func (to avoid redraws every msec) */
-function onWindowResize(func,timeout=100){
-  let doit;
-  window.onresize = function(){
-    clearTimeout(doit);
-    doit = setTimeout(func, timeout);
-  }
-}
 
 
 // ****************************************************************************************************
@@ -942,68 +979,12 @@ class FamilyTreeArtist{
   }
 }
 
-/** Debugging: show node ids on hover */
-function showNodesIds(){
-  kgp.svgg.selectAll(".nodeg")
-    .append('text')
-      .text(d => d.id)
-      //.attr("class","node-id")
-      .attr("transform","translate("+-50+",0)");
-}
 
 
 
 
 
 
-function detectIE11() {
-  if(navigator.userAgent.indexOf('MSIE')!==-1 || navigator.appVersion.indexOf('Trident/') > -1){
-    return true
-  }
-  return false
-}
-
-/** block IE if detected, not the same as mobile as foreignObject not supported */
-function IEBlock(){
-  if(detectIE11()){
-    kgp.svg.append("rect")
-        .attr("width",kgp.svgWidth)
-        .attr("height",kgp.svgHeight)
-        .attr("fill","white")
-        .attr("opacity","0.8")
-
-    privacyBackendStatus.displayDanger("IE-block-error",10000000000)
-  }
-}
-
-
-function detectMobile() {
-  if( navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i)){
-    return true
-  }
-  return false
-}
-
-/** Block mobile browsers when detected, not the same as IE as foreignObject allows text to wrap in multiple lines on small screens. */
-function mobileBlock(){
-  if(detectMobile()){
-    kgp.svg.append("rect")
-        .attr("width",kgp.svgWidth)
-        .attr("height",kgp.svgHeight)
-        .attr("fill","white")
-        .attr("opacity","0.8")
-    
-    kgp.svg.append("foreignObject")
-        .attr("y",kgp.svgHeight/4)
-        .attr("width",kgp.svgWidth)
-        .attr("height",kgp.svgHeight)
-      .append("xhtml:div")
-        .attr("style","max:width:100%;")
-        .attr("data-i18n","mobile-block")
-    
-    privacyBackendStatus.displayDanger("mobile-block",10000000000)
-  }
-}
 
 class TrashButton{
   constructor(domId, kgp, listeners = {}){

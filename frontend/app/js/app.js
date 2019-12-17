@@ -101,8 +101,8 @@ if (kgp.target) {
   kgp.selectTarget(kgp.target, true);
 }
 
-mobileBlock();
-IEBlock();
+kgp.mobileBlock();
+kgp.IEBlock();
 if (savedFtree) {
   kgpMeterScoreRequestHandler.requestScore(kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
     return n.sequencedDNA;
