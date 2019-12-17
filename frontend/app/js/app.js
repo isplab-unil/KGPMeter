@@ -135,3 +135,16 @@ if (savedFtree) {
     return n.id;
   }), kgp.userId, kgp.userSource, i18n.lng);
 }
+
+// =================================== TEST iframe to parent communication and vice-versa ===================================
+
+// parent to iframe:
+function handleEvent(e) {
+  console.log("Communication kgpmeter to kgp-iframe success! detail:", e.detail); // outputs: {foo: 'bar'}
+}
+window.document.addEventListener('myCustomEvent', handleEvent, false);
+
+// iframe to parent:
+var data = { direction: 'up' };
+var event = new CustomEvent('myCustomEvent', { detail: data });
+window.parent.document.dispatchEvent(event);
