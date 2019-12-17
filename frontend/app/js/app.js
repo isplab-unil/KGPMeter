@@ -66,7 +66,6 @@ var resp = void 0;
 var gedData = 0;
 
 // FTA
-var familyTreeArtist = void 0;
 // privacy_bar.js
 var privacyBar = void 0;
 var privacyWordedScore = void 0;
@@ -99,25 +98,6 @@ kgp = new KinGenomicPrivacyMeter("", "svg-kin-genomics-privacy-app", "@I1@", i18
 
 //initSurvey()
 
-kgp.loadFamilyTreeFromLocalStorage();
-var savedFtree = Boolean(ftree);
-if (!savedFtree) {
-  //console.log("NO FAMILY TREE IN STORAGE")
-  ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree();
-}
-
-familyTreeArtist = new FamilyTreeArtist(kgp, i18n, 0);
-
-if (kgp.target) {
-  kgp.selectTarget(kgp.target, true);
-}
 
 kgp.mobileBlock();
 kgp.IEBlock();
-if (savedFtree) {
-  kgpMeterScoreRequestHandler.requestScore(kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
-    return n.sequencedDNA;
-  }).map(function (n) {
-    return n.id;
-  }), kgp.userId, kgp.userSource, i18n.lng);
-}

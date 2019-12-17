@@ -20,8 +20,8 @@ var NodeButtonsGroup = function () {
    * @param {d3-selection} motherGroup a d3-selection containing the <g> group where the tree will be drawn (=familyTreeArtist.svgg)
    * @param {string} DOMid an id for the node buttons'<g> mother tag
    */
-  function NodeButtonsGroup(motherGroup) {
-    var DOMid = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "nodeg-action-buttons";
+  function NodeButtonsGroup(motherGroup, indiNodeSizeWidth) {
+    var DOMid = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "nodeg-action-buttons";
 
     _classCallCheck(this, NodeButtonsGroup);
 
@@ -36,7 +36,8 @@ var NodeButtonsGroup = function () {
     this.g = motherGroup.append("g").attr("id", this.DOMid);
 
     // add a circle hitbox as trigger for nodeButtons mouseleave
-    this.g.append("circle").attr("r", kgp.indiNodeSize.width / 2 + 10).attr("fill", "none").attr("stroke-width", "20px").attr("stroke", "white").attr("stroke-opacity", 0);
+    this.g.append("circle").attr("r", indiNodeSizeWidth / 2 + 10) //kgp.indiNodeSize.width/2+10)
+    .attr("fill", "none").attr("stroke-width", "20px").attr("stroke", "white").attr("stroke-opacity", 0);
   }
 
   /**

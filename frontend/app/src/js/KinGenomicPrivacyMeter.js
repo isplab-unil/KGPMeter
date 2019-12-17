@@ -81,7 +81,10 @@ class KinGenomicPrivacyMeter{
     kgpMeterScoreRequestHandler = new KgpMeterScoreRequestHandler(this.privacyScoreApiEndpoint)
     // update privacyMetric
     kgpMeterScoreRequestHandler.addListener(kgpPromise => {
-      kgpPromise.then(kgpSuccess=>kgp.privacyMetric = kgpSuccess.result.privacy_metric,()=>{})
+      kgpPromise.then(
+        kgpSuccess => self.privacyMetric = kgpSuccess.result.privacy_metric,
+        ()=>{}
+      )
     })
     // update cursor
     kgpMeterScoreRequestHandler.addListener(kgpPromise => {
@@ -112,6 +115,25 @@ class KinGenomicPrivacyMeter{
 
     onWindowResize(()=>self.resizeSvg())
 
+    this.loadFamilyTreeFromLocalStorage()
+    let savedFtree = Boolean(ftree)
+    if(!savedFtree){
+      //console.log("NO FAMILY TREE IN STORAGE")
+      ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
+    }
+
+    this.familyTreeArtist = new FamilyTreeArtist(this, i18n,0)
+
+    if(this.target){
+      this.selectTarget(this.target, true)
+    }
+    if(savedFtree){
+      kgpMeterScoreRequestHandler.requestScore(
+        self.target?self.target.id:"",
+        ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
+        self.userId, self.userSource, i18n.lng
+      )
+    }
   }
 
   /** Resets the family tree in a pleasant way */
@@ -124,7 +146,7 @@ class KinGenomicPrivacyMeter{
       if(n.id!=self.youNodeId){
         ftree.deleteNode(n.id,self.youNodeId)
     }})
-    familyTreeArtist.nodeButtons.hide()
+    this.familyTreeArtist.nodeButtons.hide()
     // set privacy score back to 1:
     self.privacyMetric = 1
     self.target = null
@@ -136,13 +158,13 @@ class KinGenomicPrivacyMeter{
     privacyScoreNumberExplainer.hide()
 
     // smoothly transition back to original position
-    familyTreeArtist.update(false, transitionDuration)
+    this.familyTreeArtist.update(false, transitionDuration)
 
     // once this is done (after 800ms), reset to the empty ftree
     setTimeout(function(){
       ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
       d3.select("#familytree-g").remove()
-      familyTreeArtist.init(0)
+      self.familyTreeArtist.init(0)
       self.saveFamilyTreeToLocalStorage()
     },transitionDuration+2)
   }
@@ -151,7 +173,7 @@ class KinGenomicPrivacyMeter{
     localStorage.setItem(familyTreeKey,JSON.stringify(ftree.serialize(["sequencedDNA","lastSequencedDNA","i18nName"])))
     localStorage.setItem(saveDateKey,+new Date())
     if(this.target){
-      localStorage.setItem(targetKey,kgp.target.id)
+      localStorage.setItem(targetKey, this.target.id)
     }else{
       localStorage.setItem(targetKey,null)
     }
@@ -178,7 +200,7 @@ class KinGenomicPrivacyMeter{
     if( forceUpdate || (!this.target) || newTarget.id!=this.target.id){
       let oldTarget = self.target
       this.target = newTarget
-      familyTreeArtist.setAsTarget(newTarget, oldTarget)
+      this.familyTreeArtist.setAsTarget(newTarget, oldTarget)
       kgpMeterScoreRequestHandler.requestScore(
         self.target?self.target.id:"",
         ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
@@ -204,16 +226,16 @@ class KinGenomicPrivacyMeter{
     // resize svg
     this.updateSvgWidth()
     // redraw tree&privacy bar
-    privacyBar.init(kgp.svgWidth - privacyBar.width - privacyBar.strokeWidth, privacyBar.y, 0)
+    privacyBar.init( self.svgWidth - privacyBar.width - privacyBar.strokeWidth, privacyBar.y, 0)
     privacyWordedScore.init()
     privacyWordedScore.hide()
     this.trashButton.init()
 
-    if(kgp.target){
+    if(self.target){
       privacyBar.update(this.privacyMetric, 0)
       privacyWordedScore.update(this.privacyMetric, 0)
     }
-    familyTreeArtist.init(0)
+    this.familyTreeArtist.init(0)
     this.mobileBlock()
     this.IEBlock()
   }

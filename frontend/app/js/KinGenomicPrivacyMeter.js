@@ -73,7 +73,7 @@ var KinGenomicPrivacyMeter = function () {
     // update privacyMetric
     kgpMeterScoreRequestHandler.addListener(function (kgpPromise) {
       kgpPromise.then(function (kgpSuccess) {
-        return kgp.privacyMetric = kgpSuccess.result.privacy_metric;
+        return self.privacyMetric = kgpSuccess.result.privacy_metric;
       }, function () {});
     });
     // update cursor
@@ -126,6 +126,26 @@ var KinGenomicPrivacyMeter = function () {
     onWindowResize(function () {
       return self.resizeSvg();
     });
+
+    this.loadFamilyTreeFromLocalStorage();
+    var savedFtree = Boolean(ftree);
+    if (!savedFtree) {
+      //console.log("NO FAMILY TREE IN STORAGE")
+      ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree();
+    }
+
+    this.familyTreeArtist = new FamilyTreeArtist(this, i18n, 0);
+
+    if (this.target) {
+      this.selectTarget(this.target, true);
+    }
+    if (savedFtree) {
+      kgpMeterScoreRequestHandler.requestScore(self.target ? self.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+        return n.sequencedDNA;
+      }).map(function (n) {
+        return n.id;
+      }), self.userId, self.userSource, i18n.lng);
+    }
   }
 
   /** Resets the family tree in a pleasant way */
@@ -145,7 +165,7 @@ var KinGenomicPrivacyMeter = function () {
           ftree.deleteNode(n.id, self.youNodeId);
         }
       });
-      familyTreeArtist.nodeButtons.hide();
+      this.familyTreeArtist.nodeButtons.hide();
       // set privacy score back to 1:
       self.privacyMetric = 1;
       self.target = null;
@@ -157,13 +177,13 @@ var KinGenomicPrivacyMeter = function () {
       privacyScoreNumberExplainer.hide();
 
       // smoothly transition back to original position
-      familyTreeArtist.update(false, transitionDuration);
+      this.familyTreeArtist.update(false, transitionDuration);
 
       // once this is done (after 800ms), reset to the empty ftree
       setTimeout(function () {
         ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree();
         d3.select("#familytree-g").remove();
-        familyTreeArtist.init(0);
+        self.familyTreeArtist.init(0);
         self.saveFamilyTreeToLocalStorage();
       }, transitionDuration + 2);
     }
@@ -177,7 +197,7 @@ var KinGenomicPrivacyMeter = function () {
       localStorage.setItem(familyTreeKey, JSON.stringify(ftree.serialize(["sequencedDNA", "lastSequencedDNA", "i18nName"])));
       localStorage.setItem(saveDateKey, +new Date());
       if (this.target) {
-        localStorage.setItem(targetKey, kgp.target.id);
+        localStorage.setItem(targetKey, this.target.id);
       } else {
         localStorage.setItem(targetKey, null);
       }
@@ -215,7 +235,7 @@ var KinGenomicPrivacyMeter = function () {
       if (forceUpdate || !this.target || newTarget.id != this.target.id) {
         var oldTarget = self.target;
         this.target = newTarget;
-        familyTreeArtist.setAsTarget(newTarget, oldTarget);
+        this.familyTreeArtist.setAsTarget(newTarget, oldTarget);
         kgpMeterScoreRequestHandler.requestScore(self.target ? self.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
           return n.sequencedDNA;
         }).map(function (n) {
@@ -249,16 +269,16 @@ var KinGenomicPrivacyMeter = function () {
       // resize svg
       this.updateSvgWidth();
       // redraw tree&privacy bar
-      privacyBar.init(kgp.svgWidth - privacyBar.width - privacyBar.strokeWidth, privacyBar.y, 0);
+      privacyBar.init(self.svgWidth - privacyBar.width - privacyBar.strokeWidth, privacyBar.y, 0);
       privacyWordedScore.init();
       privacyWordedScore.hide();
       this.trashButton.init();
 
-      if (kgp.target) {
+      if (self.target) {
         privacyBar.update(this.privacyMetric, 0);
         privacyWordedScore.update(this.privacyMetric, 0);
       }
-      familyTreeArtist.init(0);
+      this.familyTreeArtist.init(0);
       this.mobileBlock();
       this.IEBlock();
     }

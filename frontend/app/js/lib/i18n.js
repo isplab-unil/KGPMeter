@@ -41,7 +41,7 @@ var Internationalisation = function () {
    */
   function Internationalisation(supportedLanguages, languageLoader) {
     var lng = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-    var useLocalstorage = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+    var useLocalStorage = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
     var dynamic = arguments[4];
     var keyAttr = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : "data-i18n";
     var dataAttr = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : "data-i18n-data";
@@ -51,10 +51,10 @@ var Internationalisation = function () {
     this.dynamic = dynamic ? dynamic : {};
     this.keyAttr = keyAttr;
     this.dataAttr = dataAttr;
+    this.useLocalStorage = useLocalStorage;
     this.supportedLanguages = supportedLanguages;
     this.defaultLanguage = this.supportedLanguages[0];
     this.languageChangeCallbacks = [];
-    this.useLocalstorage = useLocalstorage;
     // take language from url (if lng param present): on all browsers but IE
     if (!(navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > -1)) {
       //not-IE detection
@@ -180,71 +180,67 @@ var Internationalisation = function () {
                 //console.log("t(), text: ", text)
 
                 if (!formatter) {
-                  _context.next = 9;
+                  _context.next = 7;
                   break;
                 }
 
-                _context.next = 6;
-                return formatter(text, data);
-
-              case 6:
-                text = _context.sent;
-                _context.next = 28;
+                text = formatter(text, data);
+                _context.next = 26;
                 break;
 
-              case 9:
+              case 7:
                 _iteratorNormalCompletion2 = true;
                 _didIteratorError2 = false;
                 _iteratorError2 = undefined;
-                _context.prev = 12;
+                _context.prev = 10;
 
                 for (_iterator2 = data[Symbol.iterator](); !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                   d = _step2.value;
 
                   text = text.replace("{}", d);
                 }
-                _context.next = 20;
+                _context.next = 18;
                 break;
 
-              case 16:
-                _context.prev = 16;
-                _context.t0 = _context["catch"](12);
+              case 14:
+                _context.prev = 14;
+                _context.t0 = _context["catch"](10);
                 _didIteratorError2 = true;
                 _iteratorError2 = _context.t0;
 
-              case 20:
-                _context.prev = 20;
-                _context.prev = 21;
+              case 18:
+                _context.prev = 18;
+                _context.prev = 19;
 
                 if (!_iteratorNormalCompletion2 && _iterator2.return) {
                   _iterator2.return();
                 }
 
-              case 23:
-                _context.prev = 23;
+              case 21:
+                _context.prev = 21;
 
                 if (!_didIteratorError2) {
-                  _context.next = 26;
+                  _context.next = 24;
                   break;
                 }
 
                 throw _iteratorError2;
 
+              case 24:
+                return _context.finish(21);
+
+              case 25:
+                return _context.finish(18);
+
               case 26:
-                return _context.finish(23);
-
-              case 27:
-                return _context.finish(20);
-
-              case 28:
                 return _context.abrupt("return", text);
 
-              case 29:
+              case 27:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, this, [[12, 16, 20, 28], [21,, 23, 27]]);
+        }, _callee, this, [[10, 14, 18, 26], [19,, 21, 25]]);
       }));
 
       function t(_x9) {
@@ -359,7 +355,7 @@ var Internationalisation = function () {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                translation = this.loadLngFromLocalStorage(lng);
+                translation = this.useLocalStorage ? this.loadLngFromLocalStorage(lng) : false;
 
                 if (!translation) {
                   _context4.next = 5;
@@ -378,7 +374,9 @@ var Internationalisation = function () {
               case 8:
                 this.translations[lng] = _context4.sent;
 
-                this.saveLngToLocalStorage(lng, this.translations[lng]);
+                if (this.useLocalStorage) {
+                  this.saveLngToLocalStorage(lng);
+                }
 
               case 10:
               case "end":
@@ -466,7 +464,7 @@ var Internationalisation = function () {
       var saveDateKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "translation_save_date." + lng;
 
 
-      if (this.useLocalstorage) {
+      if (this.useLocalStorage) {
         var transDict = localStorage.getItem(transKey);
         var transDictSaveDate = +localStorage.getItem(saveDateKey);
         if (Boolean(transDict) & transDictSaveDate + 2 * 3600 * 1000 >= +new Date()) {
@@ -481,7 +479,7 @@ var Internationalisation = function () {
       var transKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "translation." + lng;
       var saveDateKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "translation_save_date." + lng;
 
-      if (this.useLocalstorage) {
+      if (this.useLocalStorage) {
         localStorage.setItem(transKey, JSON.stringify(transDict));
         localStorage.setItem(saveDateKey, +new Date());
       }

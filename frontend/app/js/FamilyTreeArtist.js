@@ -370,7 +370,7 @@ var FamilyTreeArtist = function () {
                     addRelativeDiv.append("span").attr(i18n.keyAttr, "node-name-" + relative).on("click", function (node) {
                       var relativeNode = addRelative(node);
                       relativeNode.i18nName = self.kgp.relationToYou(node.i18nName, relative);
-                      familyTreeArtist.update(node);
+                      self.update(node);
                       self.nodeButtons.hide();
                       addRelativeHitbox.remove();
                       self.kgp.saveFamilyTreeToLocalStorage();
@@ -447,7 +447,7 @@ var FamilyTreeArtist = function () {
       }();
 
       var self = this;
-      this.nodeButtons = new NodeButtonsGroup(this.svgg);
+      this.nodeButtons = new NodeButtonsGroup(this.svgg, self.kgp.indiNodeSize.width);
 
       // ------------------------ remove node button ------------------------
       function removeNode(node) {
@@ -458,7 +458,7 @@ var FamilyTreeArtist = function () {
         }).map(function (n) {
           return n.id;
         }), self.kgp.userId, self.kgp.userSource, i18n.lng);
-        familyTreeArtist.update();
+        self.update();
         self.kgp.saveFamilyTreeToLocalStorage();
       }
 

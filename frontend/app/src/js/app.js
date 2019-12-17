@@ -20,7 +20,6 @@ let resp;
 let gedData = 0
 
 // FTA
-let familyTreeArtist
 // privacy_bar.js
 let privacyBar
 let privacyWordedScore
@@ -70,28 +69,10 @@ kgp = new KinGenomicPrivacyMeter(
 
 //initSurvey()
 
-kgp.loadFamilyTreeFromLocalStorage()
-let savedFtree = Boolean(ftree)
-if(!savedFtree){
-  //console.log("NO FAMILY TREE IN STORAGE")
-  ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
-}
 
 
-familyTreeArtist = new FamilyTreeArtist(kgp, i18n,0)
-
-if(kgp.target){
-  kgp.selectTarget(kgp.target, true)
-}
 
 kgp.mobileBlock()
 kgp.IEBlock()
-if(savedFtree){
-  kgpMeterScoreRequestHandler.requestScore(
-    kgp.target?kgp.target.id:"",
-    ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
-    kgp.userId, kgp.userSource, i18n.lng
-  )
-}
 
 
