@@ -161,15 +161,6 @@ function createNodeButtons(svgg){
   }
 
   // ------------------------ set as target button ------------------------
-  function setAsTarget(node){
-    selectTarget(node)
-    nodeButtons.hide()
-    kgpMeterScoreRequestHandler.requestScore(
-      kgp.target?kgp.target.id:"",
-      ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
-      kgp.userId, kgp.userSource, i18n.lng)
-    saveFamilyTreeToLocalStorage()
-  }
 
   nodeButtons.addButton("set-as-target",-50,0, "\uf05b",
     "120px", "45px",
@@ -177,7 +168,7 @@ function createNodeButtons(svgg){
       FAx:-10, FAy:7,
       tooltipx:"-144px",
     })
-      .on("click.set-as-target",setAsTarget)
+      .on("click.set-as-target", n=>kgp.selectTarget(n))
 
 
   // ------------------------ add relatives button ------------------------
@@ -305,29 +296,3 @@ function createNodeButtons(svgg){
 }
 
 
-
-function selectTarget(node){
-  // reset old target's buttons, logo & sequenced state
-  if(kgp.target){
-    kgp.target.buttons = kgp.target.id == kgp.youNodeId? youNodeButtons : standardNodeButtons
-    d3.select("#"+ FamilyTreeArtist.nodeGroupId(kgp.target.id)+" .node-logo")
-      .attr("class", "fas fa-dna dna-logo node-logo node-logo-large "+ (kgp.target.lastSequencedDNA? "":"invisible-dna"))
-      .attr("x","-16px")
-      .text('\uf471');
-    kgp.target.sequencedDNA = kgp.target.lastSequencedDNA
-    kgp.target.lastSequencedDNA = undefined
-  }
-  // set new target
-  kgp.target = node
-  node.buttons = node.id == kgp.youNodeId? youTargetNodeButtons : targetNodeButtons
-  // ...ensure it's not sequenced
-  node.lastSequencedDNA = node.sequencedDNA
-  node.sequencedDNA = false
-  //nodeg.select(".dna-logo").classed("invisible-dna", !node.sequencedDNA)
-
-  // change the logo
-  d3.select("#"+FamilyTreeArtist.nodeGroupId(node.id)+" .node-logo")
-      .attr("class", "fas fa-crosshairs crosshairs-logo node-logo node-logo-large")
-      .attr("x","-18px")
-      .text('\uf05b');
-}

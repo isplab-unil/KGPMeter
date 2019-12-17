@@ -142,6 +142,23 @@ class KinGenomicPrivacyMeter{
     this.svg.attr("width",this.svgWidth)
   }
 
+  selectTarget(newTarget, forceUpdate=false){
+    let self = this
+    if(!newTarget.id){
+      newTarget = ftree.nodesArray().filter(n =>n.id==newTarget)[0]
+    }
+    if( forceUpdate || (!this.target) || newTarget.id!=this.target.id){
+      let oldTarget = self.target
+      this.target = newTarget
+      familyTreeArtist.setAsTarget(newTarget, oldTarget)
+      kgpMeterScoreRequestHandler.requestScore(
+        self.target?self.target.id:"",
+        ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
+        self.userId, self.userSource, i18n.lng
+      )
+      saveFamilyTreeToLocalStorage()
+    }
+  }
 
   /**
   * function correctly resizing svg, family tree and privacy bar according to svg's parent node
@@ -403,10 +420,6 @@ class FamilyTreeArtist{
           this.setAttribute(self.i18n.keyAttr, "node-name-you")
         }
       })
-  
-    if(this.kgp.target){
-      selectTarget(this.kgp.target)
-    }
 
     this.nodeButtons = createNodeButtons(this.svgg)
 
@@ -641,6 +654,32 @@ class FamilyTreeArtist{
       .duration(transitionsDuration)
       .attr("transform", d => "translate(" + d.x + "," + d.y + ")")
 
+  }
+
+  setAsTarget(newTarget, oldTarget){
+    this.nodeButtons.hide()
+    // reset old target's buttons, logo & sequenced state
+    if(oldTarget){
+      oldTarget.buttons = oldTarget.id == this.kgp.youNodeId? youNodeButtons : standardNodeButtons
+      d3.select("#"+ FamilyTreeArtist.nodeGroupId(oldTarget.id)+" .node-logo")
+        .attr("class", "fas fa-dna dna-logo node-logo node-logo-large "+ (oldTarget.lastSequencedDNA? "":"invisible-dna"))
+        .attr("x","-16px")
+        .text('\uf471');
+      oldTarget.sequencedDNA = oldTarget.lastSequencedDNA
+      oldTarget.lastSequencedDNA = undefined
+    }
+    // set new target
+    newTarget.buttons = newTarget.id == this.kgp.youNodeId? youTargetNodeButtons : targetNodeButtons
+    // ...ensure it's not sequenced
+    newTarget.lastSequencedDNA = newTarget.sequencedDNA
+    newTarget.sequencedDNA = false
+    //nodeg.select(".dna-logo").classed("invisible-dna", !node.sequencedDNA)
+  
+    // change the logo
+    d3.select("#"+FamilyTreeArtist.nodeGroupId(newTarget.id)+" .node-logo")
+        .attr("class", "fas fa-crosshairs crosshairs-logo node-logo node-logo-large")
+        .attr("x","-18px")
+        .text('\uf05b');
   }
 
   static idToString(id){

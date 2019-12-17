@@ -98,16 +98,12 @@ if (!savedFtree) {
   ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree();
 }
 
+familyTreeArtist = new FamilyTreeArtist(kgp, i18n, 0);
+
 if (kgp.target) {
-  if (!kgp.target.id) {
-    kgp.target = ftree.nodesArray().filter(function (n) {
-      return n.id == kgp.target;
-    })[0];
-  }
-  selectTarget(kgp.target);
+  kgp.selectTarget(kgp.target, true);
 }
 
-familyTreeArtist = new FamilyTreeArtist(kgp, i18n, 0);
 mobileBlock();
 IEBlock();
 if (savedFtree) {

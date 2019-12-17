@@ -69,14 +69,13 @@ if(!savedFtree){
   ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
 }
 
-if(kgp.target){
-  if(!kgp.target.id){
-    kgp.target = ftree.nodesArray().filter(n =>n.id==kgp.target)[0]
-  }
-  selectTarget(kgp.target)
-}
 
 familyTreeArtist = new FamilyTreeArtist(kgp, i18n,0)
+
+if(kgp.target){
+  kgp.selectTarget(kgp.target, true)
+}
+
 mobileBlock()
 IEBlock()
 if(savedFtree){
