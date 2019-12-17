@@ -378,7 +378,6 @@ function otherThingsToDoOnKgpMeterScoreResponse(kgpPromise, request, previousRes
   return kgpPromise.then(kgpSuccess=>{
     // success
     $("body").css({'cursor':'auto'})
-    kgp.privacyMetric = kgpSuccess.result.privacy_metric
     kgpMeterScoreUpdateCallbacks.end.forEach(f => f(kgpPromise, request, previousResponse))
     //console.log("kgp score success: ", kgpSuccess)
   }).catch(kgpError=>{
@@ -399,7 +398,7 @@ class KgpMeterScoreRequest{
     this.family_tree = {
       "edges":familyTreeEdges,
       "sequenced_relatives":familyTreeSequencedRelatives,
-      "target":target_id//kgp.target?kgp.target.id:"",
+      "target":target_id
     }
     this.user = {
       "id": user_id,

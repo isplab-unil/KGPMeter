@@ -440,7 +440,6 @@ function otherThingsToDoOnKgpMeterScoreResponse(kgpPromise, request, previousRes
   return kgpPromise.then(function (kgpSuccess) {
     // success
     $("body").css({ 'cursor': 'auto' });
-    kgp.privacyMetric = kgpSuccess.result.privacy_metric;
     kgpMeterScoreUpdateCallbacks.end.forEach(function (f) {
       return f(kgpPromise, request, previousResponse);
     });
@@ -467,7 +466,7 @@ var KgpMeterScoreRequest = function KgpMeterScoreRequest(target_id, familyTreeEd
   this.family_tree = {
     "edges": familyTreeEdges,
     "sequenced_relatives": familyTreeSequencedRelatives,
-    "target": target_id //kgp.target?kgp.target.id:"",
+    "target": target_id
   };
   this.user = {
     "id": user_id,

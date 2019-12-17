@@ -79,6 +79,9 @@ class KinGenomicPrivacyMeter{
 
     // request handler
     kgpMeterScoreRequestHandler = new KgpMeterScoreRequestHandler(this.privacyScoreApiEndpoint)
+    kgpMeterScoreRequestHandler.addListener(kgpPromise => {
+      kgpPromise.then(kgpSuccess=>kgp.privacyMetric = kgpSuccess.result.privacy_metric,()=>{})
+    })
     kgpMeterScoreRequestHandler.addListener((...args) => privacyBar.await(...args))
     kgpMeterScoreRequestHandler.addListener((...args) => privacyWordedScore.await(...args))
     kgpMeterScoreRequestHandler.addListener((...args) => privacyBackendStatus.await(...args))

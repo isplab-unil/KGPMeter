@@ -72,6 +72,11 @@ var KinGenomicPrivacyMeter = function () {
 
     // request handler
     kgpMeterScoreRequestHandler = new KgpMeterScoreRequestHandler(this.privacyScoreApiEndpoint);
+    kgpMeterScoreRequestHandler.addListener(function (kgpPromise) {
+      kgpPromise.then(function (kgpSuccess) {
+        return kgp.privacyMetric = kgpSuccess.result.privacy_metric;
+      }, function () {});
+    });
     kgpMeterScoreRequestHandler.addListener(function () {
       var _privacyBar;
 
