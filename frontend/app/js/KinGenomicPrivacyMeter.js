@@ -70,11 +70,22 @@ var KinGenomicPrivacyMeter = function () {
 
     // request handler
     kgpMeterScoreRequestHandler = new KgpMeterScoreRequestHandler(this.privacyScoreApiEndpoint);
+    // update privacyMetric
     kgpMeterScoreRequestHandler.addListener(function (kgpPromise) {
       kgpPromise.then(function (kgpSuccess) {
         return kgp.privacyMetric = kgpSuccess.result.privacy_metric;
       }, function () {});
     });
+    // update cursor
+    kgpMeterScoreRequestHandler.addListener(function (kgpPromise) {
+      $("body").css({ 'cursor': 'progress' });
+      kgpPromise.then(function (kgpSuccess) {
+        return $("body").css({ 'cursor': 'auto' });
+      }, function (kgpError) {
+        return $("body").css({ 'cursor': 'auto' });
+      });
+    });
+    // ...other listeners
     kgpMeterScoreRequestHandler.addListener(function () {
       var _privacyBar;
 
@@ -99,9 +110,6 @@ var KinGenomicPrivacyMeter = function () {
       var _kgpsurvey;
 
       return (_kgpsurvey = kgpsurvey).await.apply(_kgpsurvey, arguments);
-    });
-    kgpMeterScoreRequestHandler.addListener(function () {
-      return otherThingsToDoOnKgpMeterScoreResponse.apply(undefined, arguments);
     });
 
     // new user: send init request

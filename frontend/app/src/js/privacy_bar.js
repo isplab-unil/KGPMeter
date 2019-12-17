@@ -243,6 +243,13 @@ class KgpMeterScoreRequestHandler{
     // necessary dummy
     this.latestResponse = new KgpMeterScoreSuccess(-1, {}, "", 1.0001, 0, 0, 0)
     this.listeners = []
+    this.callbacks = {
+      start:[],
+      end:[],
+      error:[]
+    }
+    let self = this
+    this.addListener((...args)=>self.callbacksAwait(...args))
   }
 
   /** Adds a listener to requests, returns true if not already in array*/
@@ -301,6 +308,22 @@ class KgpMeterScoreRequestHandler{
 
     return kgpPromise
   }
+
+
+/** callbacks */
+callbacksAwait(kgpPromise, request, previousResponse){
+  let self = this
+  // for tutorial videos, comment this following line (glitches in video):
+  self.callbacks.start.forEach(f => f(kgpPromise, request, previousResponse))
+  return kgpPromise.then(kgpSuccess=>{
+    // success
+    self.callbacks.end.forEach(f => f(kgpPromise, request, previousResponse))
+    //console.log("kgp score success: ", kgpSuccess)
+  }).catch(kgpError=>{
+    self.callbacks.error.forEach(f => f(kgpPromise, request, previousResponse))
+    //console.log("kgp score error: ", kgpError)
+  })
+}
 }
 
 class KgpMeterScoreResponse{
@@ -364,28 +387,6 @@ class KgpMeterScoreStale extends KgpMeterScoreResponse{
   }
 }
 
-
-/** temporary solution for small things to do on KGP score request() */
-let kgpMeterScoreUpdateCallbacks = {
-  start:[],
-  end:[],
-  error:[]
-}
-function otherThingsToDoOnKgpMeterScoreResponse(kgpPromise, request, previousResponse){
-  // for tutorial videos, comment this following line (glitches in video):
-  kgpMeterScoreUpdateCallbacks.start.forEach(f => f(kgpPromise, request, previousResponse))
-  $("body").css({'cursor':'progress'})
-  return kgpPromise.then(kgpSuccess=>{
-    // success
-    $("body").css({'cursor':'auto'})
-    kgpMeterScoreUpdateCallbacks.end.forEach(f => f(kgpPromise, request, previousResponse))
-    //console.log("kgp score success: ", kgpSuccess)
-  }).catch(kgpError=>{
-    $("body").css({'cursor':'auto'})
-    kgpMeterScoreUpdateCallbacks.error.forEach(f => f(kgpPromise, request, previousResponse))
-    //console.log("kgp score error: ", kgpError)
-  })
-}
 
 /** Creates the request that'll be sent to the KgpMeter server, with instant timestamp */
 class KgpMeterScoreRequest{

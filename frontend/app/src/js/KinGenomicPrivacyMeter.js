@@ -79,15 +79,23 @@ class KinGenomicPrivacyMeter{
 
     // request handler
     kgpMeterScoreRequestHandler = new KgpMeterScoreRequestHandler(this.privacyScoreApiEndpoint)
+    // update privacyMetric
     kgpMeterScoreRequestHandler.addListener(kgpPromise => {
       kgpPromise.then(kgpSuccess=>kgp.privacyMetric = kgpSuccess.result.privacy_metric,()=>{})
     })
+    // update cursor
+    kgpMeterScoreRequestHandler.addListener(kgpPromise => {
+      $("body").css({'cursor':'progress'})
+      kgpPromise.then(
+        kgpSuccess => $("body").css({'cursor':'auto'}),
+        kgpError => $("body").css({'cursor':'auto'}))
+    })
+    // ...other listeners
     kgpMeterScoreRequestHandler.addListener((...args) => privacyBar.await(...args))
     kgpMeterScoreRequestHandler.addListener((...args) => privacyWordedScore.await(...args))
     kgpMeterScoreRequestHandler.addListener((...args) => privacyBackendStatus.await(...args))
     kgpMeterScoreRequestHandler.addListener((...args) => privacyScoreNumberExplainer.await(...args))
     kgpMeterScoreRequestHandler.addListener((...args) => kgpsurvey.await(...args))
-    kgpMeterScoreRequestHandler.addListener((...args) => otherThingsToDoOnKgpMeterScoreResponse(...args))
     
     // new user: send init request
     if(new_user){

@@ -261,6 +261,15 @@ var KgpMeterScoreRequestHandler = function () {
     // necessary dummy
     this.latestResponse = new KgpMeterScoreSuccess(-1, {}, "", 1.0001, 0, 0, 0);
     this.listeners = [];
+    this.callbacks = {
+      start: [],
+      end: [],
+      error: []
+    };
+    var self = this;
+    this.addListener(function () {
+      return self.callbacksAwait.apply(self, arguments);
+    });
   }
 
   /** Adds a listener to requests, returns true if not already in array*/
@@ -329,6 +338,30 @@ var KgpMeterScoreRequestHandler = function () {
       }
 
       return kgpPromise;
+    }
+
+    /** callbacks */
+
+  }, {
+    key: "callbacksAwait",
+    value: function callbacksAwait(kgpPromise, request, previousResponse) {
+      var self = this;
+      // for tutorial videos, comment this following line (glitches in video):
+      self.callbacks.start.forEach(function (f) {
+        return f(kgpPromise, request, previousResponse);
+      });
+      return kgpPromise.then(function (kgpSuccess) {
+        // success
+        self.callbacks.end.forEach(function (f) {
+          return f(kgpPromise, request, previousResponse);
+        });
+        //console.log("kgp score success: ", kgpSuccess)
+      }).catch(function (kgpError) {
+        self.callbacks.error.forEach(function (f) {
+          return f(kgpPromise, request, previousResponse);
+        });
+        //console.log("kgp score error: ", kgpError)
+      });
     }
   }]);
 
@@ -423,37 +456,8 @@ var KgpMeterScoreStale = function (_KgpMeterScoreRespons3) {
   return KgpMeterScoreStale;
 }(KgpMeterScoreResponse);
 
-/** temporary solution for small things to do on KGP score request() */
-
-
-var kgpMeterScoreUpdateCallbacks = {
-  start: [],
-  end: [],
-  error: []
-};
-function otherThingsToDoOnKgpMeterScoreResponse(kgpPromise, request, previousResponse) {
-  // for tutorial videos, comment this following line (glitches in video):
-  kgpMeterScoreUpdateCallbacks.start.forEach(function (f) {
-    return f(kgpPromise, request, previousResponse);
-  });
-  $("body").css({ 'cursor': 'progress' });
-  return kgpPromise.then(function (kgpSuccess) {
-    // success
-    $("body").css({ 'cursor': 'auto' });
-    kgpMeterScoreUpdateCallbacks.end.forEach(function (f) {
-      return f(kgpPromise, request, previousResponse);
-    });
-    //console.log("kgp score success: ", kgpSuccess)
-  }).catch(function (kgpError) {
-    $("body").css({ 'cursor': 'auto' });
-    kgpMeterScoreUpdateCallbacks.error.forEach(function (f) {
-      return f(kgpPromise, request, previousResponse);
-    });
-    //console.log("kgp score error: ", kgpError)
-  });
-}
-
 /** Creates the request that'll be sent to the KgpMeter server, with instant timestamp */
+
 
 var KgpMeterScoreRequest = function KgpMeterScoreRequest(target_id, familyTreeEdges, familyTreeSequencedRelatives, user_id, user_source, lng) {
   _classCallCheck(this, KgpMeterScoreRequest);
