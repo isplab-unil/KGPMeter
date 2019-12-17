@@ -19,6 +19,7 @@ let ftree = 0
 let resp;
 let gedData = 0
 
+let familyTreeArtist
 
 // languageLoader and i18n object: Internationalisation
 let LANGUAGE_FILES_URL = "./i18n/"
