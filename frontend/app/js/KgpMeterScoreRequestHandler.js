@@ -127,9 +127,6 @@ var KgpMeterScoreRequest = function KgpMeterScoreRequest(target_id, familyTreeEd
   _classCallCheck(this, KgpMeterScoreRequest);
 
   var timestamp_js = +new Date();
-  //let family_tree_edges = ftree.getLinksAsIds()
-  // building list of sequenced relatives
-  //let sequenced_relatives_ids = ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id)
   this.timestamp_js = timestamp_js;
   this.family_tree = {
     "edges": familyTreeEdges,
