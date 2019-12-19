@@ -115,11 +115,11 @@ class KinGenomicPrivacyMeter{
 
     onWindowResize(()=>self.resizeSvg())
 
-    this.loadFamilyTreeFromLocalStorage()
-    let savedFtree = Boolean(ftree)
+    this.ftree = this.loadFamilyTreeFromLocalStorage()
+    let savedFtree = Boolean(this.ftree)
     if(!savedFtree){
       //console.log("NO FAMILY TREE IN STORAGE")
-      ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
+      this.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
     }
 
     this.familyTreeArtist = new FamilyTreeArtist(this, i18n,0)
@@ -130,7 +130,7 @@ class KinGenomicPrivacyMeter{
     if(savedFtree){
       this.scoreRequestHandler.requestScore(
         self.target?self.target.id:"",
-        ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
+        this.ftree.getLinksAsIds(), this.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
         self.userId, self.userSource, i18n.lng
       )
     }
@@ -142,9 +142,9 @@ class KinGenomicPrivacyMeter{
     
     let self = this
     // delete all nodes except you
-    ftree.nodesArray().forEach(n =>{
+    this.ftree.nodesArray().forEach(n =>{
       if(n.id!=self.youNodeId){
-        ftree.deleteNode(n.id,self.youNodeId)
+        self.ftree.deleteNode(n.id,self.youNodeId)
     }})
     this.familyTreeArtist.nodeButtons.hide()
     // set privacy score back to 1:
@@ -161,7 +161,7 @@ class KinGenomicPrivacyMeter{
 
     // once this is done (after 800ms), reset to the empty ftree
     setTimeout(function(){
-      ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
+      self.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
       d3.select("#familytree-g").remove()
       self.familyTreeArtist.init(0)
       self.saveFamilyTreeToLocalStorage()
@@ -169,7 +169,7 @@ class KinGenomicPrivacyMeter{
   }
 
   saveFamilyTreeToLocalStorage(familyTreeKey="kgp-familyTree", targetKey="kgp-targetId", saveDateKey="kgp-saveDate"){
-    localStorage.setItem(familyTreeKey,JSON.stringify(ftree.serialize(["sequencedDNA","lastSequencedDNA","i18nName"])))
+    localStorage.setItem(familyTreeKey,JSON.stringify(this.ftree.serialize(["sequencedDNA","lastSequencedDNA","i18nName"])))
     localStorage.setItem(saveDateKey,+new Date())
     if(this.target){
       localStorage.setItem(targetKey, this.target.id)
@@ -179,22 +179,22 @@ class KinGenomicPrivacyMeter{
   }
   
   loadFamilyTreeFromLocalStorage(familyTreeKey="kgp-familyTree", targetKey="kgp-targetId", saveDateKey="kgp-saveDate", familyTreeClass=FamilyTreeLayout){
+    let familyTree = null
     let ftl = localStorage.getItem(familyTreeKey)
     let targetId = localStorage.getItem(targetKey)
     let saveDate = +localStorage.getItem(saveDateKey)
     //console.log("LOADING family tree, ftl = ", ftl, ", targetId = ",targetId, ", saveDate = ",saveDate)
     if(Boolean(ftl) & (saveDate+2*3600*1000>=+new Date()) ){
-      ftree = familyTreeClass.unserialize(ftl)
-      this.target = targetId? ftree.nodes[targetId] : null
-      return ftree
+      familyTree = familyTreeClass.unserialize(ftl)
+      this.target = targetId? familyTree.nodes[targetId] : null
     }
-    return null
+    return familyTree
   }
 
   selectTarget(newTarget, forceUpdate=false){
     let self = this
     if(!newTarget.id){
-      newTarget = ftree.nodesArray().filter(n =>n.id==newTarget)[0]
+      newTarget = this.ftree.nodesArray().filter(n =>n.id==newTarget)[0]
     }
     if( forceUpdate || (!this.target) || newTarget.id!=this.target.id){
       let oldTarget = self.target
@@ -202,7 +202,7 @@ class KinGenomicPrivacyMeter{
       this.familyTreeArtist.setAsTarget(newTarget, oldTarget)
       this.scoreRequestHandler.requestScore(
         self.target?self.target.id:"",
-        ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
+        this.ftree.getLinksAsIds(), this.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
         self.userId, self.userSource, i18n.lng
       )
       self.saveFamilyTreeToLocalStorage()

@@ -3,18 +3,20 @@
 class FamilyTreeArtist{
   constructor(kgp, i18n, transitionDuration=800){
     this.kgp = kgp
+    this.ftree = this.kgp.ftree
     this.i18n = i18n
     this.init(transitionDuration)
   }
 
   init(transitionDuration=800){
+    this.ftree = this.kgp.ftree
     let self = this
     this.svgg = this.kgp.svg.append("g").attr("id","familytree-g")
 
     this.update(false, transitionDuration);
   
     // distinguish you node
-    //this.kgp.target = ftree.nodes[this.kgp.youNodeId]
+    //this.kgp.target = this.ftree.nodes[this.kgp.youNodeId]
     let meNodeGroup = d3.select("#"+FamilyTreeArtist.nodeGroupId(this.kgp.youNodeId))
       .classed("you",true)
       .each(d=>{
@@ -45,16 +47,16 @@ class FamilyTreeArtist{
   update(updateSource, transitionsDuration=800){
     let self = this
     updateSource = updateSource? {x:updateSource.x,y:updateSource.y} : false
-    ftree.computeLayout(false)
-    ftree.center(true, false)
+    this.ftree.computeLayout(false)
+    this.ftree.center(true, false)
 
     // rescale tree if gets out of svg
     let ftreeLeftMargin = 70 // 20 pix for target button, 50 for first node circle
     let ftreeRightMargin = 170 // 120 for add-relative menu, 50 for last node circle
-    let widthFtree = ftreeLeftMargin+ ftree.width() + ftreeRightMargin
+    let widthFtree = ftreeLeftMargin+ this.ftree.width() + ftreeRightMargin
 
-    let miny = ftree.minY()
-    let heightFtree = ftree.maxY() - miny + 150
+    let miny = this.ftree.minY()
+    let heightFtree = this.ftree.maxY() - miny + 150
     // if we can still resize the svg -> let's do it!
     let newSvgHeight = this.kgp.svgHeight
     if(heightFtree<this.kgp.svgOriginalHeight){ //tree height smaller than minimum
@@ -78,7 +80,7 @@ class FamilyTreeArtist{
     let scaleFactor = d3.min([1, this.kgp.svgWidth/widthFtree, this.kgp.svgHeight/heightFtree])
     let translateX = widthFtree<this.kgp.svgWidth-ftreeRightMargin/2?
         this.kgp.svgWidth/2 :
-        scaleFactor * (ftree.width() / 2 + ftreeLeftMargin)
+        scaleFactor * (this.ftree.width() / 2 + ftreeLeftMargin)
 
     this.svgg.transition()
       .duration(transitionsDuration)
@@ -99,15 +101,15 @@ class FamilyTreeArtist{
     // adds the links between the nodes
     let link = this.svgg.selectAll(".link")
 
-    // remove links whose source or target is no longer in ftree
-    let keepLink = d=> Boolean(ftree.nodes[d[0].id]) && Boolean(ftree.nodes[d[1].id])
+    // remove links whose source or target is no longer in this.ftree
+    let keepLink = d=> Boolean(this.ftree.nodes[d[0].id]) && Boolean(this.ftree.nodes[d[1].id])
     let linkExit = link.filter(d=> !keepLink(d))
     linkExit.transition()
         .duration(transitionsDuration)
         .attr("d", d=> FamilyTreeArtist.renderLink(d[1],d[1]))
         .remove();
 
-    link = link.filter(keepLink).data(ftree.getLinks(),
+    link = link.filter(keepLink).data(this.ftree.getLinks(),
       // add key function: make sure each ftree-link is assigned to the right svg-link-path
       function(d){return d? FamilyTreeArtist.linkNodeId(d[0].id,d[1].id):this.id})
     let linkEnter = link.enter().insert("path",".nodeg")
@@ -128,17 +130,17 @@ class FamilyTreeArtist{
     let self = this
 
     // maps the node data to the tree layout
-    // let nodes = ftree.nodesArray()
+    // let nodes = this.ftree.nodesArray()
 
     // adds each node as a group
     let node = this.svgg.selectAll(".nodeg")
 
     // remove nodes whose d is no longer in ftree
-    let keepNode = d=> Boolean(ftree.nodes[d.id])
+    let keepNode = d=> Boolean(this.ftree.nodes[d.id])
     node.filter(d=> !keepNode(d)).remove()
 
 
-    node = node.filter(keepNode).data(ftree.nodesArray().filter(n=>!n.hidden))
+    node = node.filter(keepNode).data(this.ftree.nodesArray().filter(n=>!n.hidden))
     //disable action buttons during the transition
     //node.on("mouseenter.actionButtons",null)
 
@@ -298,11 +300,11 @@ class FamilyTreeArtist{
   
     // ------------------------ remove node button ------------------------
     function removeNode(node){
-      ftree.deleteNode(node.id,kgp.youNodeId)
+      self.ftree.deleteNode(node.id,kgp.youNodeId)
       self.nodeButtons.hide()
       self.kgp.scoreRequestHandler.requestScore(
         self.kgp.target?kgp.target.id:"",
-        ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
+        self.ftree.getLinksAsIds(), self.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
         self.kgp.userId, self.kgp.userSource, i18n.lng
       )
       self.update()
@@ -326,7 +328,7 @@ class FamilyTreeArtist{
       d3.select("#"+FamilyTreeArtist.nodeGroupId(node.id)+" .dna-logo").classed("invisible-dna", !node.sequencedDNA)
       self.kgp.scoreRequestHandler.requestScore(
         self.kgp.target?kgp.target.id:"",
-        ftree.getLinksAsIds(), ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
+        self.ftree.getLinksAsIds(), self.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
         self.kgp.userId, self.kgp.userSource, i18n.lng)
         self.kgp.saveFamilyTreeToLocalStorage()
   
@@ -362,7 +364,7 @@ class FamilyTreeArtist{
   
       // can only add children/parents if tree not too deep
       let canAddChildren = node.depth<kgp.maxFamilyTreeDepth-1
-      let canAddParents = (ftree.maxDepth<kgp.maxFamilyTreeDepth-1 || node.depth!=0)
+      let canAddParents = (self.ftree.maxDepth<kgp.maxFamilyTreeDepth-1 || node.depth!=0)
   
       let canAddMother = (!node.famc || !node.famc.wife) && canAddParents
       let canAddFather = (!node.famc || !node.famc.husb) && canAddParents
@@ -407,12 +409,12 @@ class FamilyTreeArtist{
             })
       }
   
-      if(canAddMother){_addAddRelativeSpan("mother",d=> ftree.addParent("","F",d.id),true)}
-      if(canAddFather){_addAddRelativeSpan("father",d=> ftree.addParent("","M",d.id),true)}
-      if(spouseMissing & node.sex=="M"){_addAddRelativeSpan("partner",d=> ftree.addSpouse("",d.id),true)}
-      if(spouseMissing & node.sex=="F"){_addAddRelativeSpan("partner",d=> ftree.addSpouse("",d.id),true)}
-      if(canAddChildren){_addAddRelativeSpan("daughter",d=> ftree.addChild("","F",d.id,false),true)}
-      if(canAddChildren){_addAddRelativeSpan("son",d=> ftree.addChild("","M",d.id,false),true)}
+      if(canAddMother){_addAddRelativeSpan("mother",d=> self.ftree.addParent("","F",d.id),true)}
+      if(canAddFather){_addAddRelativeSpan("father",d=> self.ftree.addParent("","M",d.id),true)}
+      if(spouseMissing & node.sex=="M"){_addAddRelativeSpan("partner",d=> self.ftree.addSpouse("",d.id),true)}
+      if(spouseMissing & node.sex=="F"){_addAddRelativeSpan("partner",d=> self.ftree.addSpouse("",d.id),true)}
+      if(canAddChildren){_addAddRelativeSpan("daughter",d=> self.ftree.addChild("","F",d.id,false),true)}
+      if(canAddChildren){_addAddRelativeSpan("son",d=> self.ftree.addChild("","M",d.id,false),true)}
     }
     addRelativeButton.select("circle")
       .on("mouseover.addRelative",addRelativeMenu)
