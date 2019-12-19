@@ -144,8 +144,8 @@ class SequencedFamilyTree(Hashable):
         to inferring the target's SNPs.
         Family nodes are needed in the constructor to build a unique signature for the
         family tree. They are removed later on for inference.
-        :param family_tree_edges: a list of 2-tuples, each of which is an edge [from, to] in the
-            family tree, including family nodes.
+        :param family_tree_edges: a list of 2-tuples, each of which is of the form [parent, family] or [family, child] in the
+            family tree.
         :param sequenced_relatives: list of the nodes that are sequenced
         :param target: the family member whose SNPs one wants to infer.
         :param family_nodes: list of the nodes who are family nodes.
