@@ -462,13 +462,9 @@ class SequencedFamilyTree(Hashable):
                 entropy_prior = entropy(prior_distrib).item()
                 error_prior = np.sum(np.array(prior_distrib * (1 - (np.array(prior_distrib))))).item()
                 if detailed_results:
-                    return [{
-                        "evidence": [],
-                        "p_evidence": 1,
-                        "target_distrib": prior_distrib,
-                        "entropy_posterior": entropy_prior,
-                        "exp_error": error_prior
-                    }]
+                    return [KgpMetricDetailedResults(
+                        [], 1, prior_distrib, error_prior, entropy_prior, entropy_prior
+                    )]
                 else:
                     return entropy_prior, error_prior
 
@@ -478,13 +474,9 @@ class SequencedFamilyTree(Hashable):
                 if p_inputs_zero:
                     # return an dummy result
                     if detailed_results:
-                        result.append({
-                            "evidence": deepcopy(evidence),
-                            "p_evidence": 0,
-                            "target_distrib": [],
-                            "entropy_posterior": 0,
-                            "exp_error": 1,
-                        })
+                        result.append(KgpMetricDetailedResults(
+                            deepcopy(evidence), 0, [], 1, 0, 0
+                        ))
                 # termination condition 2: no more sequenced relatives with free SNP variant
                 elif len(sequenced_relatives) == 0:
                     # compute and return results
@@ -498,14 +490,14 @@ class SequencedFamilyTree(Hashable):
                     mean_exp_error[0] = mean_exp_error[0] + p_inputs * exp_error
                     # add entry to detailed results if needed
                     if detailed_results:
-                        result.append({
-                            "evidence": deepcopy(evidence),
-                            "p_evidence": p_inputs,
-                            "target_distrib": deepcopy(target_distrib),
-                            "exp_error": exp_error,
-                            "entropy_posterior": entropy_posterior,
-                            "product_p_evidence_entropy_posterior": p_inputs * entropy_posterior,
-                        })
+                        result.append(KgpMetricDetailedResults(
+                            deepcopy(evidence),
+                            p_inputs,
+                            deepcopy(target_distrib),
+                            exp_error,
+                            entropy_posterior,
+                            p_inputs * entropy_posterior
+                        ))
                 # ...otherwise, continue recursion
                 else:
                     # take a new sequenced relative with free SNP...
@@ -531,7 +523,7 @@ class SequencedFamilyTree(Hashable):
                 # invert netica evidence dictionary
                 inv_netica_nodes = {v: k for k, v in netica_net.nodes.items()}
                 for res in result:
-                    res["evidence"] = { inv_netica_nodes[netica_name]: v for netica_name,v in res["evidence"].items()}
+                    res.evidence = { inv_netica_nodes[netica_name]: v for netica_name,v in res.evidence.items()}
                 return result
             else:
                 return mean_entropy_posterior[0], mean_exp_error[0]
@@ -569,9 +561,9 @@ class SequencedFamilyTree(Hashable):
         else:
             for case in privacy_metrics:
                 if not math.isnan(normalized_entropy):
-                    case["normalized_entropy"] = normalized_entropy
+                    case.normalized_entropy = normalized_entropy
                 else:
-                    case["normalized_entropy"] = case["entropy_posterior"] / prior_entropy
+                    case.normalized_entropy = case.entropy_posterior / prior_entropy
             return privacy_metrics
 
     def snps_privacy_score(self, mafs_to_compute:List[float], mafs_to_interpolate = None):
@@ -621,3 +613,14 @@ class SequencedFamilyTree(Hashable):
                 current_qualif = SequencedFamilyTree.RELATION_MAP[current_qualif]['predecessor']
             current_node = next_node
         return current_qualif
+
+
+class KgpMetricDetailedResults:
+  def __init__(self, evidence, p_evidence, target_distrib, exp_error, entropy_posterior, product_p_evidence_entropy_posterior, normalized_entropy=None):
+    self.evidence = evidence
+    self.p_evidence = p_evidence
+    self.target_distrib = target_distrib
+    self.exp_error = exp_error
+    self.entropy_posterior = entropy_posterior
+    self.product_p_evidence_entropy_posterior = product_p_evidence_entropy_posterior
+    self.normalized_entropy = normalized_entropy
