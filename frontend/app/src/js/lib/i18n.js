@@ -161,7 +161,7 @@ class Internationalisation{
       this.translationsPromises[lng] = this.languageLoader(lng)
       this.translations[lng] = await this.translationsPromises[lng]
       if(this.useLocalStorage){
-        this.saveLngToLocalStorage(lng)
+        this.saveLngToLocalStorage(lng, this.translations[lng])
       }
     }
   }

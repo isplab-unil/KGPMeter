@@ -375,7 +375,7 @@ var Internationalisation = function () {
                 this.translations[lng] = _context4.sent;
 
                 if (this.useLocalStorage) {
-                  this.saveLngToLocalStorage(lng);
+                  this.saveLngToLocalStorage(lng, this.translations[lng]);
                 }
 
               case 10:
