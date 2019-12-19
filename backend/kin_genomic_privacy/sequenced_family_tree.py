@@ -31,11 +31,13 @@ from .genomic_privacy import entropy, ABSOLUTE_EQUALITY_TOLERANCE, snp2int
 from .MendelianInheritanceCPD import MendelianInheritanceCPD
 from .NeticaFamilyTree import NeticaFamilyTree
 
+logger = logging.getLogger(__name__)
 logging.getLogger("neticaPy.netica").setLevel(logging.WARNING)
 
 class SequencedFamilyTree(Hashable):
 
-    relation_map = {
+    SEQUENCED_DNA_ATTRIBUTE = "sequencedDNA"
+    RELATION_MAP = {
         # great grand parent generation
         'great grandparent':{
             'predecessor': 'other',
@@ -133,7 +135,7 @@ class SequencedFamilyTree(Hashable):
     }
     _cache = {}
 
-    def __init__(self, family_tree_edges: list, sequenced_relatives: list, target: str, family_nodes: list, minimize:bool=True, logger:logging.Logger=None, cache=None):
+    def __init__(self, family_tree_edges: list, sequenced_relatives: list, target: str, family_nodes: list, minimize:bool=True, cache=None):
         """
         Represents a Family Tree containing sequenced members and the target of an inference attack
 
@@ -169,6 +171,7 @@ class SequencedFamilyTree(Hashable):
 
         for n in self.nodes:
             self._set_family_node(n, n in family_nodes)
+
 
         # remove useless nodes and add back missing parents
         if minimize:
@@ -230,7 +233,6 @@ class SequencedFamilyTree(Hashable):
     @property
     def cache(self):
         return SequencedFamilyTree._cache[self.signature]
-
     @cache.setter
     def cache(self, value):
         assert(isinstance(value, MutableMapping))
@@ -241,7 +243,6 @@ class SequencedFamilyTree(Hashable):
         if not self._inference_network:
             self._inference_network = self._create_inference_network()
         return self._inference_network
-
     @inference_network.setter
     def inference_network(self, value):
         warnings.warn("SequencedFamilyTree.inference_network setter: non-mutable parameter, new value ignored")
@@ -263,14 +264,14 @@ class SequencedFamilyTree(Hashable):
     # TODO: convert attribute name strings as constant strings
     def is_sequenced(self, node) -> bool:
         assert node in self.nodes
-        return nx.get_node_attributes(self.family_tree, "sequencedDNA")[node]
+        return nx.get_node_attributes(self.family_tree, )[node]
 
     def _set_sequenced(self, node, sequencedDNA) -> None:
         assert node in self.nodes and (not self.is_family_node(node) or not sequencedDNA)
-        nx.set_node_attributes(self.family_tree, values={node: sequencedDNA}, name="sequencedDNA")
+        nx.set_node_attributes(self.family_tree, values={node: sequencedDNA}, name=SequencedFamilyTree.SEQUENCED_DNA_ATTRIBUTE)
 
     def sequenced_relatives(self) -> List[str]:
-        return [n for n, seq in nx.get_node_attributes(self.family_tree, "sequencedDNA").items() if seq]
+        return [n for n, seq in nx.get_node_attributes(self.family_tree, SequencedFamilyTree.SEQUENCED_DNA_ATTRIBUTE).items() if seq]
 
     def is_family_node(self, node) -> bool:
         assert node in self.nodes
@@ -361,7 +362,6 @@ class SequencedFamilyTree(Hashable):
         preds = sorted([self._signature(n, root) for n in self.family_tree.predecessors(root) if origin is None or n != origin])
         succs = sorted([self._signature(n, root) for n in self.family_tree.successors(root) if origin is None or n != origin])
         seq = self.is_sequenced(root)
-        # bm.nodes[root]["sequencedDNA"] if "sequencedDNA" in bm.nodes[root] else ""
         return 'N(%s|%s|%s)' % (str(seq), ','.join(preds), ','.join(succs))
 
     def __hash__(self):
@@ -613,9 +613,9 @@ class SequencedFamilyTree(Hashable):
         current_qualif = "you"
         for next_node in relation_path:
             if next_node in family_graph.successors(current_node):
-                current_qualif = SequencedFamilyTree.relation_map[current_qualif]["successor"]
+                current_qualif = SequencedFamilyTree.RELATION_MAP[current_qualif]["successor"]
 
             elif next_node in family_graph.predecessors(current_node):
-                current_qualif = SequencedFamilyTree.relation_map[current_qualif]['predecessor']
+                current_qualif = SequencedFamilyTree.RELATION_MAP[current_qualif]['predecessor']
             current_node = next_node
         return current_qualif
