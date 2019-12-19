@@ -188,6 +188,7 @@ class SequencedFamilyTree(Hashable):
             # add missing parents, so that everybody has 2 parents
             added_parents = self._add_missing_parents()
             if logger: logger.info("Missing parents added to ensure everybody has 2 parents: %s", str(added_parents))
+            self._inference_network = False
 
         # create signature
         self.signature = hashlib.md5(self._signature(self.target).encode('ascii')).hexdigest()
