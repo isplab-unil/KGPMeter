@@ -37,6 +37,7 @@ logging.getLogger("neticaPy.netica").setLevel(logging.WARNING)
 class SequencedFamilyTree(Hashable):
 
     SEQUENCED_DNA_ATTRIBUTE = "sequencedDNA"
+    FAMILY_NODE_ATTRIBUTE = "family_node"
     RELATION_MAP = {
         # great grand parent generation
         'great grandparent':{
@@ -176,14 +177,17 @@ class SequencedFamilyTree(Hashable):
         # remove useless nodes and add back missing parents
         if minimize:
             added_parents = self._add_missing_parents()
-            if logger: logger.log("Missing parents added upon start: %s", str(added_parents))
+            print("logger: ", logger)
+            print("logger.log: ", logger.log)
+            logger.info("HUHU??")
+            if logger: logger.info("Missing parents added upon start: %s", str(added_parents))
             removed_nodes = self._remove_target_independant_nodes()
-            if logger: logger.log("Nodes removed because independant from target: %s", str(removed_nodes))
+            if logger: logger.info("Nodes removed because independant from target: %s", str(removed_nodes))
             removed_nodes = self._remove_non_sequenced_leaf_nodes()
-            if logger: logger.log("Nodes removed because non-sequenced leaves: %s", str(removed_nodes))
+            if logger: logger.info("Nodes removed because non-sequenced leaves: %s", str(removed_nodes))
             # add missing parents, so that everybody has 2 parents
             added_parents = self._add_missing_parents()
-            if logger: logger.log("Missing parents added to ensure everybody has 2 parents: %s", str(added_parents))
+            if logger: logger.info("Missing parents added to ensure everybody has 2 parents: %s", str(added_parents))
 
         # create signature
         self.signature = hashlib.md5(self._signature(self.target).encode('ascii')).hexdigest()
@@ -264,7 +268,7 @@ class SequencedFamilyTree(Hashable):
     # TODO: convert attribute name strings as constant strings
     def is_sequenced(self, node) -> bool:
         assert node in self.nodes
-        return nx.get_node_attributes(self.family_tree, )[node]
+        return nx.get_node_attributes(self.family_tree, SequencedFamilyTree.SEQUENCED_DNA_ATTRIBUTE)[node]
 
     def _set_sequenced(self, node, sequencedDNA) -> None:
         assert node in self.nodes and (not self.is_family_node(node) or not sequencedDNA)
@@ -275,14 +279,14 @@ class SequencedFamilyTree(Hashable):
 
     def is_family_node(self, node) -> bool:
         assert node in self.nodes
-        return nx.get_node_attributes(self.family_tree, "family_node").get(node)
+        return nx.get_node_attributes(self.family_tree, SequencedFamilyTree.FAMILY_NODE_ATTRIBUTE).get(node)
 
     def _set_family_node(self, node, is_family_node) -> None:
         assert node in self.nodes
-        nx.set_node_attributes(self.family_tree, values={node: is_family_node}, name="family_node")
+        nx.set_node_attributes(self.family_tree, values={node: is_family_node}, name=SequencedFamilyTree.FAMILY_NODE_ATTRIBUTE)
 
     def family_nodes(self) -> List[str]:
-        return [n for n, seq in nx.get_node_attributes(self.family_tree, "family_node").items() if seq]
+        return [n for n, seq in nx.get_node_attributes(self.family_tree, SequencedFamilyTree.FAMILY_NODE_ATTRIBUTE).items() if seq]
 
     def _generate_new_node_id(self):
         return max(list(self.nodes), key=len)+"n"
