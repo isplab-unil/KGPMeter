@@ -17,9 +17,8 @@ let kgp
 
 
 // languageLoader and i18n object: Internationalisation
-let LANGUAGE_FILES_URL = "./i18n/"
 async function languageLoader(lng){
-  let translation = await fetch(LANGUAGE_FILES_URL+lng+".json")
+  let translation = await fetch("./i18n/"+lng+".json")
   if(translation.status==200){
     translation = await translation.json()
     return translation
@@ -53,14 +52,6 @@ kgp = new KinGenomicPrivacyMeter(
   i18n
 )
 
-
-//initSurvey()
-
-
-
-
-kgp.mobileBlock()
-kgp.IEBlock()
 
 
 // =================================== TEST iframe to parent communication and vice-versa ===================================

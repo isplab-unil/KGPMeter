@@ -2,6 +2,7 @@
 
 /* NodeList polyfill for IE11: not included in Babel (->?!?) */
 
+// languageLoader and i18n object: Internationalisation
 var languageLoader = function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(lng) {
     var translation;
@@ -10,7 +11,7 @@ var languageLoader = function () {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return fetch(LANGUAGE_FILES_URL + lng + ".json");
+            return fetch("./i18n/" + lng + ".json");
 
           case 2:
             translation = _context.sent;
@@ -61,10 +62,6 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
 
 var kgp = void 0;
 
-// languageLoader and i18n object: Internationalisation
-var LANGUAGE_FILES_URL = "./i18n/";
-
-
 function onChangeLanguage(oldLng, newLng) {
   cookie.create("lng", newLng, 30);
   // ensure external links target is blank to open them in a new page. Timeout, otherwise doesn't work
@@ -81,12 +78,6 @@ i18n.observe(document);
 
 //constructor(api_base_url, svgId, youNodeId, i18n, maxFamilyTreeDepth=5, cookieLocalStoragePrefix="kgpmeter-"){
 kgp = new KinGenomicPrivacyMeter("", "svg-kin-genomics-privacy-app", "@I1@", i18n);
-
-//initSurvey()
-
-
-kgp.mobileBlock();
-kgp.IEBlock();
 
 // =================================== TEST iframe to parent communication and vice-versa ===================================
 

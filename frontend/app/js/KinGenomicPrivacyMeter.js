@@ -146,6 +146,8 @@ var KinGenomicPrivacyMeter = function () {
         return n.id;
       }), self.userId, self.userSource, i18n.lng);
     }
+    this.mobileBlock();
+    this.IEBlock();
   }
 
   /** Resets the family tree in a pleasant way */

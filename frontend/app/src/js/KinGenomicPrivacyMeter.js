@@ -134,6 +134,8 @@ class KinGenomicPrivacyMeter{
         self.userId, self.userSource, i18n.lng
       )
     }
+    this.mobileBlock()
+    this.IEBlock()
   }
 
   /** Resets the family tree in a pleasant way */
