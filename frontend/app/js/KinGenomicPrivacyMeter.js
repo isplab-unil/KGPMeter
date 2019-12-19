@@ -127,11 +127,11 @@ var KinGenomicPrivacyMeter = function () {
       return self.resizeSvg();
     });
 
-    this.loadFamilyTreeFromLocalStorage();
-    var savedFtree = Boolean(ftree);
+    this.ftree = this.loadFamilyTreeFromLocalStorage();
+    var savedFtree = Boolean(this.ftree);
     if (!savedFtree) {
       //console.log("NO FAMILY TREE IN STORAGE")
-      ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree();
+      this.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree();
     }
 
     this.familyTreeArtist = new FamilyTreeArtist(this, i18n, 0);
@@ -140,7 +140,7 @@ var KinGenomicPrivacyMeter = function () {
       this.selectTarget(this.target, true);
     }
     if (savedFtree) {
-      this.scoreRequestHandler.requestScore(self.target ? self.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+      this.scoreRequestHandler.requestScore(self.target ? self.target.id : "", this.ftree.getLinksAsIds(), this.ftree.nodesArray().filter(function (n) {
         return n.sequencedDNA;
       }).map(function (n) {
         return n.id;
@@ -160,9 +160,9 @@ var KinGenomicPrivacyMeter = function () {
 
       var self = this;
       // delete all nodes except you
-      ftree.nodesArray().forEach(function (n) {
+      this.ftree.nodesArray().forEach(function (n) {
         if (n.id != self.youNodeId) {
-          ftree.deleteNode(n.id, self.youNodeId);
+          self.ftree.deleteNode(n.id, self.youNodeId);
         }
       });
       this.familyTreeArtist.nodeButtons.hide();
@@ -180,7 +180,7 @@ var KinGenomicPrivacyMeter = function () {
 
       // once this is done (after 800ms), reset to the empty ftree
       setTimeout(function () {
-        ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree();
+        self.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree();
         d3.select("#familytree-g").remove();
         self.familyTreeArtist.init(0);
         self.saveFamilyTreeToLocalStorage();
@@ -193,7 +193,7 @@ var KinGenomicPrivacyMeter = function () {
       var targetKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "kgp-targetId";
       var saveDateKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "kgp-saveDate";
 
-      localStorage.setItem(familyTreeKey, JSON.stringify(ftree.serialize(["sequencedDNA", "lastSequencedDNA", "i18nName"])));
+      localStorage.setItem(familyTreeKey, JSON.stringify(this.ftree.serialize(["sequencedDNA", "lastSequencedDNA", "i18nName"])));
       localStorage.setItem(saveDateKey, +new Date());
       if (this.target) {
         localStorage.setItem(targetKey, this.target.id);
@@ -209,16 +209,16 @@ var KinGenomicPrivacyMeter = function () {
       var saveDateKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "kgp-saveDate";
       var familyTreeClass = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : FamilyTreeLayout;
 
+      var familyTree = null;
       var ftl = localStorage.getItem(familyTreeKey);
       var targetId = localStorage.getItem(targetKey);
       var saveDate = +localStorage.getItem(saveDateKey);
       //console.log("LOADING family tree, ftl = ", ftl, ", targetId = ",targetId, ", saveDate = ",saveDate)
       if (Boolean(ftl) & saveDate + 2 * 3600 * 1000 >= +new Date()) {
-        ftree = familyTreeClass.unserialize(ftl);
-        this.target = targetId ? ftree.nodes[targetId] : null;
-        return ftree;
+        familyTree = familyTreeClass.unserialize(ftl);
+        this.target = targetId ? familyTree.nodes[targetId] : null;
       }
-      return null;
+      return familyTree;
     }
   }, {
     key: "selectTarget",
@@ -227,7 +227,7 @@ var KinGenomicPrivacyMeter = function () {
 
       var self = this;
       if (!newTarget.id) {
-        newTarget = ftree.nodesArray().filter(function (n) {
+        newTarget = this.ftree.nodesArray().filter(function (n) {
           return n.id == newTarget;
         })[0];
       }
@@ -235,7 +235,7 @@ var KinGenomicPrivacyMeter = function () {
         var oldTarget = self.target;
         this.target = newTarget;
         this.familyTreeArtist.setAsTarget(newTarget, oldTarget);
-        this.scoreRequestHandler.requestScore(self.target ? self.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+        this.scoreRequestHandler.requestScore(self.target ? self.target.id : "", this.ftree.getLinksAsIds(), this.ftree.nodesArray().filter(function (n) {
           return n.sequencedDNA;
         }).map(function (n) {
           return n.id;

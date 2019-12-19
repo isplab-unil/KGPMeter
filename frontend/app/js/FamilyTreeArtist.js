@@ -13,6 +13,7 @@ var FamilyTreeArtist = function () {
     _classCallCheck(this, FamilyTreeArtist);
 
     this.kgp = kgp;
+    this.ftree = this.kgp.ftree;
     this.i18n = i18n;
     this.init(transitionDuration);
   }
@@ -22,13 +23,14 @@ var FamilyTreeArtist = function () {
     value: function init() {
       var transitionDuration = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 800;
 
+      this.ftree = this.kgp.ftree;
       var self = this;
       this.svgg = this.kgp.svg.append("g").attr("id", "familytree-g");
 
       this.update(false, transitionDuration);
 
       // distinguish you node
-      //this.kgp.target = ftree.nodes[this.kgp.youNodeId]
+      //this.kgp.target = this.ftree.nodes[this.kgp.youNodeId]
       var meNodeGroup = d3.select("#" + FamilyTreeArtist.nodeGroupId(this.kgp.youNodeId)).classed("you", true).each(function (d) {
         d.buttons = youNodeButtons; //youTargetNodeButtons
         d.i18nName = "you";
@@ -84,16 +86,16 @@ var FamilyTreeArtist = function () {
 
       var self = this;
       updateSource = updateSource ? { x: updateSource.x, y: updateSource.y } : false;
-      ftree.computeLayout(false);
-      ftree.center(true, false);
+      this.ftree.computeLayout(false);
+      this.ftree.center(true, false);
 
       // rescale tree if gets out of svg
       var ftreeLeftMargin = 70; // 20 pix for target button, 50 for first node circle
       var ftreeRightMargin = 170; // 120 for add-relative menu, 50 for last node circle
-      var widthFtree = ftreeLeftMargin + ftree.width() + ftreeRightMargin;
+      var widthFtree = ftreeLeftMargin + this.ftree.width() + ftreeRightMargin;
 
-      var miny = ftree.minY();
-      var heightFtree = ftree.maxY() - miny + 150;
+      var miny = this.ftree.minY();
+      var heightFtree = this.ftree.maxY() - miny + 150;
       // if we can still resize the svg -> let's do it!
       var newSvgHeight = this.kgp.svgHeight;
       if (heightFtree < this.kgp.svgOriginalHeight) {
@@ -114,7 +116,7 @@ var FamilyTreeArtist = function () {
         this.kgp.svgHeight = newSvgHeight;
       }
       var scaleFactor = d3.min([1, this.kgp.svgWidth / widthFtree, this.kgp.svgHeight / heightFtree]);
-      var translateX = widthFtree < this.kgp.svgWidth - ftreeRightMargin / 2 ? this.kgp.svgWidth / 2 : scaleFactor * (ftree.width() / 2 + ftreeLeftMargin);
+      var translateX = widthFtree < this.kgp.svgWidth - ftreeRightMargin / 2 ? this.kgp.svgWidth / 2 : scaleFactor * (this.ftree.width() / 2 + ftreeLeftMargin);
 
       this.svgg.transition().duration(transitionsDuration).attr("transform", "translate(" + translateX + "," + scaleFactor * (80 - miny) + ") scale(" + scaleFactor + ")");
       // for tutorial videos, use these settings:
@@ -128,14 +130,16 @@ var FamilyTreeArtist = function () {
   }, {
     key: "updateLinks",
     value: function updateLinks(source, transitionsDuration) {
+      var _this = this;
+
       var self = this;
 
       // adds the links between the nodes
       var link = this.svgg.selectAll(".link");
 
-      // remove links whose source or target is no longer in ftree
+      // remove links whose source or target is no longer in this.ftree
       var keepLink = function keepLink(d) {
-        return Boolean(ftree.nodes[d[0].id]) && Boolean(ftree.nodes[d[1].id]);
+        return Boolean(_this.ftree.nodes[d[0].id]) && Boolean(_this.ftree.nodes[d[1].id]);
       };
       var linkExit = link.filter(function (d) {
         return !keepLink(d);
@@ -144,7 +148,7 @@ var FamilyTreeArtist = function () {
         return FamilyTreeArtist.renderLink(d[1], d[1]);
       }).remove();
 
-      link = link.filter(keepLink).data(ftree.getLinks(),
+      link = link.filter(keepLink).data(this.ftree.getLinks(),
       // add key function: make sure each ftree-link is assigned to the right svg-link-path
       function (d) {
         return d ? FamilyTreeArtist.linkNodeId(d[0].id, d[1].id) : this.id;
@@ -163,23 +167,25 @@ var FamilyTreeArtist = function () {
   }, {
     key: "updateNodes",
     value: function updateNodes(source, transitionsDuration) {
+      var _this2 = this;
+
       var self = this;
 
       // maps the node data to the tree layout
-      // let nodes = ftree.nodesArray()
+      // let nodes = this.ftree.nodesArray()
 
       // adds each node as a group
       var node = this.svgg.selectAll(".nodeg");
 
       // remove nodes whose d is no longer in ftree
       var keepNode = function keepNode(d) {
-        return Boolean(ftree.nodes[d.id]);
+        return Boolean(_this2.ftree.nodes[d.id]);
       };
       node.filter(function (d) {
         return !keepNode(d);
       }).remove();
 
-      node = node.filter(keepNode).data(ftree.nodesArray().filter(function (n) {
+      node = node.filter(keepNode).data(this.ftree.nodesArray().filter(function (n) {
         return !n.hidden;
       }));
       //disable action buttons during the transition
@@ -383,7 +389,7 @@ var FamilyTreeArtist = function () {
 
                   // can only add children/parents if tree not too deep
                   canAddChildren = node.depth < kgp.maxFamilyTreeDepth - 1;
-                  canAddParents = ftree.maxDepth < kgp.maxFamilyTreeDepth - 1 || node.depth != 0;
+                  canAddParents = self.ftree.maxDepth < kgp.maxFamilyTreeDepth - 1 || node.depth != 0;
                   canAddMother = (!node.famc || !node.famc.wife) && canAddParents;
                   canAddFather = (!node.famc || !node.famc.husb) && canAddParents;
                   spouseMissing = !node.fams || node.fams.length == 0 || !node.fams[0].husb || !node.fams[0].wife;
@@ -404,32 +410,32 @@ var FamilyTreeArtist = function () {
 
                   if (canAddMother) {
                     _addAddRelativeSpan("mother", function (d) {
-                      return ftree.addParent("", "F", d.id);
+                      return self.ftree.addParent("", "F", d.id);
                     }, true);
                   }
                   if (canAddFather) {
                     _addAddRelativeSpan("father", function (d) {
-                      return ftree.addParent("", "M", d.id);
+                      return self.ftree.addParent("", "M", d.id);
                     }, true);
                   }
                   if (spouseMissing & node.sex == "M") {
                     _addAddRelativeSpan("partner", function (d) {
-                      return ftree.addSpouse("", d.id);
+                      return self.ftree.addSpouse("", d.id);
                     }, true);
                   }
                   if (spouseMissing & node.sex == "F") {
                     _addAddRelativeSpan("partner", function (d) {
-                      return ftree.addSpouse("", d.id);
+                      return self.ftree.addSpouse("", d.id);
                     }, true);
                   }
                   if (canAddChildren) {
                     _addAddRelativeSpan("daughter", function (d) {
-                      return ftree.addChild("", "F", d.id, false);
+                      return self.ftree.addChild("", "F", d.id, false);
                     }, true);
                   }
                   if (canAddChildren) {
                     _addAddRelativeSpan("son", function (d) {
-                      return ftree.addChild("", "M", d.id, false);
+                      return self.ftree.addChild("", "M", d.id, false);
                     }, true);
                   }
 
@@ -451,9 +457,9 @@ var FamilyTreeArtist = function () {
 
       // ------------------------ remove node button ------------------------
       function removeNode(node) {
-        ftree.deleteNode(node.id, kgp.youNodeId);
+        self.ftree.deleteNode(node.id, kgp.youNodeId);
         self.nodeButtons.hide();
-        self.kgp.scoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+        self.kgp.scoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", self.ftree.getLinksAsIds(), self.ftree.nodesArray().filter(function (n) {
           return n.sequencedDNA;
         }).map(function (n) {
           return n.id;
@@ -475,7 +481,7 @@ var FamilyTreeArtist = function () {
         node.sequencedDNA = !node.sequencedDNA;
         toggleDnaButtonText(node);
         d3.select("#" + FamilyTreeArtist.nodeGroupId(node.id) + " .dna-logo").classed("invisible-dna", !node.sequencedDNA);
-        self.kgp.scoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", ftree.getLinksAsIds(), ftree.nodesArray().filter(function (n) {
+        self.kgp.scoreRequestHandler.requestScore(self.kgp.target ? kgp.target.id : "", self.ftree.getLinksAsIds(), self.ftree.nodesArray().filter(function (n) {
           return n.sequencedDNA;
         }).map(function (n) {
           return n.id;

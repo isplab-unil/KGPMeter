@@ -15,8 +15,6 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
 
 let kgp
 
-let ftree = 0
-
 
 // languageLoader and i18n object: Internationalisation
 let LANGUAGE_FILES_URL = "./i18n/"
