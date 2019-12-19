@@ -177,9 +177,6 @@ class SequencedFamilyTree(Hashable):
         # remove useless nodes and add back missing parents
         if minimize:
             added_parents = self._add_missing_parents()
-            print("logger: ", logger)
-            print("logger.log: ", logger.log)
-            logger.info("HUHU??")
             if logger: logger.info("Missing parents added upon start: %s", str(added_parents))
             removed_nodes = self._remove_target_independant_nodes()
             if logger: logger.info("Nodes removed because independant from target: %s", str(removed_nodes))
@@ -188,7 +185,6 @@ class SequencedFamilyTree(Hashable):
             # add missing parents, so that everybody has 2 parents
             added_parents = self._add_missing_parents()
             if logger: logger.info("Missing parents added to ensure everybody has 2 parents: %s", str(added_parents))
-            self._inference_network = False
 
         # create signature
         self.signature = hashlib.md5(self._signature(self.target).encode('ascii')).hexdigest()
@@ -315,7 +311,7 @@ class SequencedFamilyTree(Hashable):
         """
         Remove all nodes that are independent from target given sequenced nodes
         """
-        bayes_net = self.inference_network
+        bayes_net = self._create_inference_network()
         nodes_to_remove = set()
         sequenced_relatives = self.sequenced_relatives()
         for node in bayes_net.nodes():
