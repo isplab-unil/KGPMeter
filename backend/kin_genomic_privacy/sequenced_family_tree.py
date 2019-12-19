@@ -300,7 +300,7 @@ class SequencedFamilyTree(Hashable):
         self._set_family_node(node, family_node)
 
     def _create_inference_network(self) -> BayesianModel:
-        bayesian_network = BayesianModel(self.edges)
+        bayesian_network = BayesianModel(self.family_tree.edges)
         bayesian_network.add_node(self.target)
         for fn in self.family_nodes():
             if len(list(bayesian_network.successors(fn)))==0:
