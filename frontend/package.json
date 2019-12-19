@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "babel app/src -d app/ -watch & babel lib/src -d lib/ -watch",
-    "es6-build": "cp -r app/src/js app/ & cp -r lib/src/ lib/"
+    "build-es6": "watch -n 2 echo $(cp -r app/src/js app/ & cp -r lib/src/ lib/)"
   },
   "keywords": [],
   "author": "",
