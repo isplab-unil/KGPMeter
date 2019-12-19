@@ -226,8 +226,9 @@ class SequencedFamilyTree(Hashable):
         For a unique signature, use SequencedFamilyTree.signature
         :return: a string faithfully representing the minimal tree of this SequencedFamilyTree.
         """
+        edges = [e for e in self.edges]
         serialization = {
-            "family_tree_edges": self.edges,
+            "family_tree_edges": edges,
             "sequenced_relatives": self.sequenced_relatives(),
             "target": self.target,
             "family_nodes": self.family_nodes()
