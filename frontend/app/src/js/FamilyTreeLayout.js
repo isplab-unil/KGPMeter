@@ -1,6 +1,6 @@
-"use strict";
+import {FamilyTree} from "./FamilyTree.js"
 
-class FamilyTreeLayout extends FamilyTree{
+export class FamilyTreeLayout extends FamilyTree{
   constructor(nodes, centerNodeId){
     super(nodes)
     // if no centerNodeId, set it as the first family with 2 spouses

@@ -1,9 +1,15 @@
-"use strict";
+import {FamilyTreeLayout} from "./FamilyTreeLayout.js"
+import {FamilyTreeArtist} from "./FamilyTreeArtist.js"
+import {KgpMeterScoreRequestHandler} from "./KgpMeterScoreRequestHandler.js"
+import {KgpSurvey} from "./KgpSurvey.js"
+import {PrivacyBackendStatus} from "./PrivacyBackendStatus.js"
+import {PrivacyScoreNumberExplainer} from "./PrivacyScoreNumberExplainer.js"
+import {PrivacyWordedScore} from "./PrivacyWordedScore.js"
+import {PrivacyBar} from "./PrivacyBar.js"
+import {TrashButton} from "./TrashButton.js"
+import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
 
-
-
-
-class KinGenomicPrivacyMeter{
+export class KinGenomicPrivacyMeter{
   constructor(api_base_url, svgId, youNodeId, i18n, maxFamilyTreeDepth=5, cookieLocalStoragePrefix="kgpmeter-"){
     let self = this
     this.i18n = i18n
@@ -122,7 +128,7 @@ class KinGenomicPrivacyMeter{
       this.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
     }
 
-    this.familyTreeArtist = new FamilyTreeArtist(this, i18n,0)
+    this.familyTreeArtist = new FamilyTreeArtist(this, this.i18n,0)
 
     if(this.target){
       this.selectTarget(this.target, true)
@@ -131,7 +137,7 @@ class KinGenomicPrivacyMeter{
       this.scoreRequestHandler.requestScore(
         self.target?self.target.id:"",
         this.ftree.getLinksAsIds(), this.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
-        self.userId, self.userSource, i18n.lng
+        self.userId, self.userSource, this.i18n.lng
       )
     }
     this.mobileBlock()
@@ -205,7 +211,7 @@ class KinGenomicPrivacyMeter{
       this.scoreRequestHandler.requestScore(
         self.target?self.target.id:"",
         this.ftree.getLinksAsIds(), this.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
-        self.userId, self.userSource, i18n.lng
+        self.userId, self.userSource, self.i18n.lng
       )
       self.saveFamilyTreeToLocalStorage()
     }

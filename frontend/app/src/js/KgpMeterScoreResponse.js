@@ -1,7 +1,6 @@
-"use strict";
 
 
-class KgpMeterScoreResponse{
+export class KgpMeterScoreResponse{
   constructor(status, timestamp_js, request, tree_signature, extras=null){
     this.status = status
     this.timestamp_js = timestamp_js
@@ -40,7 +39,7 @@ class KgpMeterScoreResponse{
 }
 
 
-class KgpMeterScoreSuccess extends KgpMeterScoreResponse{
+export class KgpMeterScoreSuccess extends KgpMeterScoreResponse{
   constructor(timestamp_js, request, tree_signature, privacy_metric, cached, execution_time, extras=null){
     super("OK", timestamp_js, request, tree_signature, extras)
     this.result = {
@@ -53,7 +52,7 @@ class KgpMeterScoreSuccess extends KgpMeterScoreResponse{
 }
 
 
-class KgpMeterScoreError extends KgpMeterScoreResponse{
+export class KgpMeterScoreError extends KgpMeterScoreResponse{
   constructor(timestamp_js, request, tree_signature, code, extras=null){
     super("error", timestamp_js, request, tree_signature, extras)
     this.code = code
@@ -61,7 +60,7 @@ class KgpMeterScoreError extends KgpMeterScoreResponse{
 }
 
 
-class KgpMeterScoreStale extends KgpMeterScoreResponse{
+export class KgpMeterScoreStale extends KgpMeterScoreResponse{
   constructor(kgpResp){
     super("stale", kgpResp.timestamp_js, kgpResp.request, kgpResp.tree_signature, kgpResp.extras)
     this.staleResp = kgpResp

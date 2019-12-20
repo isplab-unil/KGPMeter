@@ -1,16 +1,13 @@
-"use strict";
-
-
-let standardNodeButtons = ["add-relative", "remove-node", "toggle-dna", "set-as-target"]
-let targetNodeButtons = [ "add-relative"]
-let youNodeButtons = ["add-relative", "change-sex", "toggle-dna", "set-as-target"]
-let youTargetNodeButtons = ["add-relative", "change-sex"]
+export let standardNodeButtons = ["add-relative", "remove-node", "toggle-dna", "set-as-target"]
+export let targetNodeButtons = [ "add-relative"]
+export let youNodeButtons = ["add-relative", "change-sex", "toggle-dna", "set-as-target"]
+export let youTargetNodeButtons = ["add-relative", "change-sex"]
 
 /**
  * Singleton class to handle buttons for a given node
  *
  */
-class NodeButtonsGroup{
+export class NodeButtonsGroup{
   /**
    *
    * @param {d3-selection} motherGroup a d3-selection containing the <g> group where the tree will be drawn (=familyTreeArtist.svgg)
@@ -83,7 +80,7 @@ class NodeButtonsGroup{
    * @param {int} tooltipHeight  tooltip svg <text> tag height (most often 45)
    * @param {string} i18nKey the i18n key of the text for the tooltip
    */
-  addButton(buttonName,x,y, FAunicode, tooltipWidth, tooltipHeight,i18nKey, options={}){
+  addButton(buttonName,x,y, FAunicode, tooltipWidth, tooltipHeight, i18n, i18nKey, options={}){
     let defaultSettings = {
       FAx:-13, FAy:6, tooltipx:24,tooltipy:-22
     }

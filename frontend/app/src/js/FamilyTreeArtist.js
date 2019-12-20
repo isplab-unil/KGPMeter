@@ -1,6 +1,9 @@
-"use strict";
 
-class FamilyTreeArtist{
+
+
+import {NodeButtonsGroup, standardNodeButtons, targetNodeButtons, youNodeButtons, youTargetNodeButtons} from "./NodeButtonsGroup.js"
+
+export class FamilyTreeArtist{
   constructor(kgp, i18n, transitionDuration=800){
     this.kgp = kgp
     this.ftree = this.kgp.ftree
@@ -300,18 +303,18 @@ class FamilyTreeArtist{
   
     // ------------------------ remove node button ------------------------
     function removeNode(node){
-      self.ftree.deleteNode(node.id,kgp.youNodeId)
+      self.ftree.deleteNode(node.id, self.kgp.youNodeId)
       self.nodeButtons.hide()
       self.kgp.scoreRequestHandler.requestScore(
-        self.kgp.target?kgp.target.id:"",
+        self.kgp.target? self.kgp.target.id:"",
         self.ftree.getLinksAsIds(), self.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
-        self.kgp.userId, self.kgp.userSource, i18n.lng
+        self.kgp.userId, self.kgp.userSource, self.i18n.lng
       )
       self.update()
       self.kgp.saveFamilyTreeToLocalStorage()
     }
   
-    self.nodeButtons.addButton("remove-node",25,-50, "\uf506", "80px","50px", "hint-delete-node")
+    self.nodeButtons.addButton("remove-node",25,-50, "\uf506", "80px","50px", self.i18n, "hint-delete-node")
         .on("click.remove",removeNode)
   
   
@@ -327,20 +330,20 @@ class FamilyTreeArtist{
       toggleDnaButtonText(node)
       d3.select("#"+FamilyTreeArtist.nodeGroupId(node.id)+" .dna-logo").classed("invisible-dna", !node.sequencedDNA)
       self.kgp.scoreRequestHandler.requestScore(
-        self.kgp.target?kgp.target.id:"",
+        self.kgp.target? self.kgp.target.id:"",
         self.ftree.getLinksAsIds(), self.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
-        self.kgp.userId, self.kgp.userSource, i18n.lng)
+        self.kgp.userId, self.kgp.userSource, self.i18n.lng)
         self.kgp.saveFamilyTreeToLocalStorage()
   
     }
-    let toggleDNAbutton = self.nodeButtons.addButton("toggle-dna",25,50, "\uf471+", "170px", "70px", "hint-sequence-node")
+    let toggleDNAbutton = self.nodeButtons.addButton("toggle-dna",25,50, "\uf471+", "170px", "70px", self.i18n, "hint-sequence-node")
         .on("click.sequenced-dna",toggleDNA)
     self.nodeButtons.onWakeCallbacks.push(toggleDnaButtonText)
   
     // ------------------------ set as target button ------------------------
   
     self.nodeButtons.addButton("set-as-target",-50,0, "\uf05b",
-      "120px", "45px",
+      "120px", "45px", self.i18n, 
       "change-target", {
         FAx:-10, FAy:7,
         tooltipx:"-144px",
@@ -350,7 +353,7 @@ class FamilyTreeArtist{
   
     // ------------------------ add relatives button ------------------------
     let addRelativeButton = self.nodeButtons.addButton("add-relative",50,0, "\uf234",
-      0, 0,
+      0, 0, self.i18n, 
       undefined, {
         FAx:-10, FAy:6,
         tooltipx:0, tooltipy:0,
@@ -363,8 +366,8 @@ class FamilyTreeArtist{
       removeAddRelativeMenu()
   
       // can only add children/parents if tree not too deep
-      let canAddChildren = node.depth<kgp.maxFamilyTreeDepth-1
-      let canAddParents = (self.ftree.maxDepth<kgp.maxFamilyTreeDepth-1 || node.depth!=0)
+      let canAddChildren = node.depth<self.kgp.maxFamilyTreeDepth-1
+      let canAddParents = (self.ftree.maxDepth<self.kgp.maxFamilyTreeDepth-1 || node.depth!=0)
   
       let canAddMother = (!node.famc || !node.famc.wife) && canAddParents
       let canAddFather = (!node.famc || !node.famc.husb) && canAddParents
@@ -398,7 +401,7 @@ class FamilyTreeArtist{
   
       function _addAddRelativeSpan(relative, addRelative){
         addRelativeDiv.append("span")
-            .attr(i18n.keyAttr,"node-name-"+relative)
+            .attr(self.i18n.keyAttr,"node-name-"+relative)
             .on("click",function(node){
               let relativeNode = addRelative(node)
               relativeNode.i18nName = self.kgp.relationToYou(node.i18nName,relative)
@@ -459,7 +462,7 @@ class FamilyTreeArtist{
       }
       self.kgp.saveFamilyTreeToLocalStorage()
     }
-    self.nodeButtons.addButton("change-sex", -25, 50, "\uf228", 80, 45, "hint-change-sex",
+    self.nodeButtons.addButton("change-sex", -25, 50, "\uf228", 80, 45, self.i18n, "hint-change-sex",
       {
         FAx:-10, FAy:6,
         tooltipx:-104,

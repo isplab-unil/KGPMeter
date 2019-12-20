@@ -1,8 +1,7 @@
-"use strict";
 
 
 
-class PrivacyBar{
+export class PrivacyBar{
   constructor(
     parentId,
     id,

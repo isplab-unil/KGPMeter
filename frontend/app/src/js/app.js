@@ -1,4 +1,6 @@
-"use strict";
+
+import {KinGenomicPrivacyMeter} from "./KinGenomicPrivacyMeter.js"
+import {Internationalisation} from "./lib/i18n.js"
 
 
 

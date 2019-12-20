@@ -1,7 +1,7 @@
-"use strict";
 
 
-class PrivacyBackendStatus{
+
+export class PrivacyBackendStatus{
   constructor(parentId, i18n){
     this.parentId = parentId
     this.i18n = i18n
@@ -70,7 +70,7 @@ class PrivacyBackendStatus{
   displayMessage(type, messageKey, timeout){
     this.hide()
     this.element.addClass("alert-"+type)
-    this.content.attr(i18n.keyAttr,messageKey)
+    this.content.attr(this.i18n.keyAttr,messageKey)
     this.element.stop(true).slideDown(500).fadeTo(timeout, 500).slideUp(500)
   }
 
@@ -97,7 +97,7 @@ class PrivacyBackendStatus{
   displaySuccess(score, time, cached, similar, timeout=5000){
     this.hide()
     this.element.addClass("alert-success")
-    this.content.attr(i18n.keyAttr,"response-success")
+    this.content.attr(this.i18n.keyAttr,"response-success")
     this.i18n.data("response-success",{
       time:time.toFixed(2),
       cached:cached,

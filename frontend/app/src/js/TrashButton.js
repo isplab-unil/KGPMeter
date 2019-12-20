@@ -1,6 +1,7 @@
-"use strict";
 
-class TrashButton{
+
+
+export class TrashButton{
   constructor(domId, kgp, listeners = {}){
     this.domId = domId
     this.kgp = kgp

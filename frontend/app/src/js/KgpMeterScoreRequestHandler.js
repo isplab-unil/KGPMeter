@@ -1,8 +1,6 @@
-"use strict";
+import {KgpMeterScoreResponse, KgpMeterScoreSuccess, KgpMeterScoreError, KgpMeterScoreStale} from "./KgpMeterScoreResponse.js"
 
-
-
-class KgpMeterScoreRequestHandler{
+export class KgpMeterScoreRequestHandler{
   constructor(api_endpoint){
     this.api_endpoint = api_endpoint
     this.lastRequest = {}
@@ -94,7 +92,7 @@ callbacksAwait(kgpPromise, request, previousResponse){
 
 
 /** Creates the request that'll be sent to the KgpMeter server, with instant timestamp */
-class KgpMeterScoreRequest{
+export class KgpMeterScoreRequest{
   constructor(target_id, familyTreeEdges, familyTreeSequencedRelatives, user_id, user_source, lng){
     let timestamp_js = +new Date()
     this.timestamp_js = timestamp_js

@@ -1,6 +1,7 @@
-"use strict";
 
-class PrivacyWordedScore{
+
+
+export class PrivacyWordedScore{
   constructor(
     parentId,
     id,
@@ -44,7 +45,7 @@ class PrivacyWordedScore{
         .range([self.height,0])
         .domain([0,1])
 
-    this.i18n.dynamic[self.i18nKey] = this.i18nFormat
+    this.i18n.dynamic[self.i18nKey] = (t,d)=>self.i18nFormat(t,d)
     this.hide(0)
   }
 
@@ -92,7 +93,7 @@ class PrivacyWordedScore{
   }
 
   async i18nFormat(text, data){
-    let qualifier = await i18n.t("privacy-bar-score-"+data)
+    let qualifier = await this.i18n.t("privacy-bar-score-"+data)
     return text.replace("{}", qualifier? qualifier : "...")
   }
 }

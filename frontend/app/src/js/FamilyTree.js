@@ -1,7 +1,4 @@
-"use strict";
-
-
-class FamilyTree{
+export class FamilyTree{
   constructor(nodes){
     this.nodes= nodes
     

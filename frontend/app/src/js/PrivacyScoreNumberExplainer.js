@@ -1,7 +1,7 @@
-"use strict";
 
 
-class PrivacyScoreNumberExplainer{
+
+export class PrivacyScoreNumberExplainer{
   constructor(parentId, i18n, i18nKey){
     this.parentId = parentId
     this.i18n = i18n
