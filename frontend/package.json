@@ -5,14 +5,19 @@
   "main": "index.js",
   "scripts": {
     "build": "babel app/src -d app/ -watch & babel lib/src -d lib/ -watch",
-    "build-es6": "watch -n 2 \"cp -r app/src/js app/ & cp -r lib/src/ lib/\""
+    "build-es6": "watch -n 2 \"cp -r app/src/js app/ & cp -r lib/src/ lib/\"",
+    "webpack": "webpack --config webpack.config.js --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0"
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
