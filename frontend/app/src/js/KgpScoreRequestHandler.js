@@ -1,11 +1,11 @@
-import {KgpMeterScoreResponse, KgpMeterScoreSuccess, KgpMeterScoreError, KgpMeterScoreStale} from "./KgpMeterScoreResponse.js"
+import {KgpScoreResponse, KgpScoreSuccess, KgpScoreError, KgpScoreStale} from "./KgpScoreResponse.js"
 
-export class KgpMeterScoreRequestHandler{
+export class KgpScoreRequestHandler{
   constructor(api_endpoint){
     this.api_endpoint = api_endpoint
     this.lastRequest = {}
     // necessary dummy
-    this.latestResponse = new KgpMeterScoreSuccess(-1, {}, "", 1.0001, 0, 0, 0)
+    this.latestResponse = new KgpScoreSuccess(-1, {}, "", 1.0001, 0, 0, 0)
     this.listeners = []
     this.callbacks = {
       start:[],
@@ -35,7 +35,7 @@ export class KgpMeterScoreRequestHandler{
 
   requestScore(target_id, familyTreeEdges, familyTreeSequencedRelatives, user_id, user_source, lng, silent=false){
     let self = this
-    let currentRequest = new KgpMeterScoreRequest(
+    let currentRequest = new KgpScoreRequest(
       target_id,
       familyTreeEdges, familyTreeSequencedRelatives,
       user_id, user_source, lng
@@ -49,13 +49,13 @@ export class KgpMeterScoreRequestHandler{
     })
     .then(resp=>resp.json())
     // handle connexion error
-    .catch( () => Promise.reject(new KgpMeterScoreError(currentRequest.timestamp_js, currentRequest, null, 5, {"message":'Erreur de connexion au serveur.'})))
+    .catch( () => Promise.reject(new KgpScoreError(currentRequest.timestamp_js, currentRequest, null, 5, {"message":'Erreur de connexion au serveur.'})))
     // parse response
     .then(json=>{
-      let kgpr = KgpMeterScoreResponse.parse(json, currentRequest)
+      let kgpr = KgpScoreResponse.parse(json, currentRequest)
       // check if it's stale or not
       if(kgpr.timestamp_js!=self.lastRequest.timestamp_js){
-        return Promise.reject(new KgpMeterScoreStale(kgpr))
+        return Promise.reject(new KgpScoreStale(kgpr))
       }
       // if it's an error -> reject
       if(kgpr.status=="error"){
@@ -91,8 +91,8 @@ callbacksAwait(kgpPromise, request, previousResponse){
 }
 
 
-/** Creates the request that'll be sent to the KgpMeter server, with instant timestamp */
-export class KgpMeterScoreRequest{
+/** Creates the request that'll be sent to the Kgp server, with instant timestamp */
+export class KgpScoreRequest{
   constructor(target_id, familyTreeEdges, familyTreeSequencedRelatives, user_id, user_source, lng){
     let timestamp_js = +new Date()
     this.timestamp_js = timestamp_js

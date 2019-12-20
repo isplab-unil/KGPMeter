@@ -1,7 +1,7 @@
 
 
 
-export class PrivacyWordedScore{
+export class KgpWordedScore{
   constructor(
     parentId,
     id,
@@ -53,7 +53,7 @@ export class PrivacyWordedScore{
     this.text.transition(transitionDuration).attr("opacity",0)
   }
 
-  /** update() updates the PrivacyWordedScore with a new score */
+  /** update() updates the KgpWordedScore with a new score */
   update(privacyMeasure, transitionDuration = 3000){
     let self = this
     //TODO: use a proper instance nbBoxes...
@@ -81,7 +81,7 @@ export class PrivacyWordedScore{
     }*/
   }
 
-  /** await() puts the PrivacyWordedScore in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
+  /** await() puts the KgpWordedScore in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
   await(kgpPromise, request, previousResponse){
     if(this.text.attr("opacity")==1){
       this.text.transition(200).attr("opacity",0.5)

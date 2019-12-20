@@ -1,11 +1,11 @@
 import {FamilyTreeLayout} from "./FamilyTreeLayout.js"
 import {FamilyTreeArtist} from "./FamilyTreeArtist.js"
-import {KgpMeterScoreRequestHandler} from "./KgpMeterScoreRequestHandler.js"
+import {KgpScoreRequestHandler} from "./KgpScoreRequestHandler.js"
 import {KgpSurvey} from "./KgpSurvey.js"
-import {PrivacyBackendStatus} from "./PrivacyBackendStatus.js"
-import {PrivacyScoreNumberExplainer} from "./PrivacyScoreNumberExplainer.js"
-import {PrivacyWordedScore} from "./PrivacyWordedScore.js"
-import {PrivacyBar} from "./PrivacyBar.js"
+import {KgpBackendStatus} from "./KgpBackendStatus.js"
+import {KgpScoreNumberExplainer} from "./KgpScoreNumberExplainer.js"
+import {KgpWordedScore} from "./KgpWordedScore.js"
+import {KgpPrivacyBar} from "./KgpPrivacyBar.js"
 import {TrashButton} from "./TrashButton.js"
 import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
 
@@ -57,7 +57,7 @@ export class KinGenomicPrivacyMeter{
     // privacy bar
     let privacyBarWidth = 30
     let privacyBarStrokeWidth = 4
-    this.privacyBar = new PrivacyBar(
+    this.privacyBar = new KgpPrivacyBar(
       this.svg.attr("id"),
       "privacy-bar-g",
       this.svgWidth - privacyBarWidth - privacyBarStrokeWidth, 30, 
@@ -67,7 +67,7 @@ export class KinGenomicPrivacyMeter{
     )
 
     // privacy worded score
-    this.privacyWordedScore = new PrivacyWordedScore(
+    this.privacyWordedScore = new KgpWordedScore(
       this.privacyBar.g.attr("id"),
       "privacy-bar-title",
       "privacy-bar-element", 
@@ -78,13 +78,13 @@ export class KinGenomicPrivacyMeter{
     )
 
     // backend status
-    this.privacyBackendStatus = new PrivacyBackendStatus("kgp-response-container", self.i18n)
+    this.backendStatus = new KgpBackendStatus("kgp-response-container", self.i18n)
 
     // explainer
-    this.privacyScoreNumberExplainer = new PrivacyScoreNumberExplainer("kgp-explainer-container", self.i18n, "explainer-text")
+    this.scoreNumberExplainer = new KgpScoreNumberExplainer("kgp-explainer-container", self.i18n, "explainer-text")
 
     // request handler
-    this.scoreRequestHandler = new KgpMeterScoreRequestHandler(this.privacyScoreApiEndpoint)
+    this.scoreRequestHandler = new KgpScoreRequestHandler(this.privacyScoreApiEndpoint)
     // update privacyMetric
     this.scoreRequestHandler.addListener(kgpPromise => {
       kgpPromise.then(
@@ -102,8 +102,8 @@ export class KinGenomicPrivacyMeter{
     // ...other listeners
     this.scoreRequestHandler.addListener((...args) => self.privacyBar.await(...args))
     this.scoreRequestHandler.addListener((...args) => self.privacyWordedScore.await(...args))
-    this.scoreRequestHandler.addListener((...args) => self.privacyBackendStatus.await(...args))
-    this.scoreRequestHandler.addListener((...args) => self.privacyScoreNumberExplainer.await(...args))
+    this.scoreRequestHandler.addListener((...args) => self.backendStatus.await(...args))
+    this.scoreRequestHandler.addListener((...args) => self.scoreNumberExplainer.await(...args))
     this.scoreRequestHandler.addListener((...args) => self.kgpsurvey.await(...args))
     
     // new user: send init request
@@ -146,7 +146,6 @@ export class KinGenomicPrivacyMeter{
 
   /** Resets the family tree in a pleasant way */
   reset(transitionDuration=800){
-    console.log("KgpMeter.reset(): transitionDuration=",transitionDuration)
     
     let self = this
     // delete all nodes except you
@@ -160,9 +159,9 @@ export class KinGenomicPrivacyMeter{
     self.target = null
     this.privacyBar.elements.transition(200).attr("opacity",1)
     this.privacyBar.update(1)
-    this.privacyBackendStatus.hide()
+    this.backendStatus.hide()
     this.privacyWordedScore.hide()
-    this.privacyScoreNumberExplainer.hide()
+    this.scoreNumberExplainer.hide()
 
     // smoothly transition back to original position
     this.familyTreeArtist.update(false, transitionDuration)
@@ -304,7 +303,7 @@ export class KinGenomicPrivacyMeter{
           .attr("fill","white")
           .attr("opacity","0.8")
 
-      this.privacyBackendStatus.displayDanger("IE-block-error",10000000000)
+      this.backendStatus.displayDanger("IE-block-error",10000000000)
     }
   }
 
@@ -326,7 +325,7 @@ export class KinGenomicPrivacyMeter{
           .attr("style","max:width:100%;")
           .attr("data-i18n","mobile-block")
       
-      this.privacyBackendStatus.displayDanger("mobile-block",10000000000)
+      this.backendStatus.displayDanger("mobile-block",10000000000)
     }
   }
 

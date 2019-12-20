@@ -1,7 +1,7 @@
 
 
 
-export class PrivacyBar{
+export class KgpPrivacyBar{
   constructor(
     parentId,
     id,
@@ -93,7 +93,7 @@ export class PrivacyBar{
     this.update(1, transitionDuration)
   }
 
-  /** update() updates the PrivacyBar with a new score */
+  /** update() updates the KgpPrivacyBar with a new score */
   update(privacyMeasure, transitionDuration=500){
     this.privacyStatus = privacyMeasure
     let transition = d3.transition().duration(transitionDuration).ease(function(t){return d3.easeBackOut(t,0.8)})
@@ -114,7 +114,7 @@ export class PrivacyBar{
     }
   }
 
-  /** await() puts the PrivacyBar in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
+  /** await() puts the KgpPrivacyBar in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
   await(kgpPromise, request, previousResponse){
     this.elements.transition(200).attr("opacity",0.5)
     kgpPromise.then(kgpSuccess=>{

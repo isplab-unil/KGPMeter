@@ -1,6 +1,6 @@
 
 
-export class KgpMeterScoreResponse{
+export class KgpScoreResponse{
   constructor(status, timestamp_js, request, tree_signature, extras=null){
     this.status = status
     this.timestamp_js = timestamp_js
@@ -9,11 +9,11 @@ export class KgpMeterScoreResponse{
     this.extras = extras
   }
   static parseJSON(json, request){
-    return KgpMeterScoreResponse.parse(JSON.parse(json), request)
+    return KgpScoreResponse.parse(JSON.parse(json), request)
   }
   static parse(raw, request){
     if(raw.status=="OK"){
-      return new KgpMeterScoreSuccess(
+      return new KgpScoreSuccess(
         raw.timestamp_js,
         request,
         raw.tree_signature,
@@ -24,7 +24,7 @@ export class KgpMeterScoreResponse{
       )
     }
     else if(raw.status=="error"){
-      return new KgpMeterScoreError(
+      return new KgpScoreError(
         raw.timestamp_js,
         request,
         raw.tree_signature,
@@ -33,13 +33,13 @@ export class KgpMeterScoreResponse{
       )
     }
     else{
-      throw new Error({"msg":"KgpMeterScoreResponse.parse(): argument raw is not a parsable KgpMeterScoreResponse.", "raw":raw})
+      throw new Error({"msg":"KgpScoreResponse.parse(): argument raw is not a parsable KgpScoreResponse.", "raw":raw})
     }
   }
 }
 
 
-export class KgpMeterScoreSuccess extends KgpMeterScoreResponse{
+export class KgpScoreSuccess extends KgpScoreResponse{
   constructor(timestamp_js, request, tree_signature, privacy_metric, cached, execution_time, extras=null){
     super("OK", timestamp_js, request, tree_signature, extras)
     this.result = {
@@ -52,7 +52,7 @@ export class KgpMeterScoreSuccess extends KgpMeterScoreResponse{
 }
 
 
-export class KgpMeterScoreError extends KgpMeterScoreResponse{
+export class KgpScoreError extends KgpScoreResponse{
   constructor(timestamp_js, request, tree_signature, code, extras=null){
     super("error", timestamp_js, request, tree_signature, extras)
     this.code = code
@@ -60,7 +60,7 @@ export class KgpMeterScoreError extends KgpMeterScoreResponse{
 }
 
 
-export class KgpMeterScoreStale extends KgpMeterScoreResponse{
+export class KgpScoreStale extends KgpScoreResponse{
   constructor(kgpResp){
     super("stale", kgpResp.timestamp_js, kgpResp.request, kgpResp.tree_signature, kgpResp.extras)
     this.staleResp = kgpResp

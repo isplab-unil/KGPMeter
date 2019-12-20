@@ -1,7 +1,7 @@
 
 
 
-export class PrivacyScoreNumberExplainer{
+export class KgpScoreNumberExplainer{
   constructor(parentId, i18n, i18nKey){
     this.parentId = parentId
     this.i18n = i18n
@@ -34,7 +34,7 @@ export class PrivacyScoreNumberExplainer{
     $("#"+this.parentId+" .alert").stop(true).slideDown(transitionDuration)//.fadeTo(5000, 500).slideUp(500)
   }
 
-  /** await() puts the PrivacyWordedScore in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
+  /** await() puts the KgpWordedScore in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
   await(kgpPromise, request, previousResponse){
     kgpPromise.then(kgpSuccess=>{
       this.update(kgpSuccess.result.privacy_metric)

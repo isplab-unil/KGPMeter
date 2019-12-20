@@ -1,7 +1,7 @@
 
 
 
-export class PrivacyBackendStatus{
+export class KgpBackendStatus{
   constructor(parentId, i18n){
     this.parentId = parentId
     this.i18n = i18n
@@ -23,7 +23,7 @@ export class PrivacyBackendStatus{
     this.i18n.dynamic["response-success"] = this.i18nFormatSuccessMessage
   }
 
-  /** await() puts the PrivacyBackendStatus in a waiting state and updates it properly once the promise has fulfilled */
+  /** await() puts the KgpBackendStatus in a waiting state and updates it properly once the promise has fulfilled */
   await(kgpPromise, request, previousResponse){
     let self = this
     this.displayOngoing()
