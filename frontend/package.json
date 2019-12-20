@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "babel app/src -d app/ -watch & babel lib/src -d lib/ -watch",
     "build-es6": "watch -n 2 \"cp -r app/src/js app/ & cp -r lib/src/ lib/\"",
-    "webpack": "webpack --config webpack.config.js --watch"
+    "build": "webpack --config webpack.config.js --watch"
   },
   "keywords": [],
   "author": "",
