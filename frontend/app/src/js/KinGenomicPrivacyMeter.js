@@ -1,3 +1,4 @@
+import {cookie} from "./lib/cookies.js"
 import {FamilyTreeLayout} from "./FamilyTreeLayout.js"
 import {FamilyTreeArtist} from "./FamilyTreeArtist.js"
 import {KgpScoreRequestHandler} from "./KgpScoreRequestHandler.js"

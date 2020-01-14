@@ -1,6 +1,7 @@
 
 import {KinGenomicPrivacyMeter} from "./KinGenomicPrivacyMeter.js"
 import {Internationalisation} from "./lib/i18n.js"
+import {cookie} from "./lib/cookies.js"
 
 
 

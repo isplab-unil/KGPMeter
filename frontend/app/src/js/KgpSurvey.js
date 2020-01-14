@@ -1,4 +1,4 @@
-"use strict";
+import {cookie} from "./lib/cookies.js"
 
 export class KgpSurvey{
   constructor(api_endpoint, userId, i18n, launchWaitTimeBasis=60, launchWaitTimePoissonMean=90, launchWaitTimeMax = 300){

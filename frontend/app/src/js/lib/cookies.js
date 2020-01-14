@@ -1,6 +1,4 @@
-"use strict";
-
-let cookie = {
+export let cookie = {
   create: function createCookie(name, value, days) {
     var expires;
 
