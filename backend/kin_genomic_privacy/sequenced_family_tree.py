@@ -188,8 +188,7 @@ class SequencedFamilyTree(Hashable):
 
         # create signature
         self._signature_visited_nodes = None
-        #self.signature = hashlib.md5(self._signature(self.target).encode('ascii')).hexdigest()
-        self.signature = self._signature(self.target)
+        self.signature = hashlib.md5(self._signature(self.target).encode('ascii')).hexdigest()
 
         if self.signature not in SequencedFamilyTree._cache:
             SequencedFamilyTree._cache[self.signature] = {}
@@ -358,17 +357,7 @@ class SequencedFamilyTree(Hashable):
                 self.family_tree.add_edge(new_parent, fn)
         return added_parents
 
-    def _signature(self, root, origin=None):
-        """Recursive function creating a unique signature corresponding to this SequencedFamilyTree.
-
-        :return: a string uniquely representing this tree
-        """
-        preds = sorted([self._signature(n, root) for n in self.family_tree.predecessors(root) if origin is None or n != origin])
-        succs = sorted([self._signature(n, root) for n in self.family_tree.successors(root) if origin is None or n != origin])
-        seq = self.is_sequenced(root)
-        return 'N(%s|%s|%s)' % (str(seq), ','.join(preds), ','.join(succs))
-
-    def _signature__NEW(self, root):
+    def _signature(self, root):
         """Recursive function creating a unique signature corresponding to this SequencedFamilyTree.
 
         :return: a string uniquely representing this tree
