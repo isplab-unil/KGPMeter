@@ -69,7 +69,10 @@ body{
 
 #kgp-explainer-container{
 height: 5em;
+max-width: 650px;
 text-align: justify;
+margin-left:auto;
+margin-right:auto;
 }
 
 #kgp-explainer-container .fa-lightbulb{
