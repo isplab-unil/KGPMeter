@@ -49,9 +49,7 @@ export class KinGenomicPrivacyMeter{
     }
 
     // api urls
-    this.api_base_url = api_base_url
-    this.privacyScoreApiEndpoint = this.api_base_url+"/privacy-score"
-    this.surveyApiEndpoint = this.api_base_url+"/survey"
+    this.setApiUrl(api_base_url)
 
     this.kgpsurvey = new KgpSurvey(this.surveyApiEndpoint, this.userId, this.i18n)
 
@@ -215,6 +213,12 @@ export class KinGenomicPrivacyMeter{
       )
       self.saveFamilyTreeToLocalStorage()
     }
+  }
+
+  setApiUrl(api_base_url){
+    this.api_base_url = api_base_url
+    this.privacyScoreApiEndpoint = this.api_base_url+"/privacy-score"
+    this.surveyApiEndpoint = this.api_base_url+"/survey"
   }
 
   /** Update the svg width, called on window resizes */
