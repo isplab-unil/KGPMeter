@@ -2,7 +2,6 @@ import {cookie} from "./lib/cookies.js"
 import {FamilyTreeLayout} from "./FamilyTreeLayout.js"
 import {FamilyTreeArtist} from "./FamilyTreeArtist.js"
 import {KgpScoreRequestHandler} from "./KgpScoreRequestHandler.js"
-import {KgpSurvey} from "./KgpSurvey.js"
 import {KgpBackendStatus} from "./KgpBackendStatus.js"
 import {KgpScoreNumberExplainer} from "./KgpScoreNumberExplainer.js"
 import {KgpWordedScore} from "./KgpWordedScore.js"
@@ -51,7 +50,6 @@ export class KinGenomicPrivacyMeter{
     // api urls
     this.setApiUrl(api_base_url)
 
-    this.kgpsurvey = new KgpSurvey(this.surveyApiEndpoint, this.userId, this.i18n)
 
     // privacy bar
     let privacyBarWidth = 30
@@ -103,7 +101,6 @@ export class KinGenomicPrivacyMeter{
     this.scoreRequestHandler.addListener((...args) => self.privacyWordedScore.await(...args))
     this.scoreRequestHandler.addListener((...args) => self.backendStatus.await(...args))
     this.scoreRequestHandler.addListener((...args) => self.scoreNumberExplainer.await(...args))
-    this.scoreRequestHandler.addListener((...args) => self.kgpsurvey.await(...args))
     
     // new user: send init request
     if(new_user){
@@ -218,7 +215,6 @@ export class KinGenomicPrivacyMeter{
   setApiUrl(api_base_url){
     this.api_base_url = api_base_url
     this.privacyScoreApiEndpoint = this.api_base_url+"/privacy-score"
-    this.surveyApiEndpoint = this.api_base_url+"/survey"
   }
 
   /** Update the svg width, called on window resizes */
