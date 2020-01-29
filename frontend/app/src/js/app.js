@@ -16,8 +16,6 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
   };
 }
 
-let kgp
-
 
 // languageLoader and i18n object: Internationalisation
 async function languageLoader(lng){
@@ -48,7 +46,7 @@ i18n.observe(document)
 
 
 //constructor(api_base_url, svgId, youNodeId, i18n, maxFamilyTreeDepth=5, cookieLocalStoragePrefix="kgpmeter-"){
-kgp = new KinGenomicPrivacyMeter(
+let kgp = new KinGenomicPrivacyMeter(
   "",
   "svg-kin-genomics-privacy-app",
   "@I1@",
