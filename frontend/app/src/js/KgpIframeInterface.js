@@ -2,7 +2,7 @@ import {cookie} from "./lib/cookies.js"
 let cl = console.log
 
 export class KgpInnerClient{
-  constructor(i18n, sourceCookieName){
+  constructor(i18n, sourceCookieName, kgp){
 
     // set language event
     function setLanguage(e){
@@ -19,23 +19,36 @@ export class KgpInnerClient{
         cookie.create(sourceCookieName, e.source, 1)
       }
     }
-    window.document.addEventListener('KgpSetSourceEvent', setLanguage, false)
+    window.document.addEventListener('KgpSetSourceEvent', setSource, false)
+
+    // set max dimensions event
+    function setIframeMaxDimensionEvent(e){
+      cl("-- KgpInnerClient setIframeMaxDimensionEvent()!")
+    }
+    window.document.addEventListener('KgpSetIframeMaxDimensionEvent', setIframeMaxDimensionEvent, false)
   }
 }
 
 
 export class KgpOuterClient{
-  constructor(iframeElementid, timeoutBeforeCommunication){
+  constructor(iframeElementid, language, max_height){
     this.iframe = document.getElementById(iframeElementid)
-    
     this.userSource = document.URL
 
     let self = this
-    setTimeout(() => {
+    self.iframe.contentDocument.onload = ()=>{
+      console.log("self.iframe.contentDocument LOADED!!")
+      // set language
+      let setLanguageEvent = new KgpSetLanguageEvent(language)
+      self.iframe.contentDocument.dispatchEvent(setLanguageEvent)
       // set source
       let setSourceEvent = new KgpSetSourceEvent(document.URL)
       self.iframe.contentDocument.dispatchEvent(setSourceEvent)
-    }, timeoutBeforeCommunication);
+      // set max height
+      let setIframeMaxDimensionEvent = new KgpSetIframeMaxDimensionEvent(max_height)
+      self.iframe.contentDocument.dispatchEvent(setIframeMaxDimensionEvent)
+    }
+
   }
   
 }
@@ -46,6 +59,8 @@ export class KgpIframeEvent extends CustomEvent{
     super(...args)
   }
 }
+
+/******** down events ********/
 
 export class KgpSetSourceEvent extends KgpIframeEvent{
   constructor(source){
@@ -61,19 +76,21 @@ export class KgpSetLanguageEvent extends KgpIframeEvent{
   }
 }
 
+/** Event from kgpmeter to kgp-iframe to signale iframe max dimensions */
+export class KgpSetIframeMaxDimensionEvent extends KgpIframeEvent{
+  constructor(maxHeight){
+    super("KgpSetIframeMaxDimensionEvent")
+    console.log("maxHeight", maxHeight, "maxWidth", maxWidth)
+  }
+}
+
+
+/******** up events ********/
+
 /** Event from kgp-iframe to kgpmeter to change height */
 export class KgpSetHeightEvent extends KgpIframeEvent{
   constructor(height){
     super("KgpSetHeightEvent")
     this.height=height
-  }
-}
-
-/** Event from kgpmeter to kgp-iframe to signale iframe max dimensions */
-export class KgpSetIframeMaxDimensionEvent extends KgpIframeEvent{
-  constructor(maxHeight, maxWidth){
-    super("KgpSetIframeMaxDimensionEvent")
-    this.maxHeight=maxHeight
-    this.maxWidth=maxWidth
   }
 }
