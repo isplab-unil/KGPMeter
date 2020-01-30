@@ -17,8 +17,8 @@ export class KinGenomicPrivacyMeter{
     this.svg = d3.select("#"+svgId)
     this.svgHeight = parseInt(this.svg.attr("height"))
     this.svgOriginalHeight = this.svgHeight
-    this.svgMaxHeight = parseInt(this.svg.attr("data-max-height"))
-    this.svgMaxHeight =  this.svgMaxHeight? this.svgMaxHeight : this.svgHeight
+    let dataSvgMaxHeight = parseInt(this.svg.attr("data-max-height"))
+    this.setSvgMaxHeight(dataSvgMaxHeight? dataSvgMaxHeight : this.svgHeight)
     
     this.maxFamilyTreeDepth = maxFamilyTreeDepth
     this.youNodeId = youNodeId // "@I1@"
@@ -215,6 +215,10 @@ export class KinGenomicPrivacyMeter{
   setApiUrl(api_base_url){
     this.api_base_url = api_base_url
     this.privacyScoreApiEndpoint = this.api_base_url+"/privacy-score"
+  }
+
+  setSvgMaxHeight(svgMaxHeight){
+    this.svgMaxHeight = svgMaxHeight
   }
 
   /** Update the svg width, called on window resizes */
