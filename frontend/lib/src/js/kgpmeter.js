@@ -15,22 +15,19 @@ class KgpMeter{
 
     // ======== send data to iframe ========
     this.iframe.contentWindow.addEventListener("load",()=>{
-      console.log("self.iframe.contentWindow LOADED!!")
-      // set language
-      let setLanguageEvent = kgpSetLanguageEvent(self.lang)
-      console.log("self.iframe language set")
-      self.iframe.contentDocument.dispatchEvent(setLanguageEvent)
-      console.log("self.iframe language set 1")
-      // set source
-      let setSourceEvent = kgpSetSourceEvent(document.URL)
-      console.log("self.iframe source set")
-      self.iframe.contentDocument.dispatchEvent(setSourceEvent)
-      console.log("self.iframe source set 1")
-      // set max height
-      let setIframeMaxDimensionEvent = kgpSetIframeMaxDimensionEvent(maxHeight)
-      console.log("self.iframe max dim set")
-      self.iframe.contentDocument.dispatchEvent(setIframeMaxDimensionEvent)
-      console.log("self.iframe max dim set 1")
+      setTimeout(() => {
+        console.log("self.iframe.contentWindow LOADED!!")
+        // set language
+        let setLanguageEvent = kgpSetLanguageEvent(self.lang)
+        self.iframe.contentDocument.dispatchEvent(setLanguageEvent)
+        // set source
+        let setSourceEvent = kgpSetSourceEvent(document.URL)
+        self.iframe.contentDocument.dispatchEvent(setSourceEvent)
+        // set max height
+        let setIframeMaxDimensionEvent = kgpSetIframeMaxDimensionEvent(maxHeight)
+        self.iframe.contentDocument.dispatchEvent(setIframeMaxDimensionEvent)
+        console.log("KgpMeter: downwards events sent")
+      }, 500);
     })
     // =================================== TEST iframe to parent communication and vice-versa ===================================
     console.log("huhuhaha")

@@ -47,6 +47,29 @@ export class KinGenomicPrivacyMeter{
       cookie.create(sourceCookie,this.userSource,1)
     }
 
+    // set language event
+    function setLanguage(e){
+      console.log("-- KgpInnerClient setLanguage()! e.detail.lng: ", e.detail.lng)
+      i18n.changeLanguage(e.detail.lng)
+    }
+    window.document.addEventListener('KgpSetLanguageEvent', setLanguage, false)
+
+    // set source event
+    function setSource(e){
+      console.log("-- KgpInnerClient setsource()! e.detail.source: ", e.detail.source)
+      let userSource = cookie.read(sourceCookie)
+      if(!userSource){
+        cookie.create(sourceCookie, e.detail.source, 1)
+      }
+    }
+    window.document.addEventListener('KgpSetSourceEvent', setSource, false)
+
+    // set max dimensions event
+    function setIframeMaxDimensionEvent(e){
+      console.log("-- KgpInnerClient setIframeMaxDimensionEvent()! e.detail.maxHeight: ", e.detail.maxHeight)
+    }
+    window.document.addEventListener('KgpSetIframeMaxDimensionEvent', setIframeMaxDimensionEvent, false)
+
     // api urls
     this.setApiUrl(api_base_url)
 

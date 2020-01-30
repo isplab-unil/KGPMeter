@@ -56,17 +56,17 @@ export class KgpOuterClient{
 /******** down events ********/
 
 export function kgpSetSourceEvent(source){
-  return new CustomEvent("KgpSetSourceEvent", {source:source})
+  return new CustomEvent("KgpSetSourceEvent", {detail: {source:source}})
 }
 
 
 export function kgpSetLanguageEvent(source){
-  return new CustomEvent("KgpSetLanguageEvent", {lng:lng})
+  return new CustomEvent("KgpSetLanguageEvent", {detail: {lng:lng}})
 }
 
 /** Event from kgpmeter to kgp-iframe to signale iframe max dimensions */
 export function kgpSetIframeMaxDimensionEvent(maxHeight){
-  return new CustomEvent("KgpSetIframeMaxDimensionEvent", {maxHeight:maxHeight})
+  return new CustomEvent("KgpSetIframeMaxDimensionEvent", {detail: {maxHeight:maxHeight}})
 }
 
 
@@ -74,5 +74,5 @@ export function kgpSetIframeMaxDimensionEvent(maxHeight){
 
 /** Event from kgp-iframe to kgpmeter to change height */
 export function kgpSetHeightEvent(height){
-  return new CustomEvent("KgpSetHeightEvent", {height:height})
+  return new CustomEvent("KgpSetHeightEvent", {detail: {height:height}})
 }
