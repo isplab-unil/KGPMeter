@@ -54,7 +54,7 @@ export class KgpOuterClient{
 }
 
 /** abstract mother class for all other Kgp iframe events */
-export class KgpIframeEvent extends CustomEvent{
+export class KgpIframeEvent extends Event{
   constructor(...args){
     super(...args)
   }
@@ -81,6 +81,7 @@ export class KgpSetIframeMaxDimensionEvent extends KgpIframeEvent{
   constructor(maxHeight){
     super("KgpSetIframeMaxDimensionEvent")
     console.log("maxHeight", maxHeight, "maxWidth", maxWidth)
+    this.maxHeight=maxHeight
   }
 }
 
