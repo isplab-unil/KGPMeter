@@ -1,4 +1,4 @@
-import {KgpSetLanguageEvent, KgpSetSourceEvent, KgpSetIframeMaxDimensionEvent} from "../../app/src/js/KgpIframeInterface.js"
+import {KgpSetLanguageEvent, KgpSetSourceEvent, KgpSetIframeMaxDimensionEvent} from "../../../app/src/js/KgpIframeInterface.js"
 
 
 class KgpMeter{
@@ -26,8 +26,9 @@ class KgpMeter{
       let setIframeMaxDimensionEvent = new KgpSetIframeMaxDimensionEvent(maxHeight)
       self.iframe.contentDocument.dispatchEvent(setIframeMaxDimensionEvent)
     }
+    self.iframe.contentDocument.addEventListener("load", ()=>{console.log("huhu")})
     // =================================== TEST iframe to parent communication and vice-versa ===================================
-
+    console.log("huhuhaha")
     // parent to iframe:
     setTimeout(() => {
       var data = { orientation: 'down' }
@@ -42,3 +43,5 @@ class KgpMeter{
     window.document.addEventListener('myCustomEvent', handleEvent, false)
   }
 }
+console.log("huhuhahahoho")
+    
