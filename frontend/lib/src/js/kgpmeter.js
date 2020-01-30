@@ -13,6 +13,8 @@ class KgpMeter{
     this.iframe = this.div.getElementsByTagName("iframe")[0]
     this.iframe.setAttribute("style",'border:none; width:100%; height:100%;')
 
+    console.log("this.lang", self.lang)
+
     // ======== send data to iframe ========
     this.iframe.contentWindow.addEventListener("load",()=>{
       setTimeout(() => {
