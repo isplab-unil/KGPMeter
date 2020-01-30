@@ -1,4 +1,4 @@
-import {KgpSetLanguageEvent, KgpSetSourceEvent, KgpSetIframeMaxDimensionEvent} from "../../../app/src/js/KgpIframeInterface.js"
+import {kgpSetLanguageEvent, kgpSetSourceEvent, kgpSetIframeMaxDimensionEvent} from "../../../app/src/js/KgpIframeInterface.js"
 
 
 class KgpMeter{
@@ -17,17 +17,17 @@ class KgpMeter{
     this.iframe.contentWindow.addEventListener("load",()=>{
       console.log("self.iframe.contentWindow LOADED!!")
       // set language
-      let setLanguageEvent = new KgpSetLanguageEvent(self.lang)
+      let setLanguageEvent = kgpSetLanguageEvent(self.lang)
       console.log("self.iframe language set")
       self.iframe.contentDocument.dispatchEvent(setLanguageEvent)
       console.log("self.iframe language set 1")
       // set source
-      let setSourceEvent = new KgpSetSourceEvent(document.URL)
+      let setSourceEvent = kgpSetSourceEvent(document.URL)
       console.log("self.iframe source set")
       self.iframe.contentDocument.dispatchEvent(setSourceEvent)
       console.log("self.iframe source set 1")
       // set max height
-      let setIframeMaxDimensionEvent = new KgpSetIframeMaxDimensionEvent(maxHeight)
+      let setIframeMaxDimensionEvent = kgpSetIframeMaxDimensionEvent(maxHeight)
       console.log("self.iframe max dim set")
       self.iframe.contentDocument.dispatchEvent(setIframeMaxDimensionEvent)
       console.log("self.iframe max dim set 1")
