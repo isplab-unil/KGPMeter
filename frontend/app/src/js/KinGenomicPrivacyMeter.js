@@ -237,7 +237,8 @@ export class KinGenomicPrivacyMeter{
 
   setApiUrl(api_base_url){
     this.api_base_url = api_base_url
-    this.privacyScoreApiEndpoint = (this.api_base_url+"/privacy-score").replace("//","/")
+    let separator = this.api_base_url.endsWith("/")? "" : "/"
+    this.privacyScoreApiEndpoint = (this.api_base_url+ separator + "privacy-score")
   }
 
   setSvgMaxHeight(svgMaxHeight){
