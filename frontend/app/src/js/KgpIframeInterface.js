@@ -60,7 +60,7 @@ export function kgpSetSourceEvent(source){
 }
 
 
-export function kgpSetLanguageEvent(source){
+export function kgpSetLanguageEvent(lng){
   return new CustomEvent("KgpSetLanguageEvent", {detail: {lng:lng}})
 }
 
