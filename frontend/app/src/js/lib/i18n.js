@@ -30,11 +30,12 @@ export class Internationalisation{
    * @param {string} keyAttr the name of the html5 attribute to watch for keys, by default "data-i18n"
    * @param {string} dataAttr the name of the html5 attribute to watch for data, by default "data-i18n-data".
    */
-  constructor(supportedLanguages, languageLoader, lng=false, useLocalStorage=true, dynamic, keyAttr = "data-i18n", dataAttr = "data-i18n-data"){
+  constructor(supportedLanguages, languageLoader, lng=false, useLocalStorage=true, localStoragePrefix = "", dynamic, keyAttr = "data-i18n", dataAttr = "data-i18n-data"){
     this.dynamic = dynamic? dynamic : {}
     this.keyAttr = keyAttr
     this.dataAttr = dataAttr
     this.useLocalStorage = useLocalStorage
+    this.localStoragePrefix = localStoragePrefix
     this.supportedLanguages = supportedLanguages
     this.defaultLanguage = this.supportedLanguages[0]
     this.languageChangeCallbacks = []
@@ -189,8 +190,8 @@ export class Internationalisation{
   loadLngFromLocalStorage(lng, transKey = "translation."+lng,saveDateKey="translation_save_date."+lng){
 
     if(this.useLocalStorage){
-      let transDict = localStorage.getItem(transKey)
-      let transDictSaveDate = +localStorage.getItem(saveDateKey)
+      let transDict = localStorage.getItem(this.localStoragePrefix+transKey)
+      let transDictSaveDate = +localStorage.getItem(this.localStoragePrefix+saveDateKey)
       if(Boolean(transDict) & (transDictSaveDate+2*3600*1000>=+new Date()) ){
         return JSON.parse(transDict)
       }
@@ -200,15 +201,15 @@ export class Internationalisation{
 
   saveLngToLocalStorage(lng, transDict, transKey = "translation."+lng,saveDateKey="translation_save_date."+lng){
     if(this.useLocalStorage){
-      localStorage.setItem(transKey,JSON.stringify(transDict))
-      localStorage.setItem(saveDateKey,+new Date())
+      localStorage.setItem(this.localStoragePrefix+transKey,JSON.stringify(transDict))
+      localStorage.setItem(this.localStoragePrefix+saveDateKey,+new Date())
     }
   }
   
-  resetLngLocalStorage(){
+  resetLngLocalStorage(transKey = "translation.",saveDateKey="translation_save_date."){
     for(let lng of this.supportedLanguages){
-      localStorage.setItem("translation."+lng,null)
-      localStorage.setItem("translation_save_date."+lng,null)
+      localStorage.setItem(this.localStoragePrefix+transKey+lng,null)
+      localStorage.setItem(this.localStoragePrefix+saveDateKey+lng,null)
     }
   }
 }
