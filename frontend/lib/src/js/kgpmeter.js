@@ -19,15 +19,13 @@ class KgpMeter{
       setTimeout(() => {
         console.log("self.iframe.contentWindow LOADED!!")
         // set language
-        this.changeLanguage(self.lng)
+        this.setLanguage(self.lng)
         // set source
-        let setSourceEvent = kgpSetSourceEvent(document.URL)
-        self.iframe.contentDocument.dispatchEvent(setSourceEvent)
+        this.setSource(document.URL)
         // set max height
-        let setIframeMaxDimensionEvent = kgpSetIframeMaxDimensionEvent(maxHeight)
-        self.iframe.contentDocument.dispatchEvent(setIframeMaxDimensionEvent)
+        this.setMaxheight(maxHeight)
         console.log("KgpMeter: downwards events sent")
-      }, 500);
+      }, 50);
     })
     // =================================== TEST iframe to parent communication and vice-versa ===================================
     console.log("huhuhaha")
@@ -45,9 +43,17 @@ class KgpMeter{
     window.document.addEventListener('myCustomEvent', handleEvent, false)
   }
 
-  changeLanguage(lng){
-    let setLanguageEvent = kgpSetLanguageEvent(self.lng)
-    self.iframe.contentDocument.dispatchEvent(setLanguageEvent)
+  setLanguage(lng){
+    let setLanguageEvent = kgpSetLanguageEvent(lng)
+    this.iframe.contentDocument.dispatchEvent(setLanguageEvent)
+  }
+  setSource(source){
+    let setSourceEvent = kgpSetSourceEvent(source)
+    this.iframe.contentDocument.dispatchEvent(setSourceEvent)
+  }
+  setMaxheight(maxHeight){
+    let setIframeMaxDimensionEvent = kgpSetIframeMaxDimensionEvent(maxHeight)
+    this.iframe.contentDocument.dispatchEvent(setIframeMaxDimensionEvent)
   }
 }
 // export KgpMeter to glboal namespace
