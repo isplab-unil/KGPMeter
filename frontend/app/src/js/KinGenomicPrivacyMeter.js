@@ -6,19 +6,20 @@ import {KgpBackendStatus} from "./KgpBackendStatus.js"
 import {KgpScoreNumberExplainer} from "./KgpScoreNumberExplainer.js"
 import {KgpWordedScore} from "./KgpWordedScore.js"
 import {KgpPrivacyBar} from "./KgpPrivacyBar.js"
-import {kgpSetSourceEvent} from "./KgpIframeInterface"
+import {kgpSetSourceEvent, kgpSetHeightEvent} from "./KgpIframeInterface"
 import {TrashButton} from "./TrashButton.js"
 import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
 
 export class KinGenomicPrivacyMeter{
-  constructor(api_base_url, svgId, youNodeId, i18n, maxFamilyTreeDepth=5, cookieLocalStoragePrefix="kgpmeter-"){
+  constructor(api_base_url, svgId, youNodeId, i18n, svgMaxHeight=2000, maxFamilyTreeDepth=5, cookieLocalStoragePrefix="kgpmeter-"){
     let self = this
     this.i18n = i18n
     
     this.svg = d3.select("#"+svgId)
     this.svgHeight = parseInt(this.svg.attr("height"))
     this.svgOriginalHeight = this.svgHeight
-    
+    this.updateSvgHeight(this.svgHeight, 800, true)
+
     this.maxFamilyTreeDepth = maxFamilyTreeDepth
     this.youNodeId = youNodeId // "@I1@"
     this.privacyMetric = 1
@@ -33,7 +34,7 @@ export class KinGenomicPrivacyMeter{
 
     // set language event
     function setLanguage(e){
-      console.log("-- KgpInnerClient setLanguage()! e.detail.lng: ", e.detail.lng)
+      //console.log("-- KgpInnerClient setLanguage()! e.detail.lng: ", e.detail.lng)
       i18n.changeLanguage(e.detail.lng)
     }
     window.document.addEventListener('KgpSetLanguageEvent', setLanguage, false)
@@ -48,11 +49,11 @@ export class KinGenomicPrivacyMeter{
       cookie.create(idCookie,this.userId,1)
     }
     function setSource(e){
-      console.log("-- KgpInnerClient setsource()! e.detail.source: ", e.detail.source)
+      //console.log("-- KgpInnerClient setsource()! e.detail.source: ", e.detail.source)
       let userSource = cookie.read(sourceCookie)
       if(!userSource){
         // if no source: init user source
-        console.log("--> creating new user")
+        //console.log("--> creating new user")
         self.userSource = e.detail.source? e.detail.source : document.URL
         // TODO: remove or refine ?test
         if(Boolean(self.userSource.match(/\/privacy-dev\//))){
@@ -68,22 +69,22 @@ export class KinGenomicPrivacyMeter{
           true // silent request
         )
       }else {
-        console.log("--> user already exists, doing nothing")
+        //console.log("--> user already exists, doing nothing")
       }
     }
     window.document.addEventListener('KgpSetSourceEvent', setSource, false)
     // if app not enclosed in an iframe: set source as current URL after 1sec
     setTimeout(function createUserAfterTimeout(){
-      console.log("+-+-+-> createUserAfterTimeout()!!")
+      //console.log("+-+-+-> createUserAfterTimeout()!!")
       let setSourceEvent = kgpSetSourceEvent(document.URL)
       document.dispatchEvent(setSourceEvent)
     },1000)
 
 
     // set max dimensions event
-    this.setSvgMaxHeight(this.svgHeight)
+    this.setSvgMaxHeight(svgMaxHeight)
     function setIframeMaxDimensionEvent(e){
-      console.log("-- KgpInnerClient setIframeMaxDimensionEvent()! e.detail.maxHeight: ", e.detail.maxHeight)
+      //console.log("-- KgpInnerClient setIframeMaxDimensionEvent()! e.detail.maxHeight: ", e.detail.maxHeight)
       self.setSvgMaxHeight(e.detail.maxHeight)
     }
     window.document.addEventListener('KgpSetIframeMaxDimensionEvent', setIframeMaxDimensionEvent, false)
@@ -147,6 +148,7 @@ export class KinGenomicPrivacyMeter{
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
 
     onWindowResize(()=>self.resizeSvg())
+    onWindowResize(()=>console.log("window resize!"))
 
     this.ftree = this.loadFamilyTreeFromLocalStorage()
     let savedFtree = Boolean(this.ftree)
@@ -169,6 +171,10 @@ export class KinGenomicPrivacyMeter{
     }
     this.mobileBlock()
     this.IEBlock()
+
+    console.log("this.familyTreeArtist.heightFtree this.familyTreeArtist.heightFtree this.familyTreeArtist.heightFtree this.familyTreeArtist.heightFtree ")
+    console.log("this.familyTreeArtist.heightFtree", this.familyTreeArtist.heightFtree)
+    //setTimeout(()=> self.updateSvgHeight(self.familyTreeArtist.heightFtree, 800, true), 5000)
   }
 
   /** Resets the family tree in a pleasant way */
@@ -251,6 +257,43 @@ export class KinGenomicPrivacyMeter{
 
   setSvgMaxHeight(svgMaxHeight){
     this.svgMaxHeight = svgMaxHeight
+  }
+
+  updateSvgHeight(heightFtree, transitionsDuration = 800, forceEnclosingHeightUpdate=false){
+    console.log("BLA BLA BLAheightFtree: ", heightFtree, " this.svgOriginalHeight: ",this.svgOriginalHeight," this.svgMaxHeight: ",this.svgMaxHeight)
+    let newSvgHeight = this.svgHeight
+    if(heightFtree<this.svgOriginalHeight){ //tree height smaller than minimum
+      newSvgHeight = this.svgOriginalHeight
+    }
+    // tree height between minimum and max
+    if(heightFtree>=this.svgOriginalHeight && heightFtree<= this.svgMaxHeight){
+      newSvgHeight = heightFtree
+      console.log("tree height between minimum and max ")
+    }
+    else{
+      console.log("tree height NOT between minimum and max ")
+    }
+    // tree height taller than maximum
+    if(heightFtree>this.svgMaxHeight){
+      newSvgHeight = this.svgMaxHeight
+      console.log("tree height taller than maximum")
+    }
+    else{
+      console.log("tree height NOT taller than maximum")
+    }
+    // if needed -> change it
+    console.log("newSvgHeight: ", newSvgHeight)
+    if(newSvgHeight!=this.svgHeight || forceEnclosingHeightUpdate){
+      let oldBodyHeight = document.getElementsByTagName('body')[0].scrollHeight;
+      let newBodyHeight = oldBodyHeight - this.svgHeight + newSvgHeight
+      console.log("oldBodyHeight: ", oldBodyHeight, " newBodyHeight: ", newBodyHeight, " body scrollHeight: ", document.getElementsByTagName('body')[0].scrollHeight)
+      this.svgHeight = newSvgHeight
+      this.svg.transition()
+        .duration(transitionsDuration)
+        .attr("height",newSvgHeight)
+      let event = kgpSetHeightEvent(newBodyHeight+20, transitionsDuration)
+      window.parent.document.dispatchEvent(event)
+    }
   }
 
   /** Update the svg width, called on window resizes */

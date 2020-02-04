@@ -6,27 +6,35 @@ class KgpMeter{
     this.divId = divId
     this.apiUrl = apiUrl
     this.lng = lng
+    this.height = 0
     let self = this
 
     this.div = document.getElementById(divId)
     this.div.innerHTML = "<iframe src='{src}/app/'></iframe>".replace("{src}",this.apiUrl)
     this.iframe = this.div.getElementsByTagName("iframe")[0]
-    this.iframe.setAttribute("style",'border:none; width:100%; height:100%;')
-
+    this.iframe.setAttribute("style",'border:none; width:100%; height:100%')
+    this.setDivStyle(this.div.scrollHeight+"px")
 
     // ======== send data to iframe ========
     this.iframe.contentWindow.addEventListener("load",()=>{
       setTimeout(() => {
-        console.log("self.iframe.contentWindow LOADED!!")
         // set language
         this.setLanguage(self.lng)
         // set source
         this.setSource(document.URL)
         // set max height
         this.setMaxheight(maxHeight)
-        console.log("KgpMeter: downwards events sent")
+        //console.log("KgpMeter: downwards events sent")
       }, 50);
     })
+
+    // ======== handle height updates ========
+    function handleHeightUpdate(e) {
+      //console.log("-- KgpOuterClient KgpSetHeightEvent()! e.detail: ", e.detail)
+      self.setHeight(e.detail.height, e.detail.transitionDuration)
+    }
+    window.document.addEventListener('KgpSetHeightEvent', handleHeightUpdate, false)
+
     // =================================== TEST iframe to parent communication and vice-versa ===================================
     console.log("huhuhaha")
     // parent to iframe:
@@ -54,6 +62,19 @@ class KgpMeter{
   setMaxheight(maxHeight){
     let setIframeMaxDimensionEvent = kgpSetIframeMaxDimensionEvent(maxHeight)
     this.iframe.contentDocument.dispatchEvent(setIframeMaxDimensionEvent)
+  }
+
+  setHeight(height, transitionDuration){
+    transitionDuration = transitionDuration * (height>this.height? 0.9:2) / 1000
+    console.log("!!kgpmeter setHeight!! oldHeight: ", this.height, "height: ",height, " transitionDuration: ", transitionDuration)
+    this.setDivStyle(this.height+"px", height+"px", transitionDuration)
+    this.height = height
+  }
+  setDivStyle(oldHeightstr, heightStr, transitionDuration){
+    let divStyle = 'border:none; width:100%; height: '+oldHeightstr+'; transition-property: height; transition-duration: '+transitionDuration+'s; transition-timing-function: easeInOutQuart;'
+    this.div.setAttribute("style",divStyle)
+    divStyle = 'border:none; width:100%; height: '+heightStr+'; transition-property: height; transition-duration: '+transitionDuration+'s; transition-timing-function: easeInOutQuart;'
+    this.div.setAttribute("style",divStyle)
   }
 }
 // export KgpMeter to glboal namespace

@@ -73,6 +73,6 @@ export function kgpSetIframeMaxDimensionEvent(maxHeight){
 /******** up events ********/
 
 /** Event from kgp-iframe to kgpmeter to change height */
-export function kgpSetHeightEvent(height){
-  return new CustomEvent("KgpSetHeightEvent", {detail: {height:height}})
+export function kgpSetHeightEvent(height, transitionDuration){
+  return new CustomEvent("KgpSetHeightEvent", {"detail": {"height":height, "transitionDuration": transitionDuration}})
 }

@@ -8,6 +8,7 @@ export class FamilyTreeArtist{
     this.kgp = kgp
     this.ftree = this.kgp.ftree
     this.i18n = i18n
+    this.heightFtree = 0
     this.init(transitionDuration)
   }
 
@@ -48,6 +49,7 @@ export class FamilyTreeArtist{
   }
 
   update(updateSource, transitionsDuration=800){
+    console.log("FTA.UPDATE()!! this.kgp.svgHeight:", this.kgp.svgHeight, ", this.kgp.svgMaxHeight: ", this.kgp.svgMaxHeight, " this.kgp.svgOriginalHeight:", this.kgp.svgOriginalHeight)
     let self = this
     updateSource = updateSource? {x:updateSource.x,y:updateSource.y} : false
     this.ftree.computeLayout(false)
@@ -59,28 +61,12 @@ export class FamilyTreeArtist{
     let widthFtree = ftreeLeftMargin+ this.ftree.width() + ftreeRightMargin
 
     let miny = this.ftree.minY()
-    let heightFtree = this.ftree.maxY() - miny + 150
+    this.heightFtree = this.ftree.maxY() - miny + 150
     // if we can still resize the svg -> let's do it!
-    let newSvgHeight = this.kgp.svgHeight
-    if(heightFtree<this.kgp.svgOriginalHeight){ //tree height smaller than minimum
-      newSvgHeight = this.kgp.svgOriginalHeight
-    }
-    // tree height between minimum and max
-    if(heightFtree>this.kgp.svgOriginalHeight && heightFtree< this.kgp.svgMaxHeight){
-      newSvgHeight = heightFtree
-    }
-    // tree height taller than maximum
-    if(heightFtree>this.kgp.svgMaxHeight){
-      newSvgHeight = this.kgp.svgMaxHeight
-    }
-    // if needed -> change it
-    if(newSvgHeight!=this.kgp.svgHeight){
-      this.kgp.svg.transition()
-        .duration(transitionsDuration)
-        .attr("height",newSvgHeight)
-      this.kgp.svgHeight = newSvgHeight
-    }
-    let scaleFactor = d3.min([1, this.kgp.svgWidth/widthFtree, this.kgp.svgHeight/heightFtree])
+    
+    this.kgp.updateSvgHeight(this.heightFtree, transitionsDuration)
+    
+    let scaleFactor = d3.min([1, this.kgp.svgWidth/widthFtree, this.kgp.svgHeight/this.heightFtree])
     let translateX = widthFtree<this.kgp.svgWidth-ftreeRightMargin/2?
         this.kgp.svgWidth/2 :
         scaleFactor * (this.ftree.width() / 2 + ftreeLeftMargin)
