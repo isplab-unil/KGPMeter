@@ -24,19 +24,16 @@ class KgpMeter{
         this.setSource(document.URL)
         // set max height
         this.setMaxheight(maxHeight)
-        //console.log("KgpMeter: downwards events sent")
       }, 50);
     })
 
     // ======== handle height updates ========
     function handleHeightUpdate(e) {
-      //console.log("-- KgpOuterClient KgpSetHeightEvent()! e.detail: ", e.detail)
       self.setHeight(e.detail.height, e.detail.transitionDuration)
     }
     window.document.addEventListener('KgpSetHeightEvent', handleHeightUpdate, false)
 
     // =================================== TEST iframe to parent communication and vice-versa ===================================
-    console.log("huhuhaha")
     // parent to iframe:
     setTimeout(() => {
       var data = { orientation: 'down' }

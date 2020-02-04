@@ -34,7 +34,6 @@ export class KinGenomicPrivacyMeter{
 
     // set language event
     function setLanguage(e){
-      //console.log("-- KgpInnerClient setLanguage()! e.detail.lng: ", e.detail.lng)
       i18n.changeLanguage(e.detail.lng)
     }
     window.document.addEventListener('KgpSetLanguageEvent', setLanguage, false)
@@ -49,11 +48,9 @@ export class KinGenomicPrivacyMeter{
       cookie.create(idCookie,this.userId,1)
     }
     function setSource(e){
-      //console.log("-- KgpInnerClient setsource()! e.detail.source: ", e.detail.source)
       let userSource = cookie.read(sourceCookie)
       if(!userSource){
         // if no source: init user source
-        //console.log("--> creating new user")
         self.userSource = e.detail.source? e.detail.source : document.URL
         // TODO: remove or refine ?test
         if(Boolean(self.userSource.match(/\/privacy-dev\//))){
@@ -68,14 +65,11 @@ export class KinGenomicPrivacyMeter{
           self.userId, self.userSource, self.i18n.lng,
           true // silent request
         )
-      }else {
-        //console.log("--> user already exists, doing nothing")
       }
     }
     window.document.addEventListener('KgpSetSourceEvent', setSource, false)
     // if app not enclosed in an iframe: set source as current URL after 1sec
     setTimeout(function createUserAfterTimeout(){
-      //console.log("+-+-+-> createUserAfterTimeout()!!")
       let setSourceEvent = kgpSetSourceEvent(document.URL)
       document.dispatchEvent(setSourceEvent)
     },1000)
@@ -84,7 +78,6 @@ export class KinGenomicPrivacyMeter{
     // set max dimensions event
     this.setSvgMaxHeight(svgMaxHeight)
     function setIframeMaxDimensionEvent(e){
-      //console.log("-- KgpInnerClient setIframeMaxDimensionEvent()! e.detail.maxHeight: ", e.detail.maxHeight)
       self.setSvgMaxHeight(e.detail.maxHeight)
     }
     window.document.addEventListener('KgpSetIframeMaxDimensionEvent', setIframeMaxDimensionEvent, false)
@@ -148,12 +141,10 @@ export class KinGenomicPrivacyMeter{
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
 
     onWindowResize(()=>self.resizeSvg())
-    onWindowResize(()=>console.log("window resize!"))
 
     this.ftree = this.loadFamilyTreeFromLocalStorage()
     let savedFtree = Boolean(this.ftree)
     if(!savedFtree){
-      //console.log("NO FAMILY TREE IN STORAGE")
       this.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
     }
 
@@ -171,10 +162,6 @@ export class KinGenomicPrivacyMeter{
     }
     this.mobileBlock()
     this.IEBlock()
-
-    console.log("this.familyTreeArtist.heightFtree this.familyTreeArtist.heightFtree this.familyTreeArtist.heightFtree this.familyTreeArtist.heightFtree ")
-    console.log("this.familyTreeArtist.heightFtree", this.familyTreeArtist.heightFtree)
-    //setTimeout(()=> self.updateSvgHeight(self.familyTreeArtist.heightFtree, 800, true), 5000)
   }
 
   /** Resets the family tree in a pleasant way */
@@ -223,7 +210,6 @@ export class KinGenomicPrivacyMeter{
     let ftl = localStorage.getItem(familyTreeKey)
     let targetId = localStorage.getItem(targetKey)
     let saveDate = +localStorage.getItem(saveDateKey)
-    //console.log("LOADING family tree, ftl = ", ftl, ", targetId = ",targetId, ", saveDate = ",saveDate)
     if(Boolean(ftl) & (saveDate+2*3600*1000>=+new Date()) ){
       familyTree = familyTreeClass.unserialize(ftl)
       this.target = targetId? familyTree.nodes[targetId] : null
@@ -260,7 +246,6 @@ export class KinGenomicPrivacyMeter{
   }
 
   updateSvgHeight(heightFtree, transitionsDuration = 800, forceEnclosingHeightUpdate=false){
-    console.log("BLA BLA BLAheightFtree: ", heightFtree, " this.svgOriginalHeight: ",this.svgOriginalHeight," this.svgMaxHeight: ",this.svgMaxHeight)
     let newSvgHeight = this.svgHeight
     if(heightFtree<this.svgOriginalHeight){ //tree height smaller than minimum
       newSvgHeight = this.svgOriginalHeight
@@ -268,25 +253,15 @@ export class KinGenomicPrivacyMeter{
     // tree height between minimum and max
     if(heightFtree>=this.svgOriginalHeight && heightFtree<= this.svgMaxHeight){
       newSvgHeight = heightFtree
-      console.log("tree height between minimum and max ")
-    }
-    else{
-      console.log("tree height NOT between minimum and max ")
     }
     // tree height taller than maximum
     if(heightFtree>this.svgMaxHeight){
       newSvgHeight = this.svgMaxHeight
-      console.log("tree height taller than maximum")
-    }
-    else{
-      console.log("tree height NOT taller than maximum")
     }
     // if needed -> change it
-    console.log("newSvgHeight: ", newSvgHeight)
     if(newSvgHeight!=this.svgHeight || forceEnclosingHeightUpdate){
       let oldBodyHeight = document.getElementsByTagName('body')[0].scrollHeight;
       let newBodyHeight = oldBodyHeight - this.svgHeight + newSvgHeight
-      console.log("oldBodyHeight: ", oldBodyHeight, " newBodyHeight: ", newBodyHeight, " body scrollHeight: ", document.getElementsByTagName('body')[0].scrollHeight)
       this.svgHeight = newSvgHeight
       this.svg.transition()
         .duration(transitionsDuration)
