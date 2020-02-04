@@ -49,7 +49,6 @@ export class FamilyTreeArtist{
   }
 
   update(updateSource, transitionsDuration=800){
-    console.log("FTA.UPDATE()!! this.kgp.svgHeight:", this.kgp.svgHeight, ", this.kgp.svgMaxHeight: ", this.kgp.svgMaxHeight, " this.kgp.svgOriginalHeight:", this.kgp.svgOriginalHeight)
     let self = this
     updateSource = updateSource? {x:updateSource.x,y:updateSource.y} : false
     this.ftree.computeLayout(false)

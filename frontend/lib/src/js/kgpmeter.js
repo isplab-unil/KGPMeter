@@ -32,20 +32,6 @@ class KgpMeter{
       self.setHeight(e.detail.height, e.detail.transitionDuration)
     }
     window.document.addEventListener('KgpSetHeightEvent', handleHeightUpdate, false)
-
-    // =================================== TEST iframe to parent communication and vice-versa ===================================
-    // parent to iframe:
-    setTimeout(() => {
-      var data = { orientation: 'down' }
-      var event = new CustomEvent('myCustomEvent', { detail: data })
-      self.iframe.contentDocument.dispatchEvent(event)
-    }, 500);
-
-    // iframe to parent
-    function handleEvent(e) {
-      console.log("Communication kgp-iframe to kgpmeter success! detail:", e.detail) // outputs: {foo: 'bar'}
-    }
-    window.document.addEventListener('myCustomEvent', handleEvent, false)
   }
 
   setLanguage(lng){
@@ -63,7 +49,6 @@ class KgpMeter{
 
   setHeight(height, transitionDuration){
     transitionDuration = transitionDuration * (height>this.height? 0.9:2) / 1000
-    console.log("!!kgpmeter setHeight!! oldHeight: ", this.height, "height: ",height, " transitionDuration: ", transitionDuration)
     this.setDivStyle(this.height+"px", height+"px", transitionDuration)
     this.height = height
   }
