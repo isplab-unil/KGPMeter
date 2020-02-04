@@ -6,6 +6,7 @@ import {KgpBackendStatus} from "./KgpBackendStatus.js"
 import {KgpScoreNumberExplainer} from "./KgpScoreNumberExplainer.js"
 import {KgpWordedScore} from "./KgpWordedScore.js"
 import {KgpPrivacyBar} from "./KgpPrivacyBar.js"
+import {kgpSetSourceEvent} from "./KgpIframeInterface"
 import {TrashButton} from "./TrashButton.js"
 import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
 
@@ -30,22 +31,7 @@ export class KinGenomicPrivacyMeter{
 
     this.updateSvgWidth()
 
-    // user id&source
-    let idCookie = cookieLocalStoragePrefix+"user-id"
-    let sourceCookie = cookieLocalStoragePrefix+"user-source"
-    this.userId = cookie.read(idCookie)
-    this.userSource = cookie.read(sourceCookie)
-    let new_user = !this.userId
-    if(new_user){
-      this.userId = (+new Date())+"-"+Math.random()
-      cookie.create(idCookie,this.userId,1)
-      this.userSource = document.URL
-      // TODO: remove or refine ?test
-      if(Boolean(this.userSource.match(/\/privacy-dev\//))){
-        this.userSource = this.userSource+"?test"
-      }
-      cookie.create(sourceCookie,this.userSource,1)
-    }
+    
 
     // set language event
     function setLanguage(e){
@@ -54,15 +40,47 @@ export class KinGenomicPrivacyMeter{
     }
     window.document.addEventListener('KgpSetLanguageEvent', setLanguage, false)
 
-    // set source event
+    // user id&source + source event
+    let idCookie = cookieLocalStoragePrefix+"user-id"
+    let sourceCookie = cookieLocalStoragePrefix+"user-source"
+    this.userId = cookie.read(idCookie)
+    this.userSource = cookie.read(sourceCookie)
+    if(!this.userId){
+      this.userId = (+new Date())+"-"+Math.random()
+      cookie.create(idCookie,this.userId,1)
+    }
     function setSource(e){
       console.log("-- KgpInnerClient setsource()! e.detail.source: ", e.detail.source)
       let userSource = cookie.read(sourceCookie)
       if(!userSource){
-        cookie.create(sourceCookie, e.detail.source, 1)
+        // if no source: init user source
+        console.log("--> creating new user")
+        self.userSource = e.detail.source? e.detail.source : document.URL
+        // TODO: remove or refine ?test
+        if(Boolean(self.userSource.match(/\/privacy-dev\//))){
+          self.userSource = self.userSource+"?test"
+        }
+        cookie.create(sourceCookie,self.userSource,1)
+
+        // send init request
+        self.scoreRequestHandler.requestScore(
+          "i1",
+          [["i1","f1"],["f1","i2"]], [],
+          self.userId, self.userSource, self.i18n.lng,
+          true // silent request
+        )
+      }else {
+        console.log("--> user already exists, doing nothing")
       }
     }
     window.document.addEventListener('KgpSetSourceEvent', setSource, false)
+    // if app not enclosed in an iframe: set source as current URL after 1sec
+    setTimeout(function createUserAfterTimeout(){
+      console.log("+-+-+-> createUserAfterTimeout()!!")
+      let setSourceEvent = kgpSetSourceEvent(document.URL)
+      document.dispatchEvent(setSourceEvent)
+    },1000)
+
 
     // set max dimensions event
     function setIframeMaxDimensionEvent(e){
@@ -124,16 +142,6 @@ export class KinGenomicPrivacyMeter{
     this.scoreRequestHandler.addListener((...args) => self.privacyWordedScore.await(...args))
     this.scoreRequestHandler.addListener((...args) => self.backendStatus.await(...args))
     this.scoreRequestHandler.addListener((...args) => self.scoreNumberExplainer.await(...args))
-    
-    // new user: send init request
-    if(new_user){
-      this.scoreRequestHandler.requestScore(
-        "i1",
-        [["i1","f1"],["f1","i2"]], [],
-        this.userId, this.userSource, self.i18n.lng,
-        true // silent request
-      )
-    }
     
     // trash button
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
