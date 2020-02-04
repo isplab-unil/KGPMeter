@@ -18,8 +18,6 @@ export class KinGenomicPrivacyMeter{
     this.svg = d3.select("#"+svgId)
     this.svgHeight = parseInt(this.svg.attr("height"))
     this.svgOriginalHeight = this.svgHeight
-    let dataSvgMaxHeight = parseInt(this.svg.attr("data-max-height"))
-    this.setSvgMaxHeight(dataSvgMaxHeight? dataSvgMaxHeight : this.svgHeight)
     
     this.maxFamilyTreeDepth = maxFamilyTreeDepth
     this.youNodeId = youNodeId // "@I1@"
@@ -31,7 +29,7 @@ export class KinGenomicPrivacyMeter{
 
     this.updateSvgWidth()
 
-    
+
 
     // set language event
     function setLanguage(e){
@@ -83,8 +81,10 @@ export class KinGenomicPrivacyMeter{
 
 
     // set max dimensions event
+    this.setSvgMaxHeight(this.svgHeight)
     function setIframeMaxDimensionEvent(e){
       console.log("-- KgpInnerClient setIframeMaxDimensionEvent()! e.detail.maxHeight: ", e.detail.maxHeight)
+      self.setSvgMaxHeight(e.detail.maxHeight)
     }
     window.document.addEventListener('KgpSetIframeMaxDimensionEvent', setIframeMaxDimensionEvent, false)
 
