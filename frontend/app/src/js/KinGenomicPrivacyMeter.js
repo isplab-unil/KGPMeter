@@ -6,21 +6,13 @@ import {KgpBackendStatus} from "./KgpBackendStatus.js"
 import {KgpScoreNumberExplainer} from "./KgpScoreNumberExplainer.js"
 import {KgpWordedScore} from "./KgpWordedScore.js"
 import {KgpPrivacyBar} from "./KgpPrivacyBar.js"
-import {kgpSetHeightEvent} from "./KgpIframeInterface"
+import {kgpSetSourceEvent, kgpSetHeightEvent} from "./KgpIframeInterface"
 import {TrashButton} from "./TrashButton.js"
 import {KgpTutorialButton, kgpTutorial} from "./KgpTutorial.js"
 import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
 
 export class KinGenomicPrivacyMeter{
-  constructor(api_base_url, svgId, youNodeId, i18n, options={}){
-    this.options = {
-      showTutorialButton:true,
-      svgMaxHeight:2000,
-      maxFamilyTreeDepth:5,
-      cookieLocalStoragePrefix:"kgpmeter-"
-    }
-    Object.assign(this.options, options)
-
+  constructor(api_base_url, svgId, youNodeId, i18n, svgMaxHeight=2000, maxFamilyTreeDepth=5, cookieLocalStoragePrefix="kgpmeter-"){
     let self = this
     this.i18n = i18n
     
@@ -29,7 +21,7 @@ export class KinGenomicPrivacyMeter{
     this.svgOriginalHeight = this.svgHeight
     this.updateSvgHeight(this.svgHeight, 800, true)
 
-    this.maxFamilyTreeDepth = this.options.maxFamilyTreeDepth
+    this.maxFamilyTreeDepth = maxFamilyTreeDepth
     this.youNodeId = youNodeId // "@I1@"
     this.privacyMetric = 1
     this.relationships = KinGenomicPrivacyMeter.getRelationships()
@@ -48,26 +40,44 @@ export class KinGenomicPrivacyMeter{
     window.document.addEventListener('KgpSetLanguageEvent', setLanguage, false)
 
     // user id&source + source event
-    let idCookie = this.options.cookieLocalStoragePrefix+"user-id"
-    let sourceCookie = this.options.cookieLocalStoragePrefix+"user-source"
+    let idCookie = cookieLocalStoragePrefix+"user-id"
+    let sourceCookie = cookieLocalStoragePrefix+"user-source"
     this.userId = cookie.read(idCookie)
     this.userSource = cookie.read(sourceCookie)
-    let newUser = !this.userId
-    if(newUser){
+    if(!this.userId){
       this.userId = (+new Date())+"-"+Math.random()
       cookie.create(idCookie,this.userId,1)
-      // if no source: init user source
-      this.userSource =  window.parent.document.URL
-      // TODO: remove or refine ?test
-      if(Boolean(this.userSource.match(/\/privacy-dev\//))){
-        this.userSource = this.userSource+"?test"
-      }
-      cookie.create(sourceCookie,this.userSource,1)
     }
+    function setSource(e){
+      let userSource = cookie.read(sourceCookie)
+      if(!userSource){
+        // if no source: init user source
+        self.userSource = e.detail.source? e.detail.source : document.URL
+        // TODO: remove or refine ?test
+        if(Boolean(self.userSource.match(/\/privacy-dev\//))){
+          self.userSource = self.userSource+"?test"
+        }
+        cookie.create(sourceCookie,self.userSource,1)
+
+        // send init request
+        self.scoreRequestHandler.requestScore(
+          "i1",
+          [["i1","f1"],["f1","i2"]], [],
+          self.userId, self.userSource, self.i18n.lng,
+          true // silent request
+        )
+      }
+    }
+    window.document.addEventListener('KgpSetSourceEvent', setSource, false)
+    // if app not enclosed in an iframe: set source as current URL after 1sec
+    setTimeout(function createUserAfterTimeout(){
+      let setSourceEvent = kgpSetSourceEvent(document.URL)
+      document.dispatchEvent(setSourceEvent)
+    },1000)
 
 
     // set max dimensions event
-    this.setSvgMaxHeight(this.options.svgMaxHeight)
+    this.setSvgMaxHeight(svgMaxHeight)
     function setIframeMaxDimensionEvent(e){
       self.setSvgMaxHeight(e.detail.maxHeight)
     }
@@ -130,12 +140,9 @@ export class KinGenomicPrivacyMeter{
     
     // trash button
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
+    this.tutorialButton = new KgpTutorialButton("tutorial-button", this, {"click.tutorial": d=>kgpTutorial(self.i18n)})
 
-    //tutorial
-    if(this.options.showTutorialButton){
-      this.tutorialButton = new KgpTutorialButton("tutorial-button", this, {"click.tutorial": d=>kgpTutorial(self.i18n)})
-    }
-    // launch tutorial event from enclosing window
+    // launch tutorial event
     window.document.addEventListener('KgpLaunchTutorialEvent', ()=>{
       $("#tuto-modal").modal("show")
       kgpTutorial(self.i18n)
@@ -163,16 +170,6 @@ export class KinGenomicPrivacyMeter{
     }
     this.mobileBlock()
     this.IEBlock()
-
-    if(newUser){
-      // send init request
-      this.scoreRequestHandler.requestScore(
-        "i1",
-        [["i1","f1"],["f1","i2"]], [],
-        this.userId, this.userSource, this.i18n.lng,
-        true // silent request
-      )
-    }
   }
 
   /** Resets the family tree in a pleasant way */
