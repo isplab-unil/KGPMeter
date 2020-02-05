@@ -86,6 +86,7 @@
     "hint-sequence-node": "Indiquez si cet individu a fait séquencer son ADN",
     "hint-change-sex": "Indiquez votre sexe",
     "hint-trash": "Réinitialiser l'arbre",
+    "hint-tuto": "Lancer le tutorial",
     "trash-sure": "Êtes-vous sûr de vouloir réinitialiser l'arbre de famille ?",
     "trash-cancel": "Annuler",
     "trash-confirm": "Confirmer",

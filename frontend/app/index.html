@@ -20,7 +20,48 @@
     </div>
     <div id="kgp-explainer-container"></div>
 
+    <!-- Modal: tutorial -->
+    <div class="modal fade" id="tuto-modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content tuto-content">
+          <div class="modal-header tuto-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <!-- tuto step 0 -->
+              <div id="tuto-step">
+                <div class="row">
+                  <h3  class="modal-title" id="tuto-title" data-i18n="tuto-title-0"></h3>
+                </div>
+                  <div class="row">
+                    <p id="tuto-text" data-i18n="tuto-text-0"></p>
+                  </div>
+                  <div class="row">
+                  <div class="col-sm-6 tuto-figure"><video id="tuto-video" autoplay="" loop="" name="Video Name" width="397px" height="317px"></video></div>
+                  </div>
+              </div>
 
+          </div>
+          <!---->
+          <div class="row">
+              <svg width="80" height="15" style="display:block;margin:auto;">
+                  <circle id="tuto-puce0" class="tuto-puce" r="5" cx="10" cy="7" fill="grey"></circle>
+                  <circle id="tuto-puce1" class="tuto-puce" r="5" cx="30" cy="7" fill="#f0f0f0"></circle>
+                  <circle id="tuto-puce2" class="tuto-puce" r="5" cx="50" cy="7" fill="#f0f0f0"></circle>
+                  <circle id="tuto-puce3" class="tuto-puce" r="5" cx="70" cy="7" fill="#f0f0f0"></circle>
+              </svg>
+          </div>
+          <div class="modal-footer tuto-footer">
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button id="tuto-left-button" type="button" class="btn btn-default" data-i18n="previous-button"></button>
+              <button id="tuto-right-button" type="button" class="btn btn-default" data-i18n="next-button"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
 	<script src="./js/lib/babel-polyfill.min.js"></script>
 	<script src="./js/lib/promise-polyfill.min.js"></script>

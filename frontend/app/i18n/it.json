@@ -84,6 +84,7 @@
     "hint-sequence-node": "Indicare se questa persona ha messo in sequenza il proprio genoma.",
     "hint-change-sex": "Indica il tuo sesso",
     "hint-trash": "Ripristina albero genealogico",
+    "hint-tuto": "Tutorial di lancio",
     "change-target": "Selezionare questa persona come obiettivo.",
     "trash-sure": "Sei sicuro di voler resettare il tuo albero di famiglia?",
     "trash-cancel": "Annulla",

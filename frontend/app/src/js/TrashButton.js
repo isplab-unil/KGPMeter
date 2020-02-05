@@ -11,7 +11,7 @@ export class TrashButton{
   init(){
     d3.select("#"+this.domId).remove()
     // trash button
-    this.trashButton = this.kgp.addSvgButton("\uf2ed",this.domId,"hint-trash",0)
+    this.trashButton = this.kgp.addSvgButton("\uf2ed",this.domId,"hint-trash", 1, 27)
     let self = this
     Object.keys(this.listeners).forEach(k=>self.trashButton.on(k, self.listeners[k]))
   }

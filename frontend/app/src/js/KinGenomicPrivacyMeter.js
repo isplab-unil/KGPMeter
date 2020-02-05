@@ -8,6 +8,7 @@ import {KgpWordedScore} from "./KgpWordedScore.js"
 import {KgpPrivacyBar} from "./KgpPrivacyBar.js"
 import {kgpSetSourceEvent, kgpSetHeightEvent} from "./KgpIframeInterface"
 import {TrashButton} from "./TrashButton.js"
+import {KgpTutorialButton} from "./KgpTutorial.js"
 import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
 
 export class KinGenomicPrivacyMeter{
@@ -139,6 +140,7 @@ export class KinGenomicPrivacyMeter{
     
     // trash button
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
+    this.tutorialButton = new KgpTutorialButton("tutorial-button", this, {"click.trash": d=>self.reset()})
 
     onWindowResize(()=>self.resizeSvg())
 
@@ -291,6 +293,7 @@ export class KinGenomicPrivacyMeter{
     this.privacyWordedScore.init()
     this.privacyWordedScore.hide()
     this.trashButton.init()
+    this.tutorialButton.init()
 
     if(self.target){
       this.privacyBar.update(this.privacyMetric, 0)
@@ -318,10 +321,10 @@ export class KinGenomicPrivacyMeter{
 
 
   /** use by TrashButton, TrashButtonWithConfirmation */
-  addSvgButton(FAunicode,gId,i18nKey,x=0,tooltipX=0,tooltipY=25,tooltipWidth=80,tooltipHeight=50){
+  addSvgButton(FAunicode,gId,i18nKey,x=0,y=0,tooltipX=22,tooltipY=0,tooltipWidth=80,tooltipHeight=50){
     let button = this.svg.append("g")
         .attr("id",gId)
-        .attr("transform","translate("+x+",27)")
+        .attr("transform","translate("+x+","+y+")")
         .attr("style","cursor:pointer;")
         .classed("button-with-tooltip",true)
     button.append("rect")

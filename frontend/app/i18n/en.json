@@ -89,6 +89,7 @@
   "hint-sequence-node": "Indicate whether this person has sequenced their genome.",
   "hint-change-sex": "Indicate your gender",
   "hint-trash": "Reset family tree",
+  "hint-tuto": "Launch tutorial",
   "change-target": "Select this person as target.",
   "trash-sure": "Are you sure you want to reset your family-tree?",
   "trash-cancel": "Cancel",

@@ -85,6 +85,7 @@
     "hint-sequence-node": "Geben Sie an, ob diese Person ihr Genom sequenziert hat.",
     "hint-change-sex": "Geben Sie Ihr Geschlecht an",
     "hint-trash": "Stammbaum zurücksetzen",
+    "hint-tuto": "Einführungstutorial",
     "change-target": "Wählen Sie diese Person als Ziel aus.",
     "trash-sure": "Bist du sicher, dass du deinen Stammbaum zurücksetzen willst?",
     "trash-cancel": "Abbrechen",

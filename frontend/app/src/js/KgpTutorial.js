@@ -1,6 +1,25 @@
-"use strict";
+export class KgpTutorialButton{
+  constructor(domId, kgp, listeners = {}){
+    this.domId = domId
+    this.kgp = kgp
+    this.listeners = listeners
+    this.init()
+  }
+  init(){
+    d3.select("#"+this.domId).remove()
+    // trash button
+    this.tutoButton = this.kgp.addSvgButton("\uf059",this.domId,"hint-tuto",0,57, 22, 0, 60)
+    let self = this
+    Object.keys(this.listeners).forEach(k=>self.tutoButton.on(k, self.listeners[k]))
+  }
 
-function startTuto(i18n){
+  on(event, listener){
+    this.listeners[event] = listener
+    this.tutoButton.on(event, listener)
+  }
+}
+
+export function kgpTutorial(i18n){
   //intro1: 'Construisez votre arbre de famille: <img class="tutorial-img" src="../img/tool/tuto1_build.png">'
   //intro2: 'Indiquez qui est séquencé dans votre famille: <img class="tutorial-img" src="../img/tool/tuto2_sequence.png">'
   //intro3: 'Observez votre score: <video controls="false" autoplay width="365px" height="348px" name="Video Name" src="../img/tool/tuto3_score.mov"></video>'+'<script type="javascript">var vids = $("video");$.each(vids, function(){this.controls = false;});</script>'
