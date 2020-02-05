@@ -354,21 +354,27 @@ border-right: 0px;
 
 /* =================================== tutorial =================================== */
 
-.modal-title{
+#tuto-modal .modal-title{
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 800;
   margin-left: 35px;
-  margin-bottom: -15px;
+  margin-bottom: 0px;
   margin-top: 0px;
+}
+#tuto-modal .modal-body{
+  margin-top: 0px;
+  padding-top: 0px;
 }
 
 .tuto-content{
-  width: 700px;
-  height: 650px;
+  /* width: 700px;*/
+  height: 580px;
 }
 
-.modal-header{
+#tuto-modal .modal-header{
   border-bottom: 0px solid white;
 }
-.modal-footer{
+#tuto-modal .modal-footer{
   border-top: 0px solid white;
 }
 #tuto-step{
@@ -392,7 +398,7 @@ border-right: 0px;
   background-color: red;
   cursor:pointer;
 }
-.modal-header .close{
+#tuto-modal .modal-header .close{
   margin-top:-10px;
   font-size:30px;
 }

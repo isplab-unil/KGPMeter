@@ -8,7 +8,7 @@ import {KgpWordedScore} from "./KgpWordedScore.js"
 import {KgpPrivacyBar} from "./KgpPrivacyBar.js"
 import {kgpSetSourceEvent, kgpSetHeightEvent} from "./KgpIframeInterface"
 import {TrashButton} from "./TrashButton.js"
-import {KgpTutorialButton} from "./KgpTutorial.js"
+import {KgpTutorialButton, kgpTutorial} from "./KgpTutorial.js"
 import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
 
 export class KinGenomicPrivacyMeter{
@@ -140,7 +140,7 @@ export class KinGenomicPrivacyMeter{
     
     // trash button
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
-    this.tutorialButton = new KgpTutorialButton("tutorial-button", this, {"click.trash": d=>self.reset()})
+    this.tutorialButton = new KgpTutorialButton("tutorial-button", this, {"click.tutorial": d=>kgpTutorial(self.i18n)})
 
     onWindowResize(()=>self.resizeSvg())
 

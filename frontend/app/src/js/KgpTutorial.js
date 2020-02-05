@@ -9,6 +9,9 @@ export class KgpTutorialButton{
     d3.select("#"+this.domId).remove()
     // trash button
     this.tutoButton = this.kgp.addSvgButton("\uf059",this.domId,"hint-tuto",0,57, 22, 0, 60)
+    this.tutoButton
+      .attr("data-toggle", 'modal')
+      .attr("data-target", '#tuto-modal')
     let self = this
     Object.keys(this.listeners).forEach(k=>self.tutoButton.on(k, self.listeners[k]))
   }
@@ -65,7 +68,7 @@ export function kgpTutorial(i18n){
     $("#tuto-title").attr(i18n.keyAttr,"tuto-title-"+tutoStep)
     $("#tuto-text").attr(i18n.keyAttr,"tuto-text-"+tutoStep)
     let video_lng = i18n.lng=="fr"?  i18n.lng : "en" // video only in french or english
-    $("#tuto-video").attr("src","../img/tool/tuto_"+video_lng+"_"+tutoStep+".mp4")
+    $("#tuto-video").attr("src","./tuto/tuto_"+video_lng+"_"+tutoStep+".mp4")
     $("#tuto-video").currentTime=0
     d3.selectAll(".tuto-puce").transition(500).attr("fill","#f0f0f0")
     d3.select("#tuto-puce"+tutoStep).transition(500).attr("fill","grey")
