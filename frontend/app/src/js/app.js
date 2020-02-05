@@ -50,7 +50,7 @@ i18n.observe(document)
 let kgp
 function initKgp(options){
   kgp = new KinGenomicPrivacyMeter(
-    "../",
+    "https://santeperso.unil.ch/api-dev/app/",
     "svg-kin-genomics-privacy-app",
     "@I1@",
     i18n,
@@ -69,5 +69,6 @@ if(window.parent != window){
 }
 
 console.log("app.js window.parent == window: ", window.parent == window)
+console.log("window.document.URL: ", window.document.URL)
 console.log("window.parent.document.URL: ", window.parent.document.URL)
 console.log("window.parent.document.getElementsByTagName(body)[0]: ", window.parent.document.getElementsByTagName("body")[0])
