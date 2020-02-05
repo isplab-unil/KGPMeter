@@ -69,6 +69,9 @@ export function kgpSetIframeMaxDimensionEvent(maxHeight){
   return new CustomEvent("KgpSetIframeMaxDimensionEvent", {detail: {maxHeight:maxHeight}})
 }
 
+export function kgpLaunchTutorialEvent(){
+  return new CustomEvent("KgpLaunchTutorialEvent")
+}
 
 /******** up events ********/
 

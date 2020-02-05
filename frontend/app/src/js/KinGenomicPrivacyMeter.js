@@ -142,6 +142,12 @@ export class KinGenomicPrivacyMeter{
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
     this.tutorialButton = new KgpTutorialButton("tutorial-button", this, {"click.tutorial": d=>kgpTutorial(self.i18n)})
 
+    // launch tutorial event
+    window.document.addEventListener('KgpLaunchTutorialEvent', ()=>{
+      $("#tuto-modal").modal("show")
+      kgpTutorial(self.i18n)
+    }, false)
+
     onWindowResize(()=>self.resizeSvg())
 
     this.ftree = this.loadFamilyTreeFromLocalStorage()
