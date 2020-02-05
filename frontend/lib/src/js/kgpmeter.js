@@ -1,4 +1,4 @@
-import {kgpSetLanguageEvent, kgpSetSourceEvent, kgpSetIframeMaxDimensionEvent, kgpLaunchTutorialEvent} from "../../../app/src/js/KgpIframeInterface.js"
+import {kgpSetLanguageEvent, kgpSetIframeMaxDimensionEvent, kgpLaunchTutorialEvent} from "../../../app/src/js/KgpIframeInterface.js"
 
 
 class KgpMeter{
@@ -20,8 +20,6 @@ class KgpMeter{
       setTimeout(() => {
         // set language
         this.setLanguage(self.lng)
-        // set source
-        this.setSource(document.URL)
         // set max height
         this.setMaxheight(maxHeight)
       }, 50);
@@ -37,10 +35,6 @@ class KgpMeter{
   setLanguage(lng){
     let setLanguageEvent = kgpSetLanguageEvent(lng)
     this.iframe.contentDocument.dispatchEvent(setLanguageEvent)
-  }
-  setSource(source){
-    let setSourceEvent = kgpSetSourceEvent(source)
-    this.iframe.contentDocument.dispatchEvent(setSourceEvent)
   }
   setMaxheight(maxHeight){
     let setIframeMaxDimensionEvent = kgpSetIframeMaxDimensionEvent(maxHeight)

@@ -44,36 +44,18 @@ export class KinGenomicPrivacyMeter{
     let sourceCookie = cookieLocalStoragePrefix+"user-source"
     this.userId = cookie.read(idCookie)
     this.userSource = cookie.read(sourceCookie)
-    if(!this.userId){
+    let newUser = !this.userId
+    if(newUser){
       this.userId = (+new Date())+"-"+Math.random()
       cookie.create(idCookie,this.userId,1)
-    }
-    function setSource(e){
-      let userSource = cookie.read(sourceCookie)
-      if(!userSource){
-        // if no source: init user source
-        self.userSource = e.detail.source? e.detail.source : document.URL
-        // TODO: remove or refine ?test
-        if(Boolean(self.userSource.match(/\/privacy-dev\//))){
-          self.userSource = self.userSource+"?test"
-        }
-        cookie.create(sourceCookie,self.userSource,1)
-
-        // send init request
-        self.scoreRequestHandler.requestScore(
-          "i1",
-          [["i1","f1"],["f1","i2"]], [],
-          self.userId, self.userSource, self.i18n.lng,
-          true // silent request
-        )
+      // if no source: init user source
+      this.userSource =  window.parent.document.URL
+      // TODO: remove or refine ?test
+      if(Boolean(this.userSource.match(/\/privacy-dev\//))){
+        this.userSource = this.userSource+"?test"
       }
+      cookie.create(sourceCookie,this.userSource,1)
     }
-    window.document.addEventListener('KgpSetSourceEvent', setSource, false)
-    // if app not enclosed in an iframe: set source as current URL after 1sec
-    setTimeout(function createUserAfterTimeout(){
-      let setSourceEvent = kgpSetSourceEvent(document.URL)
-      document.dispatchEvent(setSourceEvent)
-    },1000)
 
 
     // set max dimensions event
@@ -170,6 +152,16 @@ export class KinGenomicPrivacyMeter{
     }
     this.mobileBlock()
     this.IEBlock()
+
+    if(newUser){
+      // send init request
+      this.scoreRequestHandler.requestScore(
+        "i1",
+        [["i1","f1"],["f1","i2"]], [],
+        this.userId, this.userSource, this.i18n.lng,
+        true // silent request
+      )
+    }
   }
 
   /** Resets the family tree in a pleasant way */
