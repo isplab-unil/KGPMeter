@@ -13,30 +13,16 @@ import {KgpTutorialButton, kgpTutorial} from "./KgpTutorial.js"
 import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
 
 export class KinGenomicPrivacyMeter{
-  constructor(api_base_url, svgId, youNodeId, i18n, options={}){
-    this.options = {
-      showTutorialButton:true,
-      svgMaxHeight:2000,
-      maxFamilyTreeDepth:5,
-      cookieLocalStoragePrefix:"kgpmeter-"
-    }
-    Object.assign(this.options, options)
+  constructor(api_base_url, svgId, youNodeId, i18n, cookieLocalStoragePrefix="kgpmeter-", options={}){
+    this.setOptions(options)
     let self = this
     this.i18n = i18n
-    
-    // set max dimensions event
-    this.setSvgMaxHeight(this.options.svgMaxHeight)
-    function setIframeMaxDimensionEvent(e){
-      self.setSvgMaxHeight(e.detail.maxHeight)
-    }
-    window.document.addEventListener('KgpSetIframeMaxDimensionEvent', setIframeMaxDimensionEvent, false)
 
     this.svg = d3.select("#"+svgId)
     this.svgHeight = parseInt(this.svg.attr("height"))
     this.svgOriginalHeight = this.svgHeight
     this.updateSvgHeight(this.svgHeight, 800, true)
 
-    this.maxFamilyTreeDepth = this.options.maxFamilyTreeDepth
     this.youNodeId = youNodeId // "@I1@"
     this.privacyMetric = 1
     this.relationships = KinGenomicPrivacyMeter.getRelationships()
@@ -54,9 +40,15 @@ export class KinGenomicPrivacyMeter{
     }
     window.document.addEventListener('KgpSetLanguageEvent', setLanguage, false)
 
+    // set max dimensions event
+    function setIframeMaxDimensionEvent(e){
+      this.options.svgMaxHeight = e.detail.maxHeight
+    }
+    window.document.addEventListener('KgpSetIframeMaxDimensionEvent', setIframeMaxDimensionEvent, false)
+
     // user id&source + source event
-    let idCookie = this.options.cookieLocalStoragePrefix+"user-id"
-    let sourceCookie = this.options.cookieLocalStoragePrefix+"user-source"
+    let idCookie = cookieLocalStoragePrefix+"user-id"
+    let sourceCookie = cookieLocalStoragePrefix+"user-source"
     this.userId = cookie.read(idCookie)
     this.userSource = cookie.read(sourceCookie)
     if(!this.userId){
@@ -214,6 +206,20 @@ export class KinGenomicPrivacyMeter{
     },transitionDuration+2)
   }
 
+  resetOptions(){
+    this.options = {
+      svgMaxHeight:2000,
+      maxFamilyTreeDepth:5
+    }
+  }
+  setOptions(options){
+    this.resetOptions()
+    this.addOptions(options)
+  }
+  addOptions(options){
+    Object.assign(this.options, options)
+  }
+
   saveFamilyTreeToLocalStorage(familyTreeKey="kgp-familyTree", targetKey="kgp-targetId", saveDateKey="kgp-saveDate"){
     localStorage.setItem(familyTreeKey,JSON.stringify(this.ftree.serialize(["sequencedDNA","lastSequencedDNA","i18nName"])))
     localStorage.setItem(saveDateKey,+new Date())
@@ -261,22 +267,18 @@ export class KinGenomicPrivacyMeter{
     this.surveyApiEndpoint = this.api_base_url+separator+"survey"
   }
 
-  setSvgMaxHeight(svgMaxHeight){
-    this.svgMaxHeight = svgMaxHeight
-  }
-
   updateSvgHeight(heightFtree, transitionsDuration = 800, forceEnclosingHeightUpdate=false){
     let newSvgHeight = this.svgHeight
     if(heightFtree<this.svgOriginalHeight){ //tree height smaller than minimum
       newSvgHeight = this.svgOriginalHeight
     }
     // tree height between minimum and max
-    if(heightFtree>=this.svgOriginalHeight && heightFtree<= this.svgMaxHeight){
+    if(heightFtree>=this.svgOriginalHeight && heightFtree<= this.options.svgMaxHeight){
       newSvgHeight = heightFtree
     }
     // tree height taller than maximum
-    if(heightFtree>this.svgMaxHeight){
-      newSvgHeight = this.svgMaxHeight
+    if(heightFtree>this.options.svgMaxHeight){
+      newSvgHeight = this.options.svgMaxHeight
     }
     // if needed -> change it
     if(newSvgHeight!=this.svgHeight || forceEnclosingHeightUpdate){

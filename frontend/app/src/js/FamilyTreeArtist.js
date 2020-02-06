@@ -353,8 +353,8 @@ export class FamilyTreeArtist{
       removeAddRelativeMenu()
   
       // can only add children/parents if tree not too deep
-      let canAddChildren = node.depth<self.kgp.maxFamilyTreeDepth-1
-      let canAddParents = (self.ftree.maxDepth<self.kgp.maxFamilyTreeDepth-1 || node.depth!=0)
+      let canAddChildren = node.depth<self.kgp.options.maxFamilyTreeDepth-1
+      let canAddParents = (self.ftree.maxDepth<self.kgp.options.maxFamilyTreeDepth-1 || node.depth!=0)
   
       let canAddMother = (!node.famc || !node.famc.wife) && canAddParents
       let canAddFather = (!node.famc || !node.famc.husb) && canAddParents
