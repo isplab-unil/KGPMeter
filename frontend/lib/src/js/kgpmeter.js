@@ -46,7 +46,7 @@ class KgpMeter{
     let setIframeMaxDimensionEvent = kgpSetIframeMaxDimensionEvent(maxHeight)
     this.iframe.contentDocument.dispatchEvent(setIframeMaxDimensionEvent)
   }
-  launchTutorial(maxHeight){
+  launchTutorial(){
     this.iframe.contentDocument.dispatchEvent(kgpLaunchTutorialEvent())
   }
 
