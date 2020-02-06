@@ -56,9 +56,9 @@ class KgpMeter{
     this.height = height
   }
   setDivStyle(oldHeightstr, heightStr, transitionDuration){
-    let divStyle = 'border:none; width:100%; height: '+oldHeightstr+'; transition-property: height; transition-duration: '+transitionDuration+'s; transition-timing-function: easeInOutQuart;'
+    let divStyle = 'border:none; width:100%; height: '+oldHeightstr+'; transition-property: height; transition-duration: '+transitionDuration+'s; transition-timing-function: ease;'
     this.div.setAttribute("style",divStyle)
-    divStyle = 'border:none; width:100%; height: '+heightStr+'; transition-property: height; transition-duration: '+transitionDuration+'s; transition-timing-function: easeInOutQuart;'
+    divStyle = 'border:none; width:100%; height: '+heightStr+'; transition-property: height; transition-duration: '+transitionDuration+'s; transition-timing-function: ease;'
     this.div.setAttribute("style",divStyle)
   }
 }
