@@ -63,12 +63,13 @@ export class FamilyTreeArtist{
     this.heightFtree = this.ftree.maxY() - miny + 150
     // if we can still resize the svg -> let's do it!
     
-    this.kgp.updateSvgHeight(this.heightFtree, transitionsDuration)
     
     let scaleFactor = d3.min([1, this.kgp.svgWidth/widthFtree, this.kgp.svgHeight/this.heightFtree])
     let translateX = widthFtree<this.kgp.svgWidth-ftreeRightMargin/2?
         this.kgp.svgWidth/2 :
         scaleFactor * (this.ftree.width() / 2 + ftreeLeftMargin)
+
+    this.kgp.updateSvgHeight(this.heightFtree*scaleFactor, transitionsDuration)
 
     this.svgg.transition()
       .duration(transitionsDuration)
