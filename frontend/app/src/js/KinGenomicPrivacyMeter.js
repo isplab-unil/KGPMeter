@@ -13,16 +13,30 @@ import {KgpTutorialButton, kgpTutorial} from "./KgpTutorial.js"
 import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
 
 export class KinGenomicPrivacyMeter{
-  constructor(api_base_url, svgId, youNodeId, i18n, svgMaxHeight=2000, maxFamilyTreeDepth=5, cookieLocalStoragePrefix="kgpmeter-"){
+  constructor(api_base_url, svgId, youNodeId, i18n, options={}){
+    this.options = {
+      showTutorialButton:true,
+      svgMaxHeight:2000,
+      maxFamilyTreeDepth:5,
+      cookieLocalStoragePrefix:"kgpmeter-"
+    }
+    Object.assign(this.options, options)
     let self = this
     this.i18n = i18n
     
+    // set max dimensions event
+    this.setSvgMaxHeight(this.options.svgMaxHeight)
+    function setIframeMaxDimensionEvent(e){
+      self.setSvgMaxHeight(e.detail.maxHeight)
+    }
+    window.document.addEventListener('KgpSetIframeMaxDimensionEvent', setIframeMaxDimensionEvent, false)
+
     this.svg = d3.select("#"+svgId)
     this.svgHeight = parseInt(this.svg.attr("height"))
     this.svgOriginalHeight = this.svgHeight
     this.updateSvgHeight(this.svgHeight, 800, true)
 
-    this.maxFamilyTreeDepth = maxFamilyTreeDepth
+    this.maxFamilyTreeDepth = this.options.maxFamilyTreeDepth
     this.youNodeId = youNodeId // "@I1@"
     this.privacyMetric = 1
     this.relationships = KinGenomicPrivacyMeter.getRelationships()
@@ -41,8 +55,8 @@ export class KinGenomicPrivacyMeter{
     window.document.addEventListener('KgpSetLanguageEvent', setLanguage, false)
 
     // user id&source + source event
-    let idCookie = cookieLocalStoragePrefix+"user-id"
-    let sourceCookie = cookieLocalStoragePrefix+"user-source"
+    let idCookie = this.options.cookieLocalStoragePrefix+"user-id"
+    let sourceCookie = this.options.cookieLocalStoragePrefix+"user-source"
     this.userId = cookie.read(idCookie)
     this.userSource = cookie.read(sourceCookie)
     if(!this.userId){
@@ -77,12 +91,6 @@ export class KinGenomicPrivacyMeter{
     },1000)
 
 
-    // set max dimensions event
-    this.setSvgMaxHeight(svgMaxHeight)
-    function setIframeMaxDimensionEvent(e){
-      self.setSvgMaxHeight(e.detail.maxHeight)
-    }
-    window.document.addEventListener('KgpSetIframeMaxDimensionEvent', setIframeMaxDimensionEvent, false)
 
     // api urls
     this.setApiUrl(api_base_url)
