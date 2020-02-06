@@ -67,6 +67,10 @@ export class KgpSurvey{
   
     this.updateSurveyVolunteerButton(0)
     
+    document.getElementById("survey-finish-step-1-button").addEventListener("click", ()=>self.changePageSurvey())
+    document.getElementById("survey-left-button").addEventListener("click", ()=>self.surveyPrevious())
+    document.getElementById("survey-right-button").addEventListener("click", ()=>self.closeSurvey())
+
   }
 
   /**
