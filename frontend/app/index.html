@@ -20,6 +20,255 @@
     </div>
     <div id="kgp-explainer-container"></div>
 
+    <!------------------------ Modal: survey ------------------------>
+    <!--survey launch button-->
+    <div id="survey-launch-button" class="text-center">
+      <a><i class="fas fa-poll"></i> <span data-i18n="survey-volunteer"></span></a>
+    </div>
+
+    <div class="modal fade" id="modal-survey" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" id="survey-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="survey-step-1" class="survey-step survey-step-active">
+              <div class="row">
+                <h3 class="modal-title" id="survey-title"><i class="far fa-edit"></i> <span data-i18n="survey-step-1-title"></span></h3>
+              </div>
+
+
+
+                <!-- survey question prior-knowledge -->
+              <div id="survey-question-prior-knowledge" class="survey-question">
+                <div class="question row" data-i18n="survey-prior-knowledge">
+                </div>
+                <div class="row survey-answer">
+                  <form id="prior-knowledge">
+                    <input id="yes-prior-knowledge" class="prior-knowledge survey-choice" type="radio" name="prior-knowledge" value="yes">
+                    <label for="yes-prior-knowledge" data-i18n="yes"></label>
+                    <input id="to-some-extent-prior-knowledge" class="prior-knowledge survey-choice" type="radio" name="prior-knowledge" value="to-some-extent">
+                    <label for="to-some-extent-prior-knowledge" data-i18n="to-some-extent"></label>
+                    <input id="no-prior-knowledge" class="prior-knowledge survey-choice" type="radio" name="prior-knowledge" value="no">
+                    <label for="no-prior-knowledge" data-i18n="no"></label>
+                    <input id="rathernotsay-prior-knowledge" class="prior-knowledge survey-choice" type="radio" name="prior-knowledge" value="rathernotsay">
+                    <label for="rathernotsay-prior-knowledge" data-i18n="rathernotsay"></label>
+                  </form>
+                </div>
+              </div>
+
+              <!-- survey question score-exp -->
+              <div id="survey-question-score-exp" class="survey-question">
+                <div class="question row" data-i18n="score-exp">Est-ce que les scores de confidentialité obtenus étaient plutôt au-dessus ou en dessous de vos attentes?</div>
+                  <div class="row survey-answer">
+                  <form id="score-exp">
+                    <div class="col col-sm-3 text-right" data-i18n="score-exp-leftbound"></div>
+                    <div class="col col-sm-1"><input id="score-exp-1" class="score-exp survey-choice" type="radio" name="score-exp" value="score-exp-1"></div>
+                    <div class="col col-sm-1"><input id="score-exp-2" class="score-exp survey-choice" type="radio" name="score-exp" value="score-exp-2"></div>
+                    <div class="col col-sm-1"><input id="score-exp-3" class="score-exp survey-choice" type="radio" name="score-exp" value="score-exp-3"></div>
+                    <div class="col col-sm-1"><input id="score-exp-4" class="score-exp survey-choice" type="radio" name="score-exp" value="score-exp-4"></div>
+                    <div class="col col-sm-1"><input id="score-exp-5" class="score-exp survey-choice" type="radio" name="score-exp" value="score-exp-5"></div>
+                    <div class="col col-sm-1"><input id="score-exp-6" class="score-exp survey-choice" type="radio" name="score-exp" value="score-exp-6"></div>
+                    <div class="col col-sm-1"><input id="score-exp-7" class="score-exp survey-choice" type="radio" name="score-exp" value="score-exp-7"></div>
+                    <div class="col col-sm-2" data-i18n="score-exp-rightbound"></div>
+
+                  </form>
+                </div>
+          </div>
+
+          <!-- survey question you-or-family -->
+          <div id="survey-question-you-or-family" class="survey-question">
+            <div class="question row" data-i18n="you-or-family"></div>
+          <div class="row survey-answer">
+          <form id="you-or-family">
+
+                  <div class="col col-sm-3 text-right" data-i18n="you-or-family-leftbound"></div>
+
+                  <div class="col col-sm-1"><input id="you-or-family-1" class="you-or-family survey-choice" type="radio" name="you-or-family" value="you-or-family-1"></div>
+                  <div class="col col-sm-1"><input id="you-or-family-2" class="you-or-family survey-choice" type="radio" name="you-or-family" value="you-or-family-2"></div>
+                  <div class="col col-sm-1"><input id="you-or-family-3" class="you-or-family survey-choice" type="radio" name="you-or-family" value="you-or-family-3"></div>
+                  <div class="col col-sm-1"><input id="you-or-family-4" class="you-or-family survey-choice" type="radio" name="you-or-family" value="you-or-family-4"></div>
+                  <div class="col col-sm-1"><input id="you-or-family-5" class="you-or-family survey-choice" type="radio" name="you-or-family" value="you-or-family-5"></div>
+                  <div class="col col-sm-1"><input id="you-or-family-6" class="you-or-family survey-choice" type="radio" name="you-or-family" value="you-or-family-6"></div>
+                  <div class="col col-sm-1"><input id="you-or-family-7" class="you-or-family survey-choice" type="radio" name="you-or-family" value="you-or-family-7"></div>
+
+                  <div class="col col-sm-2" data-i18n="you-or-family-rightbound"></div>
+              </form>
+            </div>
+          </div>
+
+
+          <!-- survey question utility-website -->
+          <div id="survey-question-utility-website" class="survey-question">
+              <div class="question row" data-i18n="utility-website"></div>
+            <div class="row survey-answer">
+            <form id="utility-website">
+
+                    <div class="col col-sm-3 text-right" data-i18n="utility-website-leftbound"></div>
+
+                    <div class="col col-sm-1"><input id="utility-website-1" class="utility-website survey-choice" type="radio" name="utility-website" value="utility-website-1"></div>
+                    <div class="col col-sm-1"><input id="utility-website-2" class="utility-website survey-choice" type="radio" name="utility-website" value="utility-website-2"></div>
+                    <div class="col col-sm-1"><input id="utility-website-3" class="utility-website survey-choice" type="radio" name="utility-website" value="utility-website-3"></div>
+                    <div class="col col-sm-1"><input id="utility-website-4" class="utility-website survey-choice" type="radio" name="utility-website" value="utility-website-4"></div>
+                    <div class="col col-sm-1"><input id="utility-website-5" class="utility-website survey-choice" type="radio" name="utility-website" value="utility-website-5"></div>
+                    <div class="col col-sm-1"><input id="utility-website-6" class="utility-website survey-choice" type="radio" name="utility-website" value="utility-website-6"></div>
+                    <div class="col col-sm-1"><input id="utility-website-7" class="utility-website survey-choice" type="radio" name="utility-website" value="utility-website-7"></div>
+
+                    <div class="col col-sm-2" data-i18n="utility-website-rightbound"></div>
+
+            </form>
+          </div>
+        </div>
+
+
+
+              <!-- survey question nps -->
+              <div id="survey-question-nps" class="survey-question">
+                  <div class="question row" data-i18n="nps"></div>
+                <div class="row survey-answer">
+                <form id="nps">
+
+                        <div class="col col-sm-3 text-right" data-i18n="nps-leftbound"></div>
+                        <div class="col col-sm-1"><input id="nps-1" class="nps survey-choice" type="radio" name="nps" value="nps-1"></div>
+                        <div class="col col-sm-1"><input id="nps-2" class="nps survey-choice" type="radio" name="nps" value="nps-2"></div>
+                        <div class="col col-sm-1"><input id="nps-3" class="nps survey-choice" type="radio" name="nps" value="nps-3"></div>
+                        <div class="col col-sm-1"><input id="nps-4" class="nps survey-choice" type="radio" name="nps" value="nps-4"></div>
+                        <div class="col col-sm-1"><input id="nps-5" class="nps survey-choice" type="radio" name="nps" value="nps-5"></div>
+                        <div class="col col-sm-1"><input id="nps-6" class="nps survey-choice" type="radio" name="nps" value="nps-6"></div>
+                        <div class="col col-sm-1"><input id="nps-7" class="nps survey-choice" type="radio" name="nps" value="nps-7"></div>
+                        <div class="col col-sm-2" data-i18n="nps-rightbound"></div>
+
+                  </form>
+
+              </div>
+            </div>
+
+
+
+        <!-- survey question comment -->
+        <div id="survey-question-comment" class="survey-question">
+          <div class="question row" data-i18n="survey-comment"></div>
+          <div class="row survey-answer">
+            <form id="survey-comment">
+              <textarea id="survey-comment-text" rows="5" maxlength="1000" style="resize:none;"></textarea>
+            </form>
+          </div>
+        </div>
+
+
+
+
+
+        </div><!-- close step-1-->
+
+
+        <div id="survey-step-2" class="survey-step survey-step-active" style="display: none">
+
+            <div class="row">
+              <h3 class="modal-title" id="survey-title"><i class="far fa-edit"></i> <span data-i18n="survey-step-2-title"></span></h3>
+            </div>
+
+          <!-- survey question survey-sex -->
+          <div id="survey-question-survey-sex" class="survey-question">
+              <div class="question row" data-i18n="survey-sex"></div>
+              <div class="row survey-answer">
+                <form id="survey-sex">
+                  <input id="female" class="survey-sex survey-choice" type="radio" name="survey-sex" value="female">
+                      <label for="female" data-i18n="female"></label>
+                  <input id="male" class="survey-sex survey-choice" type="radio" name="survey-sex" value="male">
+                      <label for="male" data-i18n="male"></label>
+                    <input id="rathernotsay" class="survey-sex survey-choice" type="radio" name="survey-sex" value="rathernotsay">
+                      <label for="rathernotsay" data-i18n="rathernotsay"></label>
+              </form>
+            </div>
+          </div>
+
+          <!-- survey question survey-age -->
+          <div id="survey-question-survey-age" class="survey-question">
+              <div class="question row" data-i18n="survey-age"></div>
+              <div class="row survey-answer">
+                <form id="survey-age">
+                    <input id="0-17" class="survey-age survey-choice" type="radio" name="survey-age" value="0-17">
+                        <label for="0-17">0-17</label>
+                    <input id="18-24" class="survey-age survey-choice" type="radio" name="survey-age" value="18-24">
+                        <label for="18-24">18-24</label>
+                    <input id="25-34" class="survey-age survey-choice" type="radio" name="survey-age" value="25-34">
+                        <label for="25-34">25-34</label>
+                    <input id="35-44" class="survey-age survey-choice" type="radio" name="survey-age" value="35-44">
+                        <label for="35-44">35-44</label>
+                  <input id="45-64" class="survey-age survey-choice" type="radio" name="survey-age" value="45-64">
+                        <label for="45-64">45-64</label>
+                    <input id="65+" class="npsurvey-ages survey-choice" type="radio" name="survey-age" value="65+">
+                        <label for="65+">65+</label>
+              </form>
+            </div>
+          </div>
+
+          <!-- survey question own-sequence -->
+          <div id="survey-question-own-sequence" class="survey-question">
+              <div class="question row" data-i18n="survey-own-sequence"></div>
+              <div class="row survey-answer">
+                <form id="survey-own-sequence">
+                  <input id="yes-own" class="survey-own-sequence survey-choice" type="radio" name="survey-own-sequence" value="yes">
+                  <label for="yes-own" data-i18n="yes"></label>
+                  <input id="no-own" class="survey-own-sequence survey-choice" type="radio" name="survey-own-sequence" value="no">
+                  <label for="no-own" data-i18n="no"></label>
+                  <input id="not-sure-own" class="survey-own-sequence survey-choice" type="radio" name="survey-own-sequence" value="not-sure">
+                  <label for="not-sure-own" data-i18n="not-sure"></label>
+                  <input id="rathernotsay-own" class="survey-own-sequence survey-choice" type="radio" name="survey-own-sequence" value="rathernotsay">
+                  <label for="rathernotsay-own" data-i18n="rathernotsay"></label>
+              </form>
+            </div>
+          </div>
+
+          <!-- survey question other-sequence -->
+          <div id="survey-question-other-sequence" class="survey-question">
+              <div class="question row" data-i18n="survey-other-sequence"></div>
+              <div class="row survey-answer">
+                <form id="survey-other-sequence">
+                    <input id="yes-other" class="survey-other-sequence survey-choice" type="radio" name="survey-other-sequence" value="yes">
+                    <label for="yes-other" data-i18n="yes"></label>
+                  <input id="no-other" class="survey-other-sequence survey-choice" type="radio" name="survey-other-sequence" value="no">
+                  <label for="no-other" data-i18n="no"></label>
+                  <input id="not-sure-other" class="survey-other-sequence survey-choice" type="radio" name="survey-other-sequence" value="not-sure">
+                  <label for="not-sure-other" data-i18n="not-sure"></label>
+                  <input id="rathernotsay-other" class="survey-other-sequence survey-choice" type="radio" name="survey-other-sequence" value="rathernotsay">
+                  <label for="rathernotsay-other" data-i18n="rathernotsay"></label>
+              </form>
+            </div>
+          </div>
+
+
+
+
+
+
+    </div><!-- close step-2-->
+
+      </div><!-- close modal-body-->
+
+        <div class="modal-footer">
+            <div class="row" id="buttons-survey">
+                <button id="survey-finish-step-1-button" type="button" class="margin35 btn btn-default" data-i18n="close-button" onclick="kgpsurvey.changePageSurvey()"></button>
+
+                <div id="survey-finish-step-2-button" class="margin35 btn-group" role="group" aria-label="Basic example" style="display: none">
+                  <button id="tuto-left-button" type="button" class="btn btn-default" onclick="kgpsurvey.surveyPrevious()" data-i18n="previous-button"></button>
+                  <button id="tuto-right-button" type="button" class="btn btn-default" onclick="kgpsurvey.closeSurvey()" data-i18n="close-button"></button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-md-12" data-i18n="survey-policy" id="policy-survey">
+                  Check our <a href="../faq#data">Privacy policy</a>.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal: tutorial -->
     <div class="modal fade" id="tuto-modal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">

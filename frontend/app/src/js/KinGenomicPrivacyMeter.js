@@ -2,6 +2,7 @@ import {cookie} from "./lib/cookies.js"
 import {FamilyTreeLayout} from "./FamilyTreeLayout.js"
 import {FamilyTreeArtist} from "./FamilyTreeArtist.js"
 import {KgpScoreRequestHandler} from "./KgpScoreRequestHandler.js"
+import {KgpSurvey} from "./KgpSurvey.js"
 import {KgpBackendStatus} from "./KgpBackendStatus.js"
 import {KgpScoreNumberExplainer} from "./KgpScoreNumberExplainer.js"
 import {KgpWordedScore} from "./KgpWordedScore.js"
@@ -86,6 +87,7 @@ export class KinGenomicPrivacyMeter{
     // api urls
     this.setApiUrl(api_base_url)
 
+    this.kgpsurvey = new KgpSurvey(this.surveyApiEndpoint, this.userId, this.i18n)
 
     // privacy bar
     let privacyBarWidth = 30
@@ -137,6 +139,7 @@ export class KinGenomicPrivacyMeter{
     this.scoreRequestHandler.addListener((...args) => self.privacyWordedScore.await(...args))
     this.scoreRequestHandler.addListener((...args) => self.backendStatus.await(...args))
     this.scoreRequestHandler.addListener((...args) => self.scoreNumberExplainer.await(...args))
+    this.scoreRequestHandler.addListener((...args) => self.kgpsurvey.await(...args))
     
     // trash button
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
@@ -247,6 +250,7 @@ export class KinGenomicPrivacyMeter{
     this.api_base_url = api_base_url
     let separator = this.api_base_url.endsWith("/")? "" : "/"
     this.privacyScoreApiEndpoint = (this.api_base_url+ separator + "privacy-score")
+    this.surveyApiEndpoint = this.api_base_url+"/survey"
   }
 
   setSvgMaxHeight(svgMaxHeight){
