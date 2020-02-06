@@ -360,7 +360,7 @@ margin: 0;
   float: left;
 }
 #modal-survey .col-sm-3{
-  max-width: 130px;
+  width: 130px;
   padding-left: 5px;
   padding-right: 5px;
   float: left;
