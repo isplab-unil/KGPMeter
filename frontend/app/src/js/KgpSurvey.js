@@ -1,11 +1,12 @@
 import {cookie} from "./lib/cookies.js"
 
 export class KgpSurvey{
-  constructor(api_endpoint, userId, i18n, launchWaitTimeBasis=60, launchWaitTimePoissonMean=90, launchWaitTimeMax = 300){
+  constructor(api_endpoint, userId, i18n, launchWaitTimeBasis=60, launchWaitTimePoissonMean=90, launchWaitTimeMax = 300, cookieLocalStoragePrefix="kgpmeter-"){
     this.api_endpoint = api_endpoint
     this.questions = ["prior-knowledge","score-exp","you-or-family","utility-website","nps","survey-comment","survey-sex","survey-age", "survey-own-sequence", "survey-other-sequence"]
     this.userId = userId
-    this.i18n = i18n
+    this.i18n = i18n 
+    this.cookieName = cookieLocalStoragePrefix+"survey-status"
 
     let self = this
     
@@ -185,10 +186,10 @@ export class KgpSurvey{
    *          "finished" if finished (=user clicked on second finish button)
    */
   getSurveyStatus(){
-    return cookie.read("survey-status")
+    return cookie.read(this.cookieName)
   }
   setSurveyStatus(status){
-    cookie.create("survey-status",status,1)
+    cookie.create(this.cookieName,status,1)
     this.updateSurveyVolunteerButton()
   }
 }
