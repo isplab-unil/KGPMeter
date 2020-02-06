@@ -1,15 +1,23 @@
 import {kgpSetLanguageEvent, kgpSetSourceEvent, kgpSetIframeMaxDimensionEvent, kgpLaunchTutorialEvent} from "../../../app/src/js/KgpIframeInterface.js"
+import { KinGenomicPrivacyMeter } from "../../../app/src/js/KinGenomicPrivacyMeter.js"
 
 
 class KgpMeter{
   constructor(divId, apiUrl, lng, maxHeight){
     this.divId = divId
-    this.apiUrl = apiUrl
-    this.lng = lng
+    this.div = document.getElementById(divId)
+
+    this.apiUrl = apiUrl? apiUrl : this.div.getAttribute("data-api-url")
+    if(!this.apiUrl){
+      throw "KgpMeter error: no apiUrl. API url provided: "+apiUrl
+    }
+    this.lng = lng? lng : this.div.getAttribute("data-lng")
+    this.lng = lng? lng : "en" // default
+    this.maxHeight = maxHeight? maxHeight : this.div.getAttribute("data-max-height")
+    this.maxHeight = maxHeight? maxHeight : 2000 // default
     this.height = 0
     let self = this
 
-    this.div = document.getElementById(divId)
     this.div.innerHTML = "<iframe src='{src}/app/'></iframe>".replace("{src}",this.apiUrl)
     this.iframe = this.div.getElementsByTagName("iframe")[0]
     this.iframe.setAttribute("style",'border:none; width:100%; height:100%')
@@ -23,7 +31,7 @@ class KgpMeter{
         // set source
         this.setSource(document.URL)
         // set max height
-        this.setMaxheight(maxHeight)
+        this.setMaxheight(self.maxHeight)
       }, 50);
     })
 
@@ -35,6 +43,7 @@ class KgpMeter{
   }
 
   setLanguage(lng){
+    this.lng = lng
     let setLanguageEvent = kgpSetLanguageEvent(lng)
     this.iframe.contentDocument.dispatchEvent(setLanguageEvent)
   }
@@ -43,6 +52,7 @@ class KgpMeter{
     this.iframe.contentDocument.dispatchEvent(setSourceEvent)
   }
   setMaxheight(maxHeight){
+    this.maxHeight = maxHeight
     let setIframeMaxDimensionEvent = kgpSetIframeMaxDimensionEvent(maxHeight)
     this.iframe.contentDocument.dispatchEvent(setIframeMaxDimensionEvent)
   }
@@ -62,6 +72,14 @@ class KgpMeter{
     this.div.setAttribute("style",divStyle)
   }
 }
-// export KgpMeter to glboal namespace
+// export KgpMeter to global namespace
 window.KgpMeter = KgpMeter
+
+// create default kgpmeter if div#kin-genomic-privacy-meter exists
+let defaultKgpmeterDivId = "kin-genomic-privacy-meter"
+let kgpmeter
+if(document.getElementById(defaultKgpmeterDivId)){
+  kgpmeter = new KgpMeter(defaultKgpmeterDivId, "https://santeperso.unil.ch/api-dev/app/?test")
+  window.kgpmeter = kgpmeter
+}
     
