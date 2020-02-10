@@ -17,7 +17,6 @@ export class FamilyTreeArtist{
     let self = this
     this.svgg = this.kgp.svg.append("g").attr("id","familytree-g")
 
-    console.log("FTA init update()")
     this.update(false, transitionDuration);
   
     // distinguish you node
@@ -38,7 +37,7 @@ export class FamilyTreeArtist{
         }
       })
 
-    this.initNodeButtons()
+      this.initNodeButtons()
 
     // hide on mouseleave
     this.nodeButtons.g.on("mouseleave.hide",d => self.nodeButtons.hide())
@@ -119,16 +118,6 @@ export class FamilyTreeArtist{
 
   updateNodes(source, transitionsDuration){
     let self = this
-    if(self.kgp.target){
-      let e = document.querySelector("#"+FamilyTreeArtist.nodeGroupId(self.kgp.target.id)+" .node-logo")
-      if(e){
-        console.log("FTA.updateNodes() START kgp.target.id node class: ", e.getAttribute("class"))
-      }else{
-        console.log("FTA.updateNodes() START -> no kgp target element")
-      }  
-    } else {
-      console.log("FTA.updateNodes() START no kgp.target -> no target node class")
-    }
 
     // maps the node data to the tree layout
     // let nodes = this.ftree.nodesArray()
@@ -206,12 +195,6 @@ export class FamilyTreeArtist{
         .attr('font-size', "36px")
         .text('\uf471');
 
-    if(self.kgp.target){
-      console.log("FTA.updateNodes() kgp.target.id node class: ", d3.select("#"+FamilyTreeArtist.nodeGroupId(self.kgp.target.id)+" .node-logo").attr("class"))
-    } else {
-      console.log("FTA.updateNodes() no kgp.target -> no target node class")
-    }
-
     // Node name: a div that has contenteditable
     indiNodes.append("foreignObject")
         .attr("x","-40px")
@@ -273,20 +256,12 @@ export class FamilyTreeArtist{
       .duration(transitionsDuration)
       .attr("transform", d => "translate(" + d.x + "," + d.y + ")")
 
-
-    console.log("FTA updateNodes kgp.SELECTTARGET() kgp.target: ", self.kgp.target)
-
-    if(self.kgp.target){
-      //self.setAsTarget(self.kgp.target)
-    }
   }
 
   setAsTarget(newTarget, oldTarget){
-    console.log("FTA.setAsTarget() newTarget:", newTarget, ", oldTarget: ", oldTarget)
     this.nodeButtons.hide()
     // reset old target's buttons, logo & sequenced state
-    if(oldTarget){// && oldTarget.id!=newTarget.id){
-      console.log("->>>>>>>> FTA.setAsTarget() oldTarget.id!=newTarget.id")
+    if(oldTarget){
       oldTarget.buttons = oldTarget.id == this.kgp.youNodeId? youNodeButtons : standardNodeButtons
       d3.select("#"+ FamilyTreeArtist.nodeGroupId(oldTarget.id)+" .node-logo")
         .attr("class", "fas fa-dna dna-logo node-logo node-logo-large "+ (oldTarget.lastSequencedDNA? "":"invisible-dna"))
@@ -294,8 +269,6 @@ export class FamilyTreeArtist{
         .text('\uf471');
       oldTarget.sequencedDNA = oldTarget.lastSequencedDNA
       oldTarget.lastSequencedDNA = undefined
-    }else{
-      console.log("-<<<<<<<<<<<<<<< FTA.setAsTarget() oldTarget.id==newTarget.id")
     }
     // set new target
     newTarget.buttons = newTarget.id == this.kgp.youNodeId? youTargetNodeButtons : targetNodeButtons
@@ -309,7 +282,6 @@ export class FamilyTreeArtist{
         .attr("class", "fas fa-crosshairs crosshairs-logo node-logo node-logo-large")
         .attr("x","-18px")
         .text('\uf05b');
-    console.log("FTA.setAsTarget() newTarget node class: ", d3.select("#"+FamilyTreeArtist.nodeGroupId(newTarget.id)+" .node-logo").attr("class"))
   }
 
   initNodeButtons(){
@@ -325,7 +297,6 @@ export class FamilyTreeArtist{
         self.ftree.getLinksAsIds(), self.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
         self.kgp.userId, self.kgp.userSource, self.i18n.lng
       )
-      console.log("FTA removeNode click update()")
       self.update()
       self.kgp.saveFamilyTreeToLocalStorage()
     }
@@ -421,7 +392,6 @@ export class FamilyTreeArtist{
             .on("click",function(node){
               let relativeNode = addRelative(node)
               relativeNode.i18nName = self.kgp.relationToYou(node.i18nName,relative)
-              console.log("FTA addRelative click update()")
               self.update(node)
               self.nodeButtons.hide()
               addRelativeHitbox.remove()
