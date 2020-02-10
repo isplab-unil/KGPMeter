@@ -159,10 +159,13 @@ export class KinGenomicPrivacyMeter{
       this.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
     }
 
-    this.familyTreeArtist = new FamilyTreeArtist(this, this.i18n,0)
+    console.log("KGP.target: ",this.target)
+    this.familyTreeArtist = new FamilyTreeArtist(this, this.i18n, this.target, 0)
 
     if(this.target){
-      this.selectTarget(this.target, true)
+      let waitTime = 200
+      console.log("WAITING FOR kgp.SELECTTARGET() waitTime: ", waitTime)
+      setTimeout(()=>self.selectTarget(self.target, true), waitTime)
     }
     if(savedFtree){
       this.scoreRequestHandler.requestScore(
@@ -195,6 +198,7 @@ export class KinGenomicPrivacyMeter{
     this.scoreNumberExplainer.hide()
 
     // smoothly transition back to original position
+    console.log("KGP reset FTA update()")
     this.familyTreeArtist.update(false, transitionDuration)
 
     // once this is done (after 800ms), reset to the empty ftree
@@ -243,6 +247,7 @@ export class KinGenomicPrivacyMeter{
   }
 
   selectTarget(newTarget, forceUpdate=false){
+    console.log("kgp.selectTarget() newTarget:", newTarget, ", forceUpdate: ", forceUpdate)
     let self = this
     if(!newTarget.id){
       newTarget = this.ftree.nodesArray().filter(n =>n.id==newTarget)[0]
