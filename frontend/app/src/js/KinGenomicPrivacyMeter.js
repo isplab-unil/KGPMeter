@@ -42,7 +42,7 @@ export class KinGenomicPrivacyMeter{
 
     // set max dimensions event
     function setIframeMaxDimensionEvent(e){
-      this.options.svgMaxHeight = e.detail.maxHeight
+      self.options.svgMaxHeight = e.detail.maxHeight
     }
     window.document.addEventListener('KgpSetIframeMaxDimensionEvent', setIframeMaxDimensionEvent, false)
 
