@@ -11,5 +11,10 @@
         }
       }
     ]
+  ],
+  "plugins": [
+    ["transform-runtime", {
+      "regenerator": true
+    }]
   ]
 }
