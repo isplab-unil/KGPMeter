@@ -7,7 +7,7 @@ This git repo is the companion to our paper [_KGP Meter: Communicating Kin Genom
 
 ## Getting started
 
-This repo is intended for people that either want to add the KGPMeter web app to their website or are interested in using the KGPMeter codebase. If you simply want to evalulate scenarios of kin genomic privacy, head to our dedicated website [santeperso.unil.ch][santeperso_unil_ch_website]. If you want to learn about the scientific foundations of KGPMeter head to our [paper][KGPMeter_paper_url].
+This repo is intended for people that either want to add the KGPMeter web app to their website or are interested in using the KGPMeter codebase. If you simply want to evalulate scenarios of kin genomic privacy, head to our dedicated website [santeperso.unil.ch][our_website]. If you want to learn about the scientific foundations of KGPMeter head to our [paper][KGPMeter_paper_url].
 
 There are 3 possible use-cases documented here:
 1. Integrate the KGPMeter web app into a website (using our backend or your own).
@@ -25,7 +25,7 @@ The first and simplest method to integrate the KGPMeter web app is to add two ta
 ```
 Where `path/to/kgpmeter.js` corresponds to the `frontend/lib/js/kgpmeter.js` file.
 The `kgpmeter.js` script looks for a `<div>` with id `kin-genomic-privacy-meter`.
-If it finds it, the script automatically creates a kgpmeter instance in it, using by default our [api endpoint][santeperso_unil_ch_api_endpoint].
+If it finds it, the script automatically creates a kgpmeter instance in it, using by default our [api endpoint][our_api_endpoint].
 
 It is also possible to specify some options using optional `data-` attributes :
 ```
@@ -97,5 +97,5 @@ cd ..
 
 
 [KGPMeter_paper_url]: santeperso.unil.ch/privacy-dev/?test
-[santeperso_unil_ch_website]: santeperso.unil.ch/privacy-dev/?github
-[santeperso_unil_ch_api_endpoint]: https://santeperso.unil.ch/api-dev/
+[our_website]: santeperso.unil.ch/privacy-dev/?github
+[our_api_endpoint]: https://santeperso.unil.ch/api-dev/
