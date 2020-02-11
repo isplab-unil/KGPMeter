@@ -1,6 +1,6 @@
 # Kin Genomic Privacy Meter
 
-This git repo is the companion to our paper [_KGP Meter: Communicating Kin Genomic Privacy to the Masses_][KGPMeter_paper_url] presenting KGPMeter. Here is the abstract:
+This git repo is the companion to our paper [_KGP Meter: Communicating Kin Genomic Privacy to the Masses_][KGPMeter_paper_url] presenting KGPMeter. Here is the paper's abstract:
 >Direct-to-consumer genetic testing services are gaining a lot of momentum: As of today, companies such as 23andMe or AncestryDNA have already attracted 26 million customers, and the trend is certainly not about to cease. These services ob- viously raise new concerns regarding privacy, exacerbated by the fact that their customers can then share their genomic data on platforms such as GEDmatch. Notwithstanding their right to know more about their genetic background or to share their genomic data, individuals must realize that such a behavior damages their relatives’ genomic privacy.
 >
 >In this paper, we present KGP Meter, a new online tool that provides means for raising awareness in the general public about the privacy risks of genomic data sharing. Our tool features various properties that makes it highly interactive, privacy-preserving (i.e., it does not require access to actual genomic data), and user-friendly. It explores possible config- urations in an optimized way and combines well-established graphical models with an entropy-based metric to compute kin genomic privacy scores. Our benchmarking experiments show that KGP Meter is very reactive, it provides privacy scores in less than a second on average. We design and imple- ment an interface that enables users to draw their family trees and indicate which of their relatives’ genomes are known, and that communicates the resulting privacy scores to the users. By analyzing the usage of our tool and surveying its users, we observe that most users find the privacy score worrisome, and that the large majority of them find KGP Meter useful.
@@ -20,15 +20,22 @@ For 2. and 3., you will need to first follow the guide to _A) Download Netica an
 
 The first and simplest method to integrate the KGPMeter web app is to add two tags to your webpage:
 ```
-<div id="kin-genomic-privacy-meter" data-kgpmeter-api-url="https://santeperso.unil.ch/api-dev/" data-kgpmeter-lng="en" data-kgpmeter-max-height="2000"></div>
+<div id="kin-genomic-privacy-meter"></div>
 <script src="path/to/kgpmeter.js"></script>
 ```
 Where `path/to/kgpmeter.js` corresponds to the `frontend/lib/js/kgpmeter.js` file.
-The `kgpmeter.js` script looks for a `<div>` with id `kin-genomic-privacy-meter`. This `<div>` must have a `data-kgpmeter-api-url` specifying the url of the used api (here our own santeperso.unil.ch endpoint). If it finds it, the script automatically creates a kgpmeter instance in it.
+The `kgpmeter.js` script looks for a `<div>` with id `kin-genomic-privacy-meter`.
+If it finds it, the script automatically creates a kgpmeter instance in it, using by default our [api endpoint][santeperso_unil_ch_api_endpoint].
 
-The two other `data-` attributes are optional and allow to set the web app language and maximum height (in pixel), if not present they default to `"en"` and `2000`. Available languages are `["en", "fr", "it", "de", "es"]`, the `max-height` should be at least `600`.
+It is also possible to specify some options using optional `data-` attributes :
+```
+<div id="kin-genomic-privacy-meter" data-kgpmeter-api-url="https://santeperso.unil.ch/api-dev/" data-kgpmeter-lng="fr" data-kgpmeter-max-height="1000"></div>
+<script src="path/to/kgpmeter.js"></script>
+```
+`data-kgpmeter-api-url` specifies the url of the used KGPMeter backend, here it is our santeperso.unil.ch endpoint (the default). Once you have set up your own KGPMeter backend, you can use its url.
+The two other `data-` attributes allow to set the web app language and maximum height (in pixel), if not present they default to `"en"` and `2000`. Available languages are `["en", "fr", "it", "de", "es"]`, the `data-kgpmeter-max-height` should be at least `600`.
 
-The second method is to create a KGPMeter instance directly with javascript:
+The second method to integrate KGPMeter in a webpage is to create a KGPMeter instance with javascript, the only advantage being the ability to use another `<div>` id:
 ```
 <div id="kgp-meter"></div>
 <script src="path/to/kgpmeter.js"></script>
@@ -63,10 +70,6 @@ Of course, once you're done, do not forget to deactivate the python virtual envi
 deactivate
 ```
 
-### Build a family tree in the browser and get a privacy score
-
-Coming soon.
-
 
 ### A) Download Netica and install python dependencies
 
@@ -94,3 +97,4 @@ cd ..
 
 
 [KGPMeter_paper_url]: santeperso.unil.ch/privacy-dev/?test
+[santeperso_unil_ch_api_endpoint]: https://santeperso.unil.ch/api-dev/
