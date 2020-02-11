@@ -6,7 +6,10 @@
 
     <meta name="author" content="SantéPerSo-Privacy" />
     <style>
-      #main{
+      body{
+        background-color: beige;
+      }
+      .main{
         width: 800px;
         margin-left: auto;
         margin-right: auto;
@@ -14,9 +17,26 @@
     </style>
   </head>
   <body>
-    <div id="main">
-      <div id="kin-genomic-privacy-meter"></div>
+
+    <div class="main">
+      <h3>KGP Meter integration using default div id</h3>
+      <div id="kin-genomic-privacy-meter" data-kgpmeter-lng="fr"></div>
       <script src="./frontend/lib/js/kgpmeter.js"></script>
+    </div>
+
+
+    <div class="main">
+      <h3>KGP Meter integration using javascript</h3>
+      <div id="kgpmeter"></div>
+      <!--script src="./frontend/lib/js/kgpmeter.js"></script <- already included just above, uncomment if needed -->
+      <script type="text/javascript">
+        kgpmeter = new KgpMeter(
+          "kgpmeter",
+          "https://santeperso.unil.ch/api-dev/",
+          "it",
+          2000
+        )
+      </script>
     </div>
     
   </body>
