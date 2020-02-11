@@ -7,13 +7,13 @@ class KgpMeter{
     this.divId = divId
     this.div = document.getElementById(divId)
 
-    this.apiUrl = apiUrl? apiUrl : this.div.getAttribute("data-api-url")
+    this.apiUrl = apiUrl? apiUrl : this.div.getAttribute("data-kgpmeter-api-url")
     if(!this.apiUrl){
       throw "KgpMeter error: no apiUrl. API url provided: "+apiUrl
     }
-    this.lng = lng? lng : this.div.getAttribute("data-lng")
+    this.lng = lng? lng : this.div.getAttribute("data-kgpmeter-lng")
     this.lng = lng? lng : "en" // default
-    this.maxHeight = maxHeight? maxHeight : this.div.getAttribute("data-max-height")
+    this.maxHeight = maxHeight? maxHeight : this.div.getAttribute("data-kgpmeter-max-height")
     this.maxHeight = maxHeight? maxHeight : 2000 // default
     this.height = 0
     let self = this
