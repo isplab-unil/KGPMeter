@@ -81,7 +81,7 @@ window.KgpMeter = KgpMeter
 let defaultKgpmeterDivId = "kin-genomic-privacy-meter"
 let kgpmeter
 if(document.getElementById(defaultKgpmeterDivId)){
-  kgpmeter = new KgpMeter(defaultKgpmeterDivId, "https://santeperso.unil.ch/api-dev/app/?test")
+  kgpmeter = new KgpMeter(defaultKgpmeterDivId, "https://santeperso.unil.ch/api-dev/")
   window.kgpmeter = kgpmeter
 }
     
