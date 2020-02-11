@@ -24,11 +24,8 @@ class KgpMeter{
 
     // ======== send data to iframe ========
 
-    //this.iframe.onload = ()=>console.log("THE ANSWER IS FUCKING 42")
     this.iframe.onload = ()=>{
-      console.log("kgpmeter.js: this.iframe.contentWindow LOADED")
       setTimeout(() => {
-        console.log("kgpmeter.js: sending events")
         // set language
         self.setLanguage(self.lng)
         // set source
@@ -37,18 +34,15 @@ class KgpMeter{
         self.setMaxheight(self.maxHeight)
       }, 50);
     }
-    console.log("this.iframe.contentWindow: ", this.iframe.contentWindow)
 
     // ======== handle height updates ========
     function dispatchKgpIframeMessage(e) {
-      console.log("kgpmeter.js dispatchKgpIframeMessage()!! e.data.type:", e.data.type,", e.origin:", e.origin,", e:", e)
       if(e.data.type && e.data.type=="KgpSetHeightEvent"){
         self.setHeight(e.data.height, e.data.transitionDuration)
       }
       if(e.data.type){
         switch(e.data.type){
           case "KgpSetHeightEvent":
-            console.log("setHeight!")
             self.setHeight(e.data.height, e.data.transitionDuration)
             break
           default:
@@ -60,24 +54,20 @@ class KgpMeter{
   }
 
   setLanguage(lng){
-    console.log("kgpmeter.setLanguage()")
     this.lng = lng
     let setLanguageEvent = kgpSetLanguageEvent(lng)
     this.iframe.contentWindow.postMessage(setLanguageEvent, this.apiUrl)
   }
   setSource(source){
-    console.log("kgpmeter.setSource()")
     let setSourceEvent = kgpSetSourceEvent(source)
     this.iframe.contentWindow.postMessage(setSourceEvent, this.apiUrl)
   }
   setMaxheight(maxHeight){
-    console.log("kgpmeter.setMaxheight()")
     this.maxHeight = maxHeight
     let setIframeMaxDimensionEvent = kgpSetIframeMaxDimensionEvent(maxHeight)
     this.iframe.contentWindow.postMessage(setIframeMaxDimensionEvent, this.apiUrl)
   }
   launchTutorial(){
-    console.log("kgpmeter.launchTutorial()")
     this.iframe.contentWindow.postMessage(kgpLaunchTutorialEvent(), this.apiUrl)
   }
 

@@ -81,7 +81,6 @@ export class KinGenomicPrivacyMeter{
 
     //handles messages received from parent window
     function dispatchKgpParentMessage(e){
-      console.log("KinGenomicPrivacyMeter.js dispatchKgpParentMessage()!! e.data.type:", e.data.type,", e.origin:", e.origin,", e:", e)
       if(e.data.type){
         switch(e.data.type){
           case "KgpSetLanguageEvent":
