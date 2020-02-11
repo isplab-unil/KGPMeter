@@ -152,6 +152,7 @@ export class KinGenomicPrivacyMeter{
     }, false)
 
     onWindowResize(()=>self.resizeSvg())
+    onWindowResize(()=>d3.range(1000)) // hack with an astonishing effect: fixes problems with privacyBar&target on window resize...
 
     this.ftree = this.loadFamilyTreeFromLocalStorage()
     let savedFtree = Boolean(this.ftree)
@@ -304,6 +305,7 @@ export class KinGenomicPrivacyMeter{
   * function correctly resizing svg, family tree and privacy bar according to svg's parent node
   */
   resizeSvg(){
+    let self = this
     // remove all children of svg
     let svgNode = this.svg.node()
     while (svgNode.firstChild) {svgNode.removeChild(svgNode.firstChild);}
@@ -317,8 +319,8 @@ export class KinGenomicPrivacyMeter{
     this.tutorialButton.init()
 
     if(self.target){
-      this.privacyBar.update(this.privacyMetric, 0)
-      this.privacyWordedScore.update(this.privacyMetric, 0)
+      self.privacyBar.update(self.privacyMetric, 0)
+      self.privacyWordedScore.update(self.privacyMetric, 0)
     }
     this.familyTreeArtist.init(0)
     this.mobileBlock()
