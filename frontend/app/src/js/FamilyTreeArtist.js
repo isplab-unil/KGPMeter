@@ -287,6 +287,7 @@ export class FamilyTreeArtist{
   initNodeButtons(){
     let self = this
     this.nodeButtons = new NodeButtonsGroup(this.svgg, self.kgp.indiNodeSize.width)
+    this.nodeButtons.hide()
   
     // ------------------------ remove node button ------------------------
     function removeNode(node){
