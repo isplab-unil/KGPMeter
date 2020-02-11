@@ -4,62 +4,81 @@ import { KinGenomicPrivacyMeter } from "../../../app/src/js/KinGenomicPrivacyMet
 
 class KgpMeter{
   constructor(divId, apiUrl, lng, maxHeight){
+    let self = this
     this.divId = divId
     this.div = document.getElementById(divId)
 
-    this.apiUrl = apiUrl? apiUrl : this.div.getAttribute("data-kgpmeter-api-url")
+    this.apiUrl = apiUrl
     if(!this.apiUrl){
       throw "KgpMeter error: API url missing. API url provided: "+apiUrl
     }
-    lng = lng? lng : this.div.getAttribute("data-kgpmeter-lng")
-    lng = lng? lng : "en" // default
-    this.lng = lng
-    maxHeight = maxHeight? maxHeight : this.div.getAttribute("data-kgpmeter-max-height")
-    maxHeight = maxHeight? maxHeight : 2000 // default
-    this.maxHeight = maxHeight
+    let urlSeparator = this.apiUrl.endsWith("/")? "" : "/"
+    this.lng = lng? lng : "en" // default
+    this.maxHeight = maxHeight? maxHeight : 2000 // default
     this.height = 0
-    let self = this
 
-    this.div.innerHTML = "<iframe src='{src}/app/'></iframe>".replace("{src}",this.apiUrl)
+    this.div.innerHTML = "<iframe src='{src}app/'></iframe>".replace("{src}",this.apiUrl+urlSeparator)
     this.iframe = this.div.getElementsByTagName("iframe")[0]
     this.iframe.setAttribute("style",'border:none; width:100%; height:100%')
     this.setDivStyle(this.div.scrollHeight+"px")
 
     // ======== send data to iframe ========
-    this.iframe.contentWindow.addEventListener("load",()=>{
+
+    //this.iframe.onload = ()=>console.log("THE ANSWER IS FUCKING 42")
+    this.iframe.onload = ()=>{
+      console.log("kgpmeter.js: this.iframe.contentWindow LOADED")
       setTimeout(() => {
+        console.log("kgpmeter.js: sending events")
         // set language
-        this.setLanguage(self.lng)
+        self.setLanguage(self.lng)
         // set source
-        this.setSource(document.URL)
+        self.setSource(document.URL)
         // set max height
-        this.setMaxheight(self.maxHeight)
+        self.setMaxheight(self.maxHeight)
       }, 50);
-    })
+    }
+    console.log("this.iframe.contentWindow: ", this.iframe.contentWindow)
 
     // ======== handle height updates ========
-    function handleHeightUpdate(e) {
-      self.setHeight(e.detail.height, e.detail.transitionDuration)
+    function dispatchKgpIframeMessage(e) {
+      console.log("kgpmeter.js dispatchKgpIframeMessage()!! e.data.type:", e.data.type,", e.origin:", e.origin,", e:", e)
+      if(e.data.type && e.data.type=="KgpSetHeightEvent"){
+        self.setHeight(e.data.height, e.data.transitionDuration)
+      }
+      if(e.data.type){
+        switch(e.data.type){
+          case "KgpSetHeightEvent":
+            console.log("setHeight!")
+            self.setHeight(e.data.height, e.data.transitionDuration)
+            break
+          default:
+            console.log("kgpmeter.js: unknown type of message received from KGPMeter iFrame:", e)
+        }
+      }
     }
-    window.document.addEventListener('KgpSetHeightEvent', handleHeightUpdate, false)
+    window.addEventListener('message', dispatchKgpIframeMessage, false)
   }
 
   setLanguage(lng){
+    console.log("kgpmeter.setLanguage()")
     this.lng = lng
     let setLanguageEvent = kgpSetLanguageEvent(lng)
-    this.iframe.contentDocument.dispatchEvent(setLanguageEvent)
+    this.iframe.contentWindow.postMessage(setLanguageEvent, this.apiUrl)
   }
   setSource(source){
+    console.log("kgpmeter.setSource()")
     let setSourceEvent = kgpSetSourceEvent(source)
-    this.iframe.contentDocument.dispatchEvent(setSourceEvent)
+    this.iframe.contentWindow.postMessage(setSourceEvent, this.apiUrl)
   }
   setMaxheight(maxHeight){
+    console.log("kgpmeter.setMaxheight()")
     this.maxHeight = maxHeight
     let setIframeMaxDimensionEvent = kgpSetIframeMaxDimensionEvent(maxHeight)
-    this.iframe.contentDocument.dispatchEvent(setIframeMaxDimensionEvent)
+    this.iframe.contentWindow.postMessage(setIframeMaxDimensionEvent, this.apiUrl)
   }
   launchTutorial(){
-    this.iframe.contentDocument.dispatchEvent(kgpLaunchTutorialEvent())
+    console.log("kgpmeter.launchTutorial()")
+    this.iframe.contentWindow.postMessage(kgpLaunchTutorialEvent(), this.apiUrl)
   }
 
   setHeight(height, transitionDuration){
@@ -79,9 +98,14 @@ window.KgpMeter = KgpMeter
 
 // create default kgpmeter if div#kin-genomic-privacy-meter exists
 let defaultKgpmeterDivId = "kin-genomic-privacy-meter"
+let div = document.getElementById(defaultKgpmeterDivId)
 let kgpmeter
-if(document.getElementById(defaultKgpmeterDivId)){
-  kgpmeter = new KgpMeter(defaultKgpmeterDivId, "https://santeperso.unil.ch/api-dev/")
+if(div){
+  let apiUrl = div.getAttribute("data-kgpmeter-api-url")
+  apiUrl = apiUrl? apiUrl : "https://santeperso.unil.ch/api-dev/"
+  let lng = div.getAttribute("data-kgpmeter-lng")
+  let maxHeight = div.getAttribute("data-kgpmeter-max-height")
+  kgpmeter = new KgpMeter(defaultKgpmeterDivId, apiUrl, lng, maxHeight)
   window.kgpmeter = kgpmeter
 }
     

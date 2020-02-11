@@ -36,15 +36,13 @@ export class KinGenomicPrivacyMeter{
 
     // set language event
     function setLanguage(e){
-      i18n.changeLanguage(e.detail.lng)
+      i18n.changeLanguage(e.data.lng)
     }
-    window.document.addEventListener('KgpSetLanguageEvent', setLanguage, false)
 
     // set max dimensions event
     function setIframeMaxDimensionEvent(e){
-      self.options.svgMaxHeight = e.detail.maxHeight
+      self.options.svgMaxHeight = e.data.maxHeight
     }
-    window.document.addEventListener('KgpSetIframeMaxDimensionEvent', setIframeMaxDimensionEvent, false)
 
     // user id&source + source event
     let idCookie = cookieLocalStoragePrefix+"user-id"
@@ -59,7 +57,7 @@ export class KinGenomicPrivacyMeter{
       let userSource = cookie.read(sourceCookie)
       if(!userSource){
         // if no source: init user source
-        self.userSource = e.detail.source? e.detail.source : document.URL
+        self.userSource = e.data.source? e.data.source : document.URL
         // TODO: remove or refine ?test
         if(Boolean(self.userSource.match(/\/privacy-dev\//))){
           self.userSource = self.userSource+"?test"
@@ -75,14 +73,38 @@ export class KinGenomicPrivacyMeter{
         )
       }
     }
-    window.document.addEventListener('KgpSetSourceEvent', setSource, false)
     // if app not enclosed in an iframe: set source as current URL after 1sec
     setTimeout(function createUserAfterTimeout(){
-      let setSourceEvent = kgpSetSourceEvent(document.URL)
-      document.dispatchEvent(setSourceEvent)
+      let event = kgpSetSourceEvent(document.URL)
+      window.postMessage(event, "*")
     },1000)
 
-
+    //handles messages received from parent window
+    function dispatchKgpParentMessage(e){
+      console.log("KinGenomicPrivacyMeter.js dispatchKgpParentMessage()!! e.data.type:", e.data.type,", e.origin:", e.origin,", e:", e)
+      if(e.data.type){
+        switch(e.data.type){
+          case "KgpSetLanguageEvent":
+            setLanguage(e)
+            break
+          case "KgpSetIframeMaxDimensionEvent":
+            setIframeMaxDimensionEvent(e)
+            break
+          case "KgpSetSourceEvent":
+            setSource(e)
+            break
+          case "KgpLaunchTutorialEvent":
+            $("#tuto-modal").modal("show")
+            kgpTutorial(self.i18n)
+            break
+          case "KgpSetHeightEvent":
+            break
+          default:
+            console.log("KGPMeter inside iFrame: unknown type of message received:", e)
+        }
+      }
+    }
+    window.addEventListener('message', dispatchKgpParentMessage, false)
 
     // api urls
     this.setApiUrl(api_base_url)
@@ -144,12 +166,6 @@ export class KinGenomicPrivacyMeter{
     // trash button
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
     this.tutorialButton = new KgpTutorialButton("tutorial-button", this, {"click.tutorial": d=>kgpTutorial(self.i18n)})
-
-    // launch tutorial event
-    window.document.addEventListener('KgpLaunchTutorialEvent', ()=>{
-      $("#tuto-modal").modal("show")
-      kgpTutorial(self.i18n)
-    }, false)
 
     onWindowResize(()=>self.resizeSvg())
     onWindowResize(()=>d3.range(1000)) // hack with an astonishing effect: fixes problems with privacyBar&target on window resize...
@@ -291,7 +307,7 @@ export class KinGenomicPrivacyMeter{
         .duration(transitionsDuration)
         .attr("height",newSvgHeight)
       let event = kgpSetHeightEvent(newBodyHeight+20, transitionsDuration)
-      window.parent.document.dispatchEvent(event)
+      window.parent.postMessage(event, "*")
     }
   }
 
