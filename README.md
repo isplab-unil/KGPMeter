@@ -7,14 +7,14 @@ This git repo is the companion to our paper [_KGP Meter: Communicating Kin Genom
 
 ## Getting started
 
-This repository is intended for people that either want to add the KGPMeter web app to their website or are interested in using the KGPMeter codebase. If you simply want to evalulate scenarios of kin genomic privacy, head to our dedicated website [santeperso.unil.ch][our_website]. If you want to learn about the scientific foundations of KGPMeter head to our [paper][KGPMeter_paper_url].
+This repository is intended for people that either want to add the KGPMeter web app to their website or are interested in using the KGPMeter codebase. If you want to evalulate scenarios of kin genomic privacy, head to our dedicated website [santeperso.unil.ch][our_website]. If you want to learn about the scientific foundations of KGPMeter head to our [paper][KGPMeter_paper_url].
 
 There are 3 possible use-cases documented here:
 1. Integrate the KGPMeter web app into a website (using our backend or your own).
 2. Run the KGPMeter backend and serve the KGPMeter web app from your own machine.
 3. Use the KGPMeter python API to explore kin genomic privacy scenarios with code.
 
-For 2. and 3., you will need to first follow the guide to _A) Download Netica and install python dependencies_.
+For 2. and 3., you will need to first follow the appendix guide to _A) Download Netica and install python dependencies_ at the end of this README.
 
 ### 1. Integrate the KGPMeter web app into a website
 
@@ -27,14 +27,14 @@ The first and simplest method to integrate the KGPMeter web app is to add two ta
 ```
 Where `path/to/kgpmeter.js` corresponds to the `frontend/lib/js/kgpmeter.js` file.
 The `kgpmeter.js` script looks for a `<div>` with id `kin-genomic-privacy-meter`.
-If it finds it, the script automatically creates a kgpmeter instance in it, using by default our [api endpoint][our_api_endpoint].
+If it finds it, the script automatically creates a kgpmeter instance in it, using by default our [api endpoint].
 
 It is also possible to specify some options using optional `data-` attributes :
 ```
 <div id="kin-genomic-privacy-meter" data-kgpmeter-api-url="https://santeperso.unil.ch/api-dev/" data-kgpmeter-lng="fr" data-kgpmeter-max-height="1000"></div>
 <script src="path/to/kgpmeter.js"></script>
 ```
-`data-kgpmeter-api-url` specifies the url of the used KGPMeter backend, here it is our santeperso.unil.ch endpoint (the default). Once you have set up your own KGPMeter backend, you can use its url.
+`data-kgpmeter-api-url` specifies the url of the used KGPMeter backend, here our default [api endpoint] endpoint. Once you have set up your own KGPMeter backend, you can use its url.
 The two other `data-` attributes allow to set the web app language and maximum height (in pixel), if not present they default to `"en"` and `2000`. Available languages are `["en", "fr", "it", "de", "es"]`, the `data-kgpmeter-max-height` should be at least `600`.
 
 The second method to integrate KGPMeter in a webpage is to create a KGPMeter instance with javascript, the only advantage being the ability to use another `<div>` id:
@@ -75,9 +75,9 @@ deactivate
 
 ### A) Download Netica and install python dependencies
 
-KGP Meter depends on Netica, a Bayesian Network library in C. Netica needs to be download and compiled from Norsys sources.
+The KGP Meter backend depends on Netica, a Bayesian Network library in C. Netica needs to be download and compiled from Norsys sources.
 Notes:
-- for Mac OS X you will need to have the xcode developer tools and the compilation will fire some warnings that can be safely ignored.
+- for Mac OS X you will need to have the (free) Xcode developer tools and the compilation will fire some warnings that can be safely ignored.
 - for Windows, we don't have a download_compile script yet. If you write one, we would be very happy to add it!
 
 In the repo folder, run the following commands:
@@ -100,4 +100,4 @@ cd ..
 
 [KGPMeter_paper_url]: santeperso.unil.ch/privacy-dev/?test
 [our_website]: santeperso.unil.ch/privacy-dev/?github
-[our_api_endpoint]: https://santeperso.unil.ch/api-dev/
+[api endpoint]: https://santeperso.unil.ch/api-dev/
