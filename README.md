@@ -7,7 +7,7 @@ This git repo is the companion to our paper [_KGP Meter: Communicating Kin Genom
 
 ## Getting started
 
-This repo is intended for people that either want to add the KGPMeter web app to their website or are interested in using the KGPMeter codebase. If you simply want to evalulate scenarios of kin genomic privacy, head to our dedicated website [santeperso.unil.ch][our_website]. If you want to learn about the scientific foundations of KGPMeter head to our [paper][KGPMeter_paper_url].
+This repository is intended for people that either want to add the KGPMeter web app to their website or are interested in using the KGPMeter codebase. If you simply want to evalulate scenarios of kin genomic privacy, head to our dedicated website [santeperso.unil.ch][our_website]. If you want to learn about the scientific foundations of KGPMeter head to our [paper][KGPMeter_paper_url].
 
 There are 3 possible use-cases documented here:
 1. Integrate the KGPMeter web app into a website (using our backend or your own).
@@ -17,6 +17,8 @@ There are 3 possible use-cases documented here:
 For 2. and 3., you will need to first follow the guide to _A) Download Netica and install python dependencies_.
 
 ### 1. Integrate the KGPMeter web app into a website
+
+You can find html integration examples in the [KGPMeter_integration_example.html](./KGPMeter_integration_example.html) file.
 
 The first and simplest method to integrate the KGPMeter web app is to add two tags to your webpage:
 ```
