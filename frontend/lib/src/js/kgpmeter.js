@@ -17,7 +17,7 @@ class KgpMeter{
     this.maxHeight = maxHeight? maxHeight : 2000 // default
     this.height = 0
 
-    this.div.innerHTML = "<iframe src='{src}app/'></iframe>".replace("{src}",this.apiUrl+urlSeparator)
+    this.div.innerHTML = "<iframe src='{src}app/' crossorigin='anonymous'></iframe>".replace("{src}",this.apiUrl+urlSeparator)
     this.iframe = this.div.getElementsByTagName("iframe")[0]
     this.iframe.setAttribute("style",'border:none; width:100%; height:100%')
     this.setDivStyle(this.div.scrollHeight+"px")
