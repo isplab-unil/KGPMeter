@@ -1,5 +1,4 @@
 import {kgpSetLanguageEvent, kgpSetSourceEvent, kgpSetIframeMaxDimensionEvent, kgpLaunchTutorialEvent} from "../../../app/src/js/KgpIframeInterface.js"
-import { KinGenomicPrivacyMeter } from "../../../app/src/js/KinGenomicPrivacyMeter.js"
 
 
 class KgpMeter{
@@ -37,10 +36,8 @@ class KgpMeter{
 
     // ======== handle height updates ========
     function dispatchKgpIframeMessage(e) {
-      if(e.data.type && e.data.type=="KgpSetHeightEvent"){
-        self.setHeight(e.data.height, e.data.transitionDuration)
-      }
-      if(e.data.type){
+      //console.log("kgpmeter dispatchKgpIframeMessage() e.source==this.iframe.contentWindow: ", e.source==self.iframe.contentWindow, ", e:", e)
+      if( e.source==self.iframe.contentWindow &&  e.data.type){
         switch(e.data.type){
           case "KgpSetHeightEvent":
             self.setHeight(e.data.height, e.data.transitionDuration)
