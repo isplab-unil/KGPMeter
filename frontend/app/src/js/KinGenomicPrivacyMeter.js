@@ -1,4 +1,4 @@
-import {cookie} from "./lib/iframeCookiesLocalStorage.js"
+import {cookie, iframeLocalStorage} from "./lib/iframeCookiesLocalStorage.js"
 import {FamilyTreeLayout} from "./FamilyTreeLayout.js"
 import {FamilyTreeArtist} from "./FamilyTreeArtist.js"
 import {KgpScoreRequestHandler} from "./KgpScoreRequestHandler.js"
@@ -179,27 +179,54 @@ export class KinGenomicPrivacyMeter{
     onWindowResize(()=>self.resizeSvg())
     onWindowResize(()=>d3.range(1000)) // hack with an astonishing effect: fixes problems with privacyBar&target on window resize...
 
-    this.ftree = this.loadFamilyTreeFromLocalStorage()
-    let savedFtree = Boolean(this.ftree)
-    if(!savedFtree){
-      this.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
+    let ftl, targetId, saveDate, ftlLoaded, targetIdLoaded, saveDateLoaded
+    function loadFamilyTreeCallback(ftl, targetId, saveDate){
+      console.log("loadFamilyTreeCallback")
+      if(ftlLoaded && targetIdLoaded && saveDateLoaded){
+        if(Boolean(ftl) & (saveDate+2*3600*1000>=+new Date()) ){
+          self.ftree = FamilyTreeLayout.unserialize(ftl)
+          self.target = targetId? self.ftree.nodes[targetId] : null
+        }
+        let savedFtree = Boolean(self.ftree)
+        if(!savedFtree){
+          self.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
+        }
+
+        self.familyTreeArtist = new FamilyTreeArtist(self, self.i18n, self.target, 0)
+
+        if(self.target){
+          let waitTime = 200
+          setTimeout(()=>self.selectTarget(self.target, true), waitTime)
+        }
+        if(savedFtree){
+          self.scoreRequestHandler.requestScore(
+            self.target?self.target.id:"",
+            self.ftree.getLinksAsIds(), self.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
+            self.userId, self.userSource, self.i18n.lng
+          )
+        }
+
+        self.mobileBlock()
+        self.IEBlock()
+      }
     }
 
-    this.familyTreeArtist = new FamilyTreeArtist(this, this.i18n, this.target, 0)
+    iframeLocalStorage.getItem("kgp-familyTree", ft =>{
+      ftlLoaded=true
+      ftl=ft
+      loadFamilyTreeCallback(ftl, targetId, saveDate)
+    })
+    iframeLocalStorage.getItem("kgp-targetId", ti =>{
+      targetIdLoaded=true
+      targetId=ti
+      loadFamilyTreeCallback(ftl, targetId, saveDate)
+    })
+    iframeLocalStorage.getItem("kgp-saveDate", sd =>{
+      saveDateLoaded=true
+      saveDate=sd
+      loadFamilyTreeCallback(ftl, targetId, saveDate)
+    })
 
-    if(this.target){
-      let waitTime = 200
-      setTimeout(()=>self.selectTarget(self.target, true), waitTime)
-    }
-    if(savedFtree){
-      this.scoreRequestHandler.requestScore(
-        self.target?self.target.id:"",
-        this.ftree.getLinksAsIds(), this.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
-        self.userId, self.userSource, this.i18n.lng
-      )
-    }
-    this.mobileBlock()
-    this.IEBlock()
   }
 
   /** Resets the family tree in a pleasant way */
@@ -248,12 +275,12 @@ export class KinGenomicPrivacyMeter{
   }
 
   saveFamilyTreeToLocalStorage(familyTreeKey="kgp-familyTree", targetKey="kgp-targetId", saveDateKey="kgp-saveDate"){
-    localStorage.setItem(familyTreeKey,JSON.stringify(this.ftree.serialize(["sequencedDNA","lastSequencedDNA","i18nName"])))
-    localStorage.setItem(saveDateKey,+new Date())
+    iframeLocalStorage.setItem(familyTreeKey,JSON.stringify(this.ftree.serialize(["sequencedDNA","lastSequencedDNA","i18nName"])))
+    iframeLocalStorage.setItem(saveDateKey,+new Date())
     if(this.target){
-      localStorage.setItem(targetKey, this.target.id)
+      iframeLocalStorage.setItem(targetKey, this.target.id)
     }else{
-      localStorage.setItem(targetKey,null)
+      iframeLocalStorage.setItem(targetKey,null)
     }
   }
   

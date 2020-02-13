@@ -17,19 +17,19 @@ function readCookie(name, callback=()=>{}) {
   }else{
     let id = (+new Date())+"-"+Math.random()
     let data = {"type": "cookie.read", "id": id, "name":name}
-    readCookieCalls[id] = callback
+    readCookieCallbacks[id] = callback
     window.parent.postMessage(data, "*")
   }
 }
 //to put it into action in a parent window: window.addEventListener('message', cookie.readActionListener, false)
-let readCookieCalls = {}
 function readCookieActionListener(e){
-  console.log("readCookieActionListener() e:", e)
+  console.log("readCookieActionListener() e.data.result:", e.data.result)
   if(e.data.type && e.data.type=="cookie.read.result" && e.data.id){
-      readCookieCalls[e.data.id](e.data.result)
-      delete readCookieCalls[e.data.id]
+    readCookieCallbacks[e.data.id](e.data.result)
+    delete readCookieCallbacks[e.data.id]
   }
 }
+let readCookieCallbacks = {}
 
 function eraseCookie(name) {
   if(window.parent==window){
@@ -49,7 +49,7 @@ export let cookie = {
 
 // ============== upstream cookie event listener ============== 
 
-export class CookieActionListener{
+export class IframeCookieActionListener{
   constructor(iframe){
     this.iframe = iframe
     let self = this
@@ -82,35 +82,70 @@ export class CookieActionListener{
 }
 
 // ============== downstream LocalStorage functions ==============
-/*
+
 
 function setItem(name, value) {
-  let data = {"type": "LocalStorage.setItem", "name":name, "value":value}
-  window.parent.postMessage(data, "*")
+  if(window.parent==window){
+    localStorage.setItem(name, value)
+  }else{
+    let data = {"type": "iframeLocalStorage.setItem", "name":name, "value":value}
+    window.parent.postMessage(data, "*")
+  }
 }
 
-function getItem(name) {
-  let data = {"type": "LocalStorage.getItem", "name":name}
-  window.parent.postMessage(data, "*")
+function getItem(name, callback=()=>{}) {
+  if(window.parent==window){
+    callback(localStorage.getItem(name))
+  }else{
+    let id = (+new Date())+"-"+Math.random()
+    let data = {"type": "iframeLocalStorage.getItem", "id":id, "name":name}
+    iframeLocalStorageGetItemCallbacks[id] = callback
+    window.parent.postMessage(data, "*")
+  }
 }
 
-export let IframeLocalStorage = {
+//to put it into action in a parent window: window.addEventListener('message', iframeLocalStorage.getItemActionListener, false)
+function iframeLocalStorageGetItemActionListener(e){
+  console.log("iframeLocalStorageGetItemActionListener() e.data.result:", e.data.result)
+  if(e.data.type && e.data.type=="iframeLocalStorage.getItem.result" && e.data.id){
+    iframeLocalStorageGetItemCallbacks[e.data.id](e.data.result)
+    delete iframeLocalStorageGetItemCallbacks[e.data.id]
+  }
+}
+let iframeLocalStorageGetItemCallbacks = {}
+
+export let iframeLocalStorage = {
   setItem: setItem,
-  getItem: getItem
+  getItem: getItem,
+  getItemActionListener: iframeLocalStorageGetItemActionListener
 }
 
 // ============== upstream LocalStorage event listener ============== 
 
-//to put it into action in a parent window: window.addEventListener('message', LocalStorageActionListener, false)
-export function LocalStorageActionListener(e){
-  if(e.data.type){
-    switch(e.data.type){
-      case "LocalStorage.setItem":
-        LocalStorage.setItem(e.data.name, e.data.value)
-        break
-      case "LocalStorage.getItem":
-        LocalStorage.getItem(e.data.name)
-        break
+export class IframeLocalStorageActionListener{
+  constructor(iframe){
+    this.iframe = iframe
+    let self = this
+    // put here because of this/self problematic
+    this.listener = function listener(e){
+      if( e.source==self.iframe.contentWindow &&  e.data.type){
+        if(e.data.type.startsWith("iframeLocalStorage")){
+          //console.log("LocalStorageActionListener.listener() e.source==this.iframe.contentWindow: ", e.source==self.iframe.contentWindow, ", e:", e)
+          console.log("LocalStorageActionListener.listener() e.data.type: ",e.data.type,", e.data.name: ",e.data.name)
+          console.log("LocalStorageActionListener.listener() e.data.name: ",e.data.name, " e.data.value: ",e.data.value, " e.data.days: ",e.data.days)
+        }
+        switch(e.data.type){
+          case "iframeLocalStorage.setItem":
+            localStorage.setItem(e.data.name, e.data.value)
+            break
+          case "iframeLocalStorage.getItem":
+            let result = localStorage.getItem(e.data.name)
+            let data = {"type": "iframeLocalStorage.getItem.result", "id": e.data.id, "result":result}
+            self.iframe.contentWindow.postMessage(data, "*")
+            break
+        }
+      }
     }
+    window.addEventListener('message', this.listener, false)
   }
-}*/
+}

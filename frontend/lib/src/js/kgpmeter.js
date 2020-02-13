@@ -1,5 +1,5 @@
 import {kgpSetLanguageEvent, kgpSetSourceEvent, kgpSetIframeMaxDimensionEvent, kgpLaunchTutorialEvent} from "../../../app/src/js/KgpIframeInterface.js"
-import {CookieActionListener} from "../../../app/src/js/lib/iframeCookiesLocalStorage.js"
+import {IframeCookieActionListener, IframeLocalStorageActionListener} from "../../../app/src/js/lib/iframeCookiesLocalStorage.js"
 
 
 class KgpMeter{
@@ -20,7 +20,8 @@ class KgpMeter{
     this.div.innerHTML = "<iframe src='{src}app/'></iframe>".replace("{src}",this.apiUrl+urlSeparator)
     this.iframe = this.div.getElementsByTagName("iframe")[0]
     this.iframe.setAttribute("style",'border:none; width:100%; height:100%')
-    this.cookieActionListener = new CookieActionListener(this.iframe)
+    this.cookieActionListener = new IframeCookieActionListener(this.iframe)
+    this.localStorageActionListener = new IframeLocalStorageActionListener(this.iframe)
     this.setDivStyle(this.div.scrollHeight+"px")
 
     // ======== send data to iframe ========

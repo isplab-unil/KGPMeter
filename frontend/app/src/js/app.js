@@ -2,7 +2,7 @@
 import {KinGenomicPrivacyMeter} from "./KinGenomicPrivacyMeter.js"
 import {Internationalisation} from "./lib/i18n.js"
 //import {cookie} from "./lib/cookies.js"
-import {cookie} from "./lib/iframeCookiesLocalStorage.js"
+import {cookie, iframeLocalStorage} from "./lib/iframeCookiesLocalStorage.js"
 
 
 
@@ -19,6 +19,7 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
 
 // cookie read listener
 window.addEventListener('message', cookie.readActionListener, false)
+window.addEventListener('message', iframeLocalStorage.getItemActionListener, false)
 
 // languageLoader and i18n object: Internationalisation
 async function languageLoader(lng){

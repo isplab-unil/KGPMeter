@@ -1,4 +1,5 @@
-"use strict";
+import {iframeLocalStorage} from "./iframeCookiesLocalStorage.js"
+
 
 /**
  * Class handling Internationalisation
@@ -201,15 +202,15 @@ export class Internationalisation{
 
   saveLngToLocalStorage(lng, transDict, transKey = "translation."+lng,saveDateKey="translation_save_date."+lng){
     if(this.useLocalStorage){
-      localStorage.setItem(this.localStoragePrefix+transKey,JSON.stringify(transDict))
-      localStorage.setItem(this.localStoragePrefix+saveDateKey,+new Date())
+      iframeLocalStorage.setItem(this.localStoragePrefix+transKey,JSON.stringify(transDict))
+      iframeLocalStorage.setItem(this.localStoragePrefix+saveDateKey,+new Date())
     }
   }
   
   resetLngLocalStorage(transKey = "translation.",saveDateKey="translation_save_date."){
     for(let lng of this.supportedLanguages){
-      localStorage.setItem(this.localStoragePrefix+transKey+lng,null)
-      localStorage.setItem(this.localStoragePrefix+saveDateKey+lng,null)
+      iframeLocalStorage.setItem(this.localStoragePrefix+transKey+lng,null)
+      iframeLocalStorage.setItem(this.localStoragePrefix+saveDateKey+lng,null)
     }
   }
 }
