@@ -1,8 +1,8 @@
 
 import {KinGenomicPrivacyMeter} from "./KinGenomicPrivacyMeter.js"
-import {kgpTutorial} from "./KgpTutorial.js"
 import {Internationalisation} from "./lib/i18n.js"
-import {cookie} from "./lib/cookies.js"
+//import {cookie} from "./lib/cookies.js"
+import {cookie} from "./lib/iframeCookiesLocalStorage.js"
 
 
 
@@ -17,6 +17,8 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
   };
 }
 
+// cookie read listener
+window.addEventListener('message', cookie.readActionListener, false)
 
 // languageLoader and i18n object: Internationalisation
 async function languageLoader(lng){
@@ -39,7 +41,8 @@ function onChangeLanguage(oldLng, newLng){
   setTimeout(()=>{ d3.selectAll(".ext-link").attr("target","blank") },1)
 }
 
-let i18n = new Internationalisation(["en","fr","de","it","es"], languageLoader, cookie.read("lng"), true,"kgpmeter.")
+let i18n = new Internationalisation(["en","fr","de","it","es"], languageLoader, null, true,"kgpmeter.")
+cookie.read("lng", lng=>i18n.changeLanguage(lng))
 i18n.languageChangeCallbacks.push(onChangeLanguage)
 i18n.observe(document)
 //i18n.dynamic["cookie-text"] = (t,d) => t.replace("{#1}",Boolean(document.URL.match(/\/privacy-dev\//))? "/privacy-dev" : "/privacy")
@@ -54,6 +57,7 @@ i18n.observe(document)
       "svg-kin-genomics-privacy-app",
       "@I1@",
       i18n,
+      "kgpXXXmeter-",
       options
     )
   }

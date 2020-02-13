@@ -1,4 +1,4 @@
-import {cookie} from "./lib/cookies.js"
+import {cookie} from "./lib/iframeCookiesLocalStorage.js"
 
 export class KgpSurvey{
   constructor(api_endpoint, userId, i18n, launchWaitTimeBasis=60, launchWaitTimePoissonMean=90, launchWaitTimeMax = 300, cookieLocalStoragePrefix="kgpmeter-"){
@@ -83,7 +83,7 @@ export class KgpSurvey{
     //let oneNodeSequenced = nodes.filter(n => n.sequencedDNA).length >= 1
     this.threeRequestsAsked = this.signaturesRequestedTrees.size>=3
     this.oneTarget = Boolean(target)
-    this.surveyNotStarted = !this.getSurveyStatus()
+    //this.surveyNotStarted = !this.getSurveyStatus()
     //console.log("twoNodesAdded=",twoNodesAdded,", threeRequestsAsked=",threeRequestsAsked,", oneTarget=",oneTarget,", !surveyStarted", !surveyStarted)
   
     return this.twoNodesAdded && this.threeRequestsAsked && this.oneTarget && this.surveyNotStarted
@@ -94,12 +94,15 @@ export class KgpSurvey{
    * @param {*} trigger either "volunteer", "automatic", "resume"
    */
   launchSurvey(trigger){
-    let status = this.getSurveyStatus()
-    if(status!="finished"){
-      this.surveyTrigger = trigger
-      this.setSurveyStatus("launched")
-      $("#modal-survey").modal('show')
-    }
+    let self = this
+    this.getSurveyStatus(status => {
+      if(status!="finished"){
+        self.surveyTrigger = trigger
+        self.surveyNotStarted=false
+        self.setSurveyStatus("launched")
+        $("#modal-survey").modal('show')
+      }
+    })
     //$('#modal-survey').on('hidden.bs.modal', function (e) {if(getSurveyStatus()!="finished"){ showSurveyVolunteerButton() }})
   }
 
@@ -131,22 +134,23 @@ export class KgpSurvey{
   updateSurveyVolunteerButton(transitionSpeed=500){
     let self = this
     //
-    let surveyStatus = this.getSurveyStatus()
-    $("#survey-launch-button").off("click")
-    // not launched: volunteer
-    if(!surveyStatus){
-      $("#survey-launch-button span").attr(self.i18n.keyAttr, "survey-volunteer")
-      $("#survey-launch-button").stop(true).slideDown(transitionSpeed)
-      $("#survey-launch-button").on("click",()=>self.launchSurvey("volunteer"))
-    // launched: resume
-    } else if(surveyStatus=="launched" || surveyStatus=="step-1-done"){
-      $("#survey-launch-button span").attr(self.i18n.keyAttr, "survey-resume")
-      $("#survey-launch-button").stop(true).slideDown(transitionSpeed)
-      $("#survey-launch-button").on("click",()=>self.launchSurvey("resume"))
-    // finished: hide
-    } else if(surveyStatus=="finished"){
-      $("#survey-launch-button").stop(true).slideUp(transitionSpeed)
-    }
+    this.getSurveyStatus(surveyStatus => {
+      $("#survey-launch-button").off("click")
+      // not launched: volunteer
+      if(!surveyStatus){
+        $("#survey-launch-button span").attr(self.i18n.keyAttr, "survey-volunteer")
+        $("#survey-launch-button").stop(true).slideDown(transitionSpeed)
+        $("#survey-launch-button").on("click",()=>self.launchSurvey("volunteer"))
+      // launched: resume
+      } else if(surveyStatus=="launched" || surveyStatus=="step-1-done"){
+        $("#survey-launch-button span").attr(self.i18n.keyAttr, "survey-resume")
+        $("#survey-launch-button").stop(true).slideDown(transitionSpeed)
+        $("#survey-launch-button").on("click",()=>self.launchSurvey("resume"))
+      // finished: hide
+      } else if(surveyStatus=="finished"){
+        $("#survey-launch-button").stop(true).slideUp(transitionSpeed)
+      }
+    })
     
   }
     /** from step 1 to step 2 */
@@ -185,8 +189,8 @@ export class KgpSurvey{
    *          "step-1-done" if step 1 is done, but not step 2 (=user clicked on first finish button)
    *          "finished" if finished (=user clicked on second finish button)
    */
-  getSurveyStatus(){
-    return cookie.read(this.cookieName)
+  getSurveyStatus(func){
+    cookie.read(this.cookieName, func)
   }
   setSurveyStatus(status){
     cookie.create(this.cookieName,status,1)

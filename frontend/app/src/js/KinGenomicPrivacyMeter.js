@@ -1,4 +1,4 @@
-import {cookie} from "./lib/cookies.js"
+import {cookie} from "./lib/iframeCookiesLocalStorage.js"
 import {FamilyTreeLayout} from "./FamilyTreeLayout.js"
 import {FamilyTreeArtist} from "./FamilyTreeArtist.js"
 import {KgpScoreRequestHandler} from "./KgpScoreRequestHandler.js"
@@ -13,7 +13,7 @@ import {KgpTutorialButton, kgpTutorial} from "./KgpTutorial.js"
 import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
 
 export class KinGenomicPrivacyMeter{
-  constructor(api_base_url, svgId, youNodeId, i18n, cookieLocalStoragePrefix="kgpmeter-", options={}){
+  constructor(api_base_url, svgId, youNodeId, i18n, cookieLocalStoragePrefix="kgpXXXmeter-", options={}){
     this.setOptions(options)
     let self = this
     this.i18n = i18n
@@ -47,15 +47,24 @@ export class KinGenomicPrivacyMeter{
     // user id&source + source event
     let idCookie = cookieLocalStoragePrefix+"user-id"
     let sourceCookie = cookieLocalStoragePrefix+"user-source"
-    this.userId = cookie.read(idCookie)
-    this.userSource = cookie.read(sourceCookie)
-    if(!this.userId){
-      this.userId = (+new Date())+"-"+Math.random()
-      cookie.create(idCookie,this.userId,1)
-    }
+
+    cookie.read(
+      idCookie,
+      function(userId){
+        self.userId = userId
+        if(!self.userId){
+          self.userId = (+new Date())+"-"+Math.random()
+          cookie.create(idCookie,self.userId,1)
+        }
+
+      }
+    )
+    cookie.read(
+      sourceCookie,
+      userSource => {if(userSource){self.userSource = userSource}}
+    )
     function setSource(e){
-      let userSource = cookie.read(sourceCookie)
-      if(!userSource){
+      if(!self.userSource){
         // if no source: init user source
         self.userSource = e.data.source? e.data.source : document.URL
         // TODO: remove or refine ?test
@@ -73,6 +82,7 @@ export class KinGenomicPrivacyMeter{
         )
       }
     }
+
     // if app not enclosed in an iframe: set source as current URL after 1sec
     setTimeout(function createUserAfterTimeout(){
       let event = kgpSetSourceEvent(document.URL)
@@ -99,7 +109,7 @@ export class KinGenomicPrivacyMeter{
           case "KgpSetHeightEvent":
             break
           default:
-            console.log("KGPMeter inside iFrame: unknown type of message received:", e)
+            //console.log("KGPMeter inside iFrame: unknown type of message received:", e)
         }
       }
     }

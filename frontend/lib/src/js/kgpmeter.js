@@ -1,4 +1,5 @@
 import {kgpSetLanguageEvent, kgpSetSourceEvent, kgpSetIframeMaxDimensionEvent, kgpLaunchTutorialEvent} from "../../../app/src/js/KgpIframeInterface.js"
+import {CookieActionListener} from "../../../app/src/js/lib/iframeCookiesLocalStorage.js"
 
 
 class KgpMeter{
@@ -19,6 +20,7 @@ class KgpMeter{
     this.div.innerHTML = "<iframe src='{src}app/'></iframe>".replace("{src}",this.apiUrl+urlSeparator)
     this.iframe = this.div.getElementsByTagName("iframe")[0]
     this.iframe.setAttribute("style",'border:none; width:100%; height:100%')
+    this.cookieActionListener = new CookieActionListener(this.iframe)
     this.setDivStyle(this.div.scrollHeight+"px")
 
     // ======== send data to iframe ========
@@ -43,7 +45,7 @@ class KgpMeter{
             self.setHeight(e.data.height, e.data.transitionDuration)
             break
           default:
-            console.log("kgpmeter.js: unknown type of message received from KGPMeter iFrame:", e)
+            //console.log("kgpmeter.js: unknown type of message received from KGPMeter iFrame:", e)
         }
       }
     }

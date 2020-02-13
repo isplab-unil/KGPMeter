@@ -29,8 +29,8 @@ function eraseCookie(name) {
 }
 
 function tryOrNull(func, defaultVal=null){
-  console.log("cookie tryOrNull() with func: ", func)
   return function(a,b,c){
+    console.log("cookie tryOrNull() with func: ", func)
     try{
       return func(a,b,c)
     }catch(e){
