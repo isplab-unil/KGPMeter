@@ -4,6 +4,7 @@ import {IframeCookieActionListener, IframeLocalStorageActionListener} from "../.
 
 class KgpMeter{
   constructor(divId, apiUrl, lng, maxHeight){
+    console.log("HOLAAAA")
     let self = this
     this.divId = divId
     this.div = document.getElementById(divId)
@@ -39,7 +40,7 @@ class KgpMeter{
 
     // ======== handle height updates ========
     function dispatchKgpIframeMessage(e) {
-      //console.log("kgpmeter dispatchKgpIframeMessage() e.source==this.iframe.contentWindow: ", e.source==self.iframe.contentWindow, ", e:", e)
+      console.log("kgpmeter dispatchKgpIframeMessage() e.source==this.iframe.contentWindow: ", e.source==self.iframe.contentWindow, ", e:", e)
       if( e.source==self.iframe.contentWindow &&  e.data.type){
         switch(e.data.type){
           case "KgpSetHeightEvent":
