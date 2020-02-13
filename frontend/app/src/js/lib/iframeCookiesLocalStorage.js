@@ -50,7 +50,8 @@ export let cookie = {
 // ============== upstream cookie event listener ============== 
 
 export class IframeCookieActionListener{
-  constructor(iframe){
+  constructor(iframe, prefix=""){
+    this.prefix = prefix
     this.iframe = iframe
     let self = this
     // put here because of this/self problematic
@@ -63,16 +64,15 @@ export class IframeCookieActionListener{
         }
         switch(e.data.type){
           case "cookie.create":
-            
-            vanillaCookie.create(e.data.name, e.data.value, e.data.days)
+            vanillaCookie.create(self.prefix+"."+e.data.name, e.data.value, e.data.days)
             break
           case "cookie.read":
-            let result = vanillaCookie.read(e.data.name)
+            let result = vanillaCookie.read(self.prefix+"."+e.data.name)
             let data = {"type": "cookie.read.result", "id": e.data.id, "result":result}
             self.iframe.contentWindow.postMessage(data, "*")
             break
           case "cookie.erase":
-            vanillaCookie.erase(e.data.name)
+            vanillaCookie.erase(self.prefix+"."+e.data.name)
             break
         }
       }
@@ -123,8 +123,9 @@ export let iframeLocalStorage = {
 // ============== upstream LocalStorage event listener ============== 
 
 export class IframeLocalStorageActionListener{
-  constructor(iframe){
+  constructor(iframe, prefix=""){
     this.iframe = iframe
+    this.prefix = prefix
     let self = this
     // put here because of this/self problematic
     this.listener = function listener(e){
@@ -136,10 +137,10 @@ export class IframeLocalStorageActionListener{
         }
         switch(e.data.type){
           case "iframeLocalStorage.setItem":
-            localStorage.setItem(e.data.name, e.data.value)
+            localStorage.setItem(self.prefix+"."+e.data.name, e.data.value)
             break
           case "iframeLocalStorage.getItem":
-            let result = localStorage.getItem(e.data.name)
+            let result = localStorage.getItem(self.prefix+"."+e.data.name)
             let data = {"type": "iframeLocalStorage.getItem.result", "id": e.data.id, "result":result}
             self.iframe.contentWindow.postMessage(data, "*")
             break

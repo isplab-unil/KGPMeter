@@ -20,8 +20,8 @@ class KgpMeter{
     this.div.innerHTML = "<iframe src='{src}app/'></iframe>".replace("{src}",this.apiUrl+urlSeparator)
     this.iframe = this.div.getElementsByTagName("iframe")[0]
     this.iframe.setAttribute("style",'border:none; width:100%; height:100%')
-    this.cookieActionListener = new IframeCookieActionListener(this.iframe)
-    this.localStorageActionListener = new IframeLocalStorageActionListener(this.iframe)
+    this.cookieActionListener = new IframeCookieActionListener(this.iframe, "KgpMeter")
+    this.localStorageActionListener = new IframeLocalStorageActionListener(this.iframe, "KgpMeter")
     this.setDivStyle(this.div.scrollHeight+"px")
 
     // ======== send data to iframe ========
