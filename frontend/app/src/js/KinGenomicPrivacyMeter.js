@@ -427,7 +427,7 @@ export class KinGenomicPrivacyMeter{
 
   /** Debugging: show node ids on hover */
   showNodesIds(){
-    self.svgg.selectAll(".nodeg")
+    this.svg.selectAll(".nodeg")
       .append('text')
         .text(d => d.id)
         //.attr("class","node-id")
