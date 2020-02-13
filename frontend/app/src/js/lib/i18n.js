@@ -155,6 +155,7 @@ export class Internationalisation{
    * @param {string} lng language string identifier
    */
   async loadLanguage(lng){
+    /*/ =====
     let translation = this.useLocalStorage? this.loadLngFromLocalStorage(lng) : false
     if(translation){
       this.translations[lng] = translation
@@ -166,6 +167,28 @@ export class Internationalisation{
         this.saveLngToLocalStorage(lng, this.translations[lng])
       }
     }
+    // =====*/
+
+    let self=this
+    async function fetchLanguage(){
+      console.log("fetchLanguage()! for lng", lng)
+      let promise = self.languageLoader(lng)
+      this.translationsPromises[lng] = this.translationsPromises[lng]?
+        Promise.all(this.translationsPromises[lng], promise) : promise
+      self.translations[lng] = await self.translationsPromises[lng]
+      if(self.useLocalStorage){
+        self.saveLngToLocalStorage(lng, self.translations[lng])
+      }
+    }
+    if(!this.useLocalStorage){
+      await fetchLanguage()
+    }else{
+      await this.loadLngFromLocalStorage(lng)
+      if(!self.translations[lng]){
+        await fetchLanguage()
+      }
+    }
+    
   }
 
   /** Change to given language, handles the loading of translations if needed
@@ -188,16 +211,23 @@ export class Internationalisation{
     }
   }
 
-  loadLngFromLocalStorage(lng, transKey = "translation."+lng,saveDateKey="translation_save_date."+lng){
-
+  async loadLngFromLocalStorage(lng, transKey = "translation."+lng,saveDateKey="translation_save_date."+lng){
+    let self = this
     if(this.useLocalStorage){
-      let transDict = localStorage.getItem(this.localStoragePrefix+transKey)
-      let transDictSaveDate = +localStorage.getItem(this.localStoragePrefix+saveDateKey)
-      if(Boolean(transDict) & (transDictSaveDate+2*3600*1000>=+new Date()) ){
-        return JSON.parse(transDict)
-      }
+      let promise = Promise.all([
+        iframeLocalStorage.getItem(self.localStoragePrefix+transKey),
+        iframeLocalStorage.getItem(self.localStoragePrefix+saveDateKey)
+      ])
+      this.translationsPromises[lng] = this.translationsPromises[lng]?
+        Promise.all(this.translationsPromises[lng], promise) : promise
+      return promise.then(function(values) {
+        let [transDict, transDictSaveDate] = values
+        if(Boolean(transDict) & ((+transDictSaveDate)+2*3600*1000>=+new Date()) ){
+          self.translations[lng] = JSON.parse(transDict)
+          return self.translations[lng]
+        }
+      })
     }
-    return null
   }
 
   saveLngToLocalStorage(lng, transDict, transKey = "translation."+lng,saveDateKey="translation_save_date."+lng){
