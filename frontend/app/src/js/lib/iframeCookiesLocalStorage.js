@@ -11,6 +11,7 @@ function createCookie(name, value, days) {
   }
 }
 
+/** Reads a cookie in the parent frame, the cookie is passed as arg to the callback and to the Promise resolve */
 async function readCookie(name, callback=()=>{}) {
   // not in an iframe: straightforward
   if(window.parent==window){
@@ -104,18 +105,8 @@ function setItem(name, value) {
   }
 }
 
-function getItem(name, callback=()=>{}) {
-  if(window.parent==window){
-    callback(localStorage.getItem(name))
-  }else{
-    let id = (+new Date())+"-"+Math.random()
-    let data = {"type": "iframeLocalStorage.getItem", "id":id, "name":name}
-    iframeLocalStorageGetItemCallbacks[id] = callback
-    window.parent.postMessage(data, "*")
-  }
-}
 
-
+/** Reads a cookie in the parent frame, the cookie is passed as arg to the callback and to the Promise resolve */
 async function getItem(name, callback=()=>{}) {
   // not in an iframe: straightforward
   if(window.parent==window){
