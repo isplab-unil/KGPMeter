@@ -38,7 +38,7 @@ else:
 @application.route('/')
 def root():
     # TODO: 302 code to static doc page
-    return 'Hello World!'
+    return 'Hello World! This is the url to use as API url in your frontend ;-)'
 
 # Privacy score entry point: Computes privacy score from JSON request
 application.route('/privacy-score', methods=["POST"])(privacy_score)
