@@ -178,54 +178,40 @@ export class KinGenomicPrivacyMeter{
 
     onWindowResize(()=>self.resizeSvg())
     onWindowResize(()=>d3.range(1000)) // hack with an astonishing effect: fixes problems with privacyBar&target on window resize...
-
-    let ftl, targetId, saveDate, ftlLoaded, targetIdLoaded, saveDateLoaded
-    function loadFamilyTreeCallback(ftl, targetId, saveDate){
-      console.log("loadFamilyTreeCallback")
-      if(ftlLoaded && targetIdLoaded && saveDateLoaded){
-        if(Boolean(ftl) & (saveDate+2*3600*1000>=+new Date()) ){
-          self.ftree = FamilyTreeLayout.unserialize(ftl)
-          self.target = targetId? self.ftree.nodes[targetId] : null
-        }
-        let savedFtree = Boolean(self.ftree)
-        if(!savedFtree){
-          self.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
-        }
-
-        self.familyTreeArtist = new FamilyTreeArtist(self, self.i18n, self.target, 0)
-
-        if(self.target){
-          let waitTime = 200
-          setTimeout(()=>self.selectTarget(self.target, true), waitTime)
-        }
-        if(savedFtree){
-          self.scoreRequestHandler.requestScore(
-            self.target?self.target.id:"",
-            self.ftree.getLinksAsIds(), self.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
-            self.userId, self.userSource, self.i18n.lng
-          )
-        }
-
-        self.mobileBlock()
-        self.IEBlock()
+    
+    Promise.all([
+      iframeLocalStorage.getItem("kgp-familyTree"),
+      iframeLocalStorage.getItem("kgp-targetId"),
+      iframeLocalStorage.getItem("kgp-saveDate")
+    ]).then(function(values) {
+      console.log("mouhahaha I ANM GANDAAAAALF THE SPELLMASTER, values=", values);
+      let [ftl, targetId, saveDate] = values
+      if(Boolean(ftl) & (saveDate+2*3600*1000>=+new Date()) ){
+        self.ftree = FamilyTreeLayout.unserialize(ftl)
+        self.target = targetId? self.ftree.nodes[targetId] : null
       }
-    }
+      let savedFtree = Boolean(self.ftree)
+      if(!savedFtree){
+        self.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
+      }
 
-    iframeLocalStorage.getItem("kgp-familyTree", ft =>{
-      ftlLoaded=true
-      ftl=ft
-      loadFamilyTreeCallback(ftl, targetId, saveDate)
-    })
-    iframeLocalStorage.getItem("kgp-targetId", ti =>{
-      targetIdLoaded=true
-      targetId=ti
-      loadFamilyTreeCallback(ftl, targetId, saveDate)
-    })
-    iframeLocalStorage.getItem("kgp-saveDate", sd =>{
-      saveDateLoaded=true
-      saveDate=sd
-      loadFamilyTreeCallback(ftl, targetId, saveDate)
-    })
+      self.familyTreeArtist = new FamilyTreeArtist(self, self.i18n, self.target, 0)
+
+      if(self.target){
+        let waitTime = 200
+        setTimeout(()=>self.selectTarget(self.target, true), waitTime)
+      }
+      if(savedFtree){
+        self.scoreRequestHandler.requestScore(
+          self.target?self.target.id:"",
+          self.ftree.getLinksAsIds(), self.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
+          self.userId, self.userSource, self.i18n.lng
+        )
+      }
+
+      self.mobileBlock()
+      self.IEBlock()
+    });
 
   }
 
