@@ -2,7 +2,7 @@
 import {KinGenomicPrivacyMeter} from "./KinGenomicPrivacyMeter.js"
 import {Internationalisation} from "./lib/i18n.js"
 //import {cookie} from "./lib/cookies.js"
-import {cookie, iframeLocalStorage} from "./lib/iframeCookiesLocalStorage.js"
+import {cookie} from "./lib/iframeCookiesLocalStorage.js"
 
 
 
@@ -16,10 +16,6 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
     }
   };
 }
-
-// cookie read listener
-window.addEventListener('message', cookie.readActionListener, false)
-window.addEventListener('message', iframeLocalStorage.getItemActionListener, false)
 
 // languageLoader and i18n object: Internationalisation
 async function languageLoader(lng){
@@ -43,7 +39,7 @@ function onChangeLanguage(oldLng, newLng){
 }
 
 let i18n = new Internationalisation(["en","fr","de","it","es"], languageLoader, null, true,"kgpmeter.")
-cookie.read("lng", lng=>i18n.changeLanguage(lng))
+cookie.read("lng", lng=>lng? i18n.changeLanguage(lng): null)
 i18n.languageChangeCallbacks.push(onChangeLanguage)
 i18n.observe(document)
 //i18n.dynamic["cookie-text"] = (t,d) => t.replace("{#1}",Boolean(document.URL.match(/\/privacy-dev\//))? "/privacy-dev" : "/privacy")
