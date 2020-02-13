@@ -17,9 +17,7 @@ async function readCookie(name, callback=()=>{}) {
   if(window.parent==window){
     let result = vanillaCookie.read(name)
     callback(result)
-    return new Promise((resolve, reject)=>{
-      resolve(result)
-    })
+    return Promise.resolve(result)
   //in an iframe..
   }else{
     let id = (+new Date())+"-"+Math.random()
@@ -112,9 +110,7 @@ async function getItem(name, callback=()=>{}) {
   if(window.parent==window){
     let result = localStorage.getItem(name)
     callback(result)
-    return new Promise((resolve, reject)=>{
-      resolve(result)
-    })
+    return Promise.resolve(result)
   //in an iframe..
   }else{
     let id = (+new Date())+"-"+Math.random()
