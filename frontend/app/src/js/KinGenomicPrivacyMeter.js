@@ -193,7 +193,7 @@ export class KinGenomicPrivacyMeter{
         self.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
       }
 
-      self.familyTreeArtist = new FamilyTreeArtist(self, self.i18n, self.target, 0)
+      self.familyTreeArtist = new FamilyTreeArtist(self, self.i18n)
 
       if(self.target){
         let waitTime = 200
