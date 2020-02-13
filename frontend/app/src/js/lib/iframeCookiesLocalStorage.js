@@ -11,25 +11,37 @@ function createCookie(name, value, days) {
   }
 }
 
-function readCookie(name, callback=()=>{}) {
+async function readCookie(name, callback=()=>{}) {
+  // not in an iframe: straightforward
   if(window.parent==window){
-    callback(vanillaCookie.read(name))
+    let result = vanillaCookie.read(name)
+    callback(result)
+    return new Promise((resolve, reject)=>{
+      resolve(result)
+    })
+  //in an iframe..
   }else{
     let id = (+new Date())+"-"+Math.random()
     let data = {"type": "cookie.read", "id": id, "name":name}
-    readCookieCallbacks[id] = callback
+    let el
+    let promise = new Promise((resolve, reject)=>{
+      //console.log("MY NAME SI ARCHIBALD...")
+      el = function readCookieActionListener(e){
+        //console.log("readCookieActionListener() e.data.result:", e.data.result)
+        if(e.data.type && e.data.type=="cookie.read.result" && e.data.id==id){
+          resolve(e.data.result)
+          callback(e.data.result)
+          window.removeEventListener('message', el, false)
+          //console.log("...THE WIELDER OF PROMISES!!, e.data.name=",e.data.name+", e.data.result=",e.data.result)
+        }
+      }
+      window.addEventListener('message', el, false)
+    }) 
     window.parent.postMessage(data, "*")
+    return promise
   }
+  
 }
-//to put it into action in a parent window: window.addEventListener('message', cookie.readActionListener, false)
-function readCookieActionListener(e){
-  console.log("readCookieActionListener() e.data.result:", e.data.result)
-  if(e.data.type && e.data.type=="cookie.read.result" && e.data.id){
-    readCookieCallbacks[e.data.id](e.data.result)
-    delete readCookieCallbacks[e.data.id]
-  }
-}
-let readCookieCallbacks = {}
 
 function eraseCookie(name) {
   if(window.parent==window){
@@ -43,7 +55,6 @@ function eraseCookie(name) {
 export let cookie = {
   create: createCookie,
   read: readCookie,
-  readActionListener: readCookieActionListener,
   erase: eraseCookie,
 }
 
@@ -59,8 +70,8 @@ export class IframeCookieActionListener{
       if( e.source==self.iframe.contentWindow &&  e.data.type){
         if(e.data.type.startsWith("cookie")){
           //console.log("CookieActionListener.listener() e.source==this.iframe.contentWindow: ", e.source==self.iframe.contentWindow, ", e:", e)
-          console.log("CookieActionListener.listener() e.data.type: ",e.data.type,", e.data.name: ",e.data.name)
-          console.log("CookieActionListener.listener() e.data.name: ",e.data.name, " e.data.value: ",e.data.value, " e.data.days: ",e.data.days)
+          console.log("IframeCookieActionListener.listener() e.data.type: ",e.data.type,", e.data.name: ",e.data.name)
+          console.log("IframeCookieActionListener.listener() e.data.name: ",e.data.name, " e.data.value: ",e.data.value, " e.data.days: ",e.data.days)
         }
         switch(e.data.type){
           case "cookie.create":
@@ -68,7 +79,7 @@ export class IframeCookieActionListener{
             break
           case "cookie.read":
             let result = vanillaCookie.read(self.prefix+"."+e.data.name)
-            let data = {"type": "cookie.read.result", "id": e.data.id, "result":result}
+            let data = {"type": "cookie.read.result", "id": e.data.id, "name": e.data.name, "result":result}
             self.iframe.contentWindow.postMessage(data, "*")
             break
           case "cookie.erase":
@@ -104,20 +115,42 @@ function getItem(name, callback=()=>{}) {
   }
 }
 
-//to put it into action in a parent window: window.addEventListener('message', iframeLocalStorage.getItemActionListener, false)
-function iframeLocalStorageGetItemActionListener(e){
-  console.log("iframeLocalStorageGetItemActionListener() e.data.result:", e.data.result)
-  if(e.data.type && e.data.type=="iframeLocalStorage.getItem.result" && e.data.id){
-    iframeLocalStorageGetItemCallbacks[e.data.id](e.data.result)
-    delete iframeLocalStorageGetItemCallbacks[e.data.id]
+
+async function getItem(name, callback=()=>{}) {
+  // not in an iframe: straightforward
+  if(window.parent==window){
+    let result = localStorage.getItem(name)
+    callback(result)
+    return new Promise((resolve, reject)=>{
+      resolve(result)
+    })
+  //in an iframe..
+  }else{
+    let id = (+new Date())+"-"+Math.random()
+    let data = {"type": "iframeLocalStorage.getItem", "id": id, "name":name}
+    let el
+    let promise = new Promise((resolve, reject)=>{
+      console.log("MY NAME SI ARCHIBALD...")
+      el = function iframeLocalStorageGetItemActionListener(e){
+        //console.log("iframeLocalStorageGetItemActionListener() e.data.result:", e.data.result)
+        if(e.data.type && e.data.type=="iframeLocalStorage.getItem.result" && e.data.id==id){
+          resolve(e.data.result)
+          callback(e.data.result)
+          window.removeEventListener('message', el, false)
+          console.log("...THE WIELDER OF LS PROMISES!!, e.data.name=",e.data.name+", e.data.result=",e.data.result)
+        }
+      }
+      window.addEventListener('message', el, false)
+    }) 
+    window.parent.postMessage(data, "*")
+    return promise
   }
+  
 }
-let iframeLocalStorageGetItemCallbacks = {}
 
 export let iframeLocalStorage = {
   setItem: setItem,
   getItem: getItem,
-  getItemActionListener: iframeLocalStorageGetItemActionListener
 }
 
 // ============== upstream LocalStorage event listener ============== 
@@ -131,9 +164,9 @@ export class IframeLocalStorageActionListener{
     this.listener = function listener(e){
       if( e.source==self.iframe.contentWindow &&  e.data.type){
         if(e.data.type.startsWith("iframeLocalStorage")){
-          //console.log("LocalStorageActionListener.listener() e.source==this.iframe.contentWindow: ", e.source==self.iframe.contentWindow, ", e:", e)
-          console.log("LocalStorageActionListener.listener() e.data.type: ",e.data.type,", e.data.name: ",e.data.name)
-          console.log("LocalStorageActionListener.listener() e.data.name: ",e.data.name, " e.data.value: ",e.data.value, " e.data.days: ",e.data.days)
+          //console.log("IframeLocalStorageActionListener.listener() e.source==this.iframe.contentWindow: ", e.source==self.iframe.contentWindow, ", e:", e)
+          //console.log("IframeLocalStorageActionListener.listener() e.data.type: ",e.data.type,", e.data.name: ",e.data.name)
+          //console.log("IframeLocalStorageActionListener.listener() e.data.name: ",e.data.name, " e.data.value: ",e.data.value, " e.data.days: ",e.data.days)
         }
         switch(e.data.type){
           case "iframeLocalStorage.setItem":
@@ -141,7 +174,7 @@ export class IframeLocalStorageActionListener{
             break
           case "iframeLocalStorage.getItem":
             let result = localStorage.getItem(self.prefix+"."+e.data.name)
-            let data = {"type": "iframeLocalStorage.getItem.result", "id": e.data.id, "result":result}
+            let data = {"type": "iframeLocalStorage.getItem.result", "id": e.data.id, "name": e.data.name, "result":result}
             self.iframe.contentWindow.postMessage(data, "*")
             break
         }
