@@ -24,14 +24,11 @@ async function readCookie(name, callback=()=>{}) {
     let data = {"type": "cookie.read", "id": id, "name":name}
     let el
     let promise = new Promise((resolve, reject)=>{
-      //console.log("MY NAME SI ARCHIBALD...")
       el = function readCookieActionListener(e){
-        //console.log("readCookieActionListener() e.data.result:", e.data.result)
         if(e.data.type && e.data.type=="cookie.read.result" && e.data.id==id){
           resolve(e.data.result)
           callback(e.data.result)
           window.removeEventListener('message', el, false)
-          //console.log("...THE WIELDER OF PROMISES!!, e.data.name=",e.data.name+", e.data.result=",e.data.result)
         }
       }
       window.addEventListener('message', el, false)
@@ -68,9 +65,6 @@ export class IframeCookieActionListener{
     this.listener = function listener(e){
       if( e.source==self.iframe.contentWindow &&  e.data.type){
         if(e.data.type.startsWith("cookie")){
-          //console.log("CookieActionListener.listener() e.source==this.iframe.contentWindow: ", e.source==self.iframe.contentWindow, ", e:", e)
-          console.log("IframeCookieActionListener.listener() e.data.type: ",e.data.type,", e.data.name: ",e.data.name)
-          console.log("IframeCookieActionListener.listener() e.data.name: ",e.data.name, " e.data.value: ",e.data.value, " e.data.days: ",e.data.days)
         }
         switch(e.data.type){
           case "cookie.create":
@@ -117,14 +111,11 @@ async function getItem(name, callback=()=>{}) {
     let data = {"type": "iframeLocalStorage.getItem", "id": id, "name":name}
     let el
     let promise = new Promise((resolve, reject)=>{
-      console.log("MY NAME SI ARCHIBALD...")
       el = function iframeLocalStorageGetItemActionListener(e){
-        //console.log("iframeLocalStorageGetItemActionListener() e.data.result:", e.data.result)
         if(e.data.type && e.data.type=="iframeLocalStorage.getItem.result" && e.data.id==id){
           resolve(e.data.result)
           callback(e.data.result)
           window.removeEventListener('message', el, false)
-          console.log("...THE WIELDER OF LS PROMISES!!, e.data.name=",e.data.name+", e.data.result=",e.data.result)
         }
       }
       window.addEventListener('message', el, false)
@@ -151,9 +142,6 @@ export class IframeLocalStorageActionListener{
     this.listener = function listener(e){
       if( e.source==self.iframe.contentWindow &&  e.data.type){
         if(e.data.type.startsWith("iframeLocalStorage")){
-          //console.log("IframeLocalStorageActionListener.listener() e.source==this.iframe.contentWindow: ", e.source==self.iframe.contentWindow, ", e:", e)
-          //console.log("IframeLocalStorageActionListener.listener() e.data.type: ",e.data.type,", e.data.name: ",e.data.name)
-          //console.log("IframeLocalStorageActionListener.listener() e.data.name: ",e.data.name, " e.data.value: ",e.data.value, " e.data.days: ",e.data.days)
         }
         switch(e.data.type){
           case "iframeLocalStorage.setItem":

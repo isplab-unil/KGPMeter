@@ -172,14 +172,11 @@ export class Internationalisation{
     let self=this
     async function fetchLanguage(){
       if(self.useLocalStorage){
-        console.log("fetchLanguage()! for lng", lng,"from LOCALSTORAGE")
         await self.loadLngFromLocalStorage(lng)
       }
       if( (!self.useLocalStorage) || !self.translations[lng]){
-        console.log("fetchLanguage()! for lng", lng,"from NETWORK")
         let promise = self.languageLoader(lng)
         self.translations[lng] = await promise
-        console.log("fetchLanguage()! language loaded! self.translations[lng]=", self.translations[lng])
         if(self.useLocalStorage){
           self.saveLngToLocalStorage(lng, self.translations[lng])
         }
@@ -218,12 +215,13 @@ export class Internationalisation{
       ])
       return promise.then(function(values) {
         let [transDict, transDictSaveDate] = values
-        console.log("loadLngFromLocalStorage() transDict=", transDict, ", transDictSaveDate=",transDictSaveDate)
         if(Boolean(transDict) & ((+transDictSaveDate)+2*3600*1000>=+new Date()) ){
           self.translations[lng] = JSON.parse(transDict)
           return self.translations[lng]
         }
-      }).catch(()=>{console.log("i18n: not able to load translations form localStorage")})
+      }).catch(()=>{
+        console.log("i18n: not able to load translations form localStorage")
+      })
     }
     return Promise.resolve()
   }

@@ -109,7 +109,6 @@ export class KinGenomicPrivacyMeter{
           case "KgpSetHeightEvent":
             break
           default:
-            //console.log("KGPMeter inside iFrame: unknown type of message received:", e)
         }
       }
     }
@@ -184,7 +183,6 @@ export class KinGenomicPrivacyMeter{
       iframeLocalStorage.getItem("kgp-targetId"),
       iframeLocalStorage.getItem("kgp-saveDate")
     ]).then(function(values) {
-      console.log("mouhahaha I ANM GANDAAAAALF THE SPELLMASTER, values=", values);
       let [ftl, targetId, saveDate] = values
       if(Boolean(ftl) & (saveDate+2*3600*1000>=+new Date()) ){
         self.ftree = FamilyTreeLayout.unserialize(ftl)
