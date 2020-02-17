@@ -89,10 +89,8 @@ function localStorageSetItemWithExpires(name, value, durationMsec, timestampSuff
 function localStorageGetItemWithExpires(name, timestampSuffix=".expires"){
   let value = localStorage.getItem(name)
   let expirationDate = new Date(localStorage.getItem(name+timestampSuffix))
-  console.log("exp LS getItem expirationDate: "+ (+expirationDate)+", value: ", value)
   if(expirationDate){
     let date = +new Date()
-    console.log("exp LS getItem expirationDate: "+ (+expirationDate)+", date: ", date, ", date<=+expirationDate=",date<= +expirationDate)
     if(date<= +expirationDate){
       return value
     }else{
