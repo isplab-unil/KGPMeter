@@ -2,30 +2,30 @@ import {cookie as vanillaCookie} from "./cookies.js"
 
 // ============== downstream cookie functions ==============
 
-function createCookie(name, value, days) {
+function cookieSetItem(name, value, days) {
   if(window.parent==window){
-    vanillaCookie.create(name, value, days)
+    vanillaCookie.setItem(name, value, days)
   }else{
-    let data = {"type": "cookie.create", "name":name, "value":value, "days":days}
+    let data = {"type": "cookie.setItem", "name":name, "value":value, "days":days}
     window.parent.postMessage(data, "*")
   }
 }
 
-/** Reads a cookie in the parent frame, the cookie is passed as arg to the callback and to the Promise resolve */
-async function readCookie(name, callback=()=>{}) {
+/** set a cookie in the parent frame (or the page itself if no parent), the cookie is passed as arg to the callback and to the Promise resolve */
+async function cookieGetItem(name, callback=()=>{}) {
   // not in an iframe: straightforward
   if(window.parent==window){
-    let result = vanillaCookie.read(name)
+    let result = vanillaCookie.getItem(name)
     callback(result)
     return Promise.resolve(result)
   //in an iframe..
   }else{
     let id = (+new Date())+"-"+Math.random()
-    let data = {"type": "cookie.read", "id": id, "name":name}
+    let data = {"type": "cookie.getItem", "id": id, "name":name}
     let el
     let promise = new Promise((resolve, reject)=>{
       el = function readCookieActionListener(e){
-        if(e.data.type && e.data.type=="cookie.read.result" && e.data.id==id){
+        if(e.data.type && e.data.type=="cookie.getItem.result" && e.data.id==id){
           resolve(e.data.result)
           callback(e.data.result)
           window.removeEventListener('message', el, false)
@@ -39,19 +39,9 @@ async function readCookie(name, callback=()=>{}) {
   
 }
 
-function eraseCookie(name) {
-  if(window.parent==window){
-    callback(vanillaCookie.erase(name))
-  }else{
-    let data = {"type": "cookie.erase", "name":name}
-    window.parent.postMessage(data, "*")
-  }
-}
-
 export let cookie = {
-  create: createCookie,
-  read: readCookie,
-  erase: eraseCookie,
+  setItem: cookieSetItem,
+  getItem: cookieGetItem
 }
 
 // ============== upstream cookie event listener ============== 
@@ -67,12 +57,12 @@ export class IframeCookieActionListener{
         if(e.data.type.startsWith("cookie")){
         }
         switch(e.data.type){
-          case "cookie.create":
-            vanillaCookie.create(self.prefix+"."+e.data.name, e.data.value, e.data.days)
+          case "cookie.setItem":
+            vanillaCookie.setItem(self.prefix+"."+e.data.name, e.data.value, e.data.days)
             break
-          case "cookie.read":
-            let result = vanillaCookie.read(self.prefix+"."+e.data.name)
-            let data = {"type": "cookie.read.result", "id": e.data.id, "name": e.data.name, "result":result}
+          case "cookie.getItem":
+            let result = vanillaCookie.getItem(self.prefix+"."+e.data.name)
+            let data = {"type": "cookie.getItem.result", "id": e.data.id, "name": e.data.name, "result":result}
             self.iframe.contentWindow.postMessage(data, "*")
             break
           case "cookie.erase":
@@ -99,11 +89,10 @@ function setItem(name, value) {
 
 
 /** Reads a cookie in the parent frame, the cookie is passed as arg to the callback and to the Promise resolve */
-async function getItem(name, callback=()=>{}) {
+async function getItem(name) {
   // not in an iframe: straightforward
   if(window.parent==window){
     let result = localStorage.getItem(name)
-    callback(result)
     return Promise.resolve(result)
   //in an iframe..
   }else{
@@ -114,7 +103,6 @@ async function getItem(name, callback=()=>{}) {
       el = function iframeLocalStorageGetItemActionListener(e){
         if(e.data.type && e.data.type=="iframeLocalStorage.getItem.result" && e.data.id==id){
           resolve(e.data.result)
-          callback(e.data.result)
           window.removeEventListener('message', el, false)
         }
       }
@@ -127,8 +115,8 @@ async function getItem(name, callback=()=>{}) {
 }
 
 export let iframeLocalStorage = {
-  setItem: setItem,
-  getItem: getItem,
+  setItem,
+  getItem,
 }
 
 // ============== upstream LocalStorage event listener ============== 

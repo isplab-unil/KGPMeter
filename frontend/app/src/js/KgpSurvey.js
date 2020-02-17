@@ -190,10 +190,10 @@ export class KgpSurvey{
    *          "finished" if finished (=user clicked on second finish button)
    */
   getSurveyStatus(func){
-    cookie.read(this.cookieName, func)
+    cookie.getItem(this.cookieName, func)
   }
   setSurveyStatus(status){
-    cookie.create(this.cookieName,status,1)
+    cookie.setItem(this.cookieName,status,1)
     this.updateSurveyVolunteerButton()
   }
 }

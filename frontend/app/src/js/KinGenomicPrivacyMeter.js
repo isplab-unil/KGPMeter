@@ -48,19 +48,16 @@ export class KinGenomicPrivacyMeter{
     let idCookie = cookieLocalStoragePrefix+"user-id"
     let sourceCookie = cookieLocalStoragePrefix+"user-source"
 
-    cookie.read(
-      idCookie,
+    cookie.getItem(idCookie).then(
       function(userId){
         self.userId = userId
         if(!self.userId){
           self.userId = (+new Date())+"-"+Math.random()
-          cookie.create(idCookie,self.userId,1)
+          cookie.setItem(idCookie,self.userId,1)
         }
-
       }
     )
-    cookie.read(
-      sourceCookie,
+    cookie.getItem(sourceCookie).then(
       userSource => {if(userSource){self.userSource = userSource}}
     )
     function setSource(e){
@@ -71,7 +68,7 @@ export class KinGenomicPrivacyMeter{
         if(Boolean(self.userSource.match(/\/privacy-dev\//))){
           self.userSource = self.userSource+"?test"
         }
-        cookie.create(sourceCookie,self.userSource,1)
+        cookie.setItem(sourceCookie,self.userSource,1)
 
         // send init request
         self.scoreRequestHandler.requestScore(
@@ -266,18 +263,6 @@ export class KinGenomicPrivacyMeter{
     }else{
       iframeLocalStorage.setItem(targetKey,null)
     }
-  }
-  
-  loadFamilyTreeFromLocalStorage(familyTreeKey="kgp-familyTree", targetKey="kgp-targetId", saveDateKey="kgp-saveDate", familyTreeClass=FamilyTreeLayout){
-    let familyTree = null
-    let ftl = localStorage.getItem(familyTreeKey)
-    let targetId = localStorage.getItem(targetKey)
-    let saveDate = +localStorage.getItem(saveDateKey)
-    if(Boolean(ftl) & (saveDate+2*3600*1000>=+new Date()) ){
-      familyTree = familyTreeClass.unserialize(ftl)
-      this.target = targetId? familyTree.nodes[targetId] : null
-    }
-    return familyTree
   }
 
   selectTarget(newTarget, forceUpdate=false){

@@ -1,4 +1,4 @@
-function createCookie(name, value, days) {
+function setItem(name, value, days) {
   var expires;
 
   if (days) {
@@ -11,7 +11,7 @@ function createCookie(name, value, days) {
   document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/";
 }
 
-function readCookie(name) {
+function getItem(name) {
   var nameEQ = encodeURIComponent(name) + "=";
   var ca = document.cookie.split(';');
   for (var i = 0; i < ca.length; i++) {
@@ -24,27 +24,7 @@ function readCookie(name) {
   return null;
 }
 
-function eraseCookie(name) {
-  document.cookie = encodeURIComponent(name) + "=;expires=" + (new Date()).toGMTString() + "; path=/";
-}
-
-function tryOrNull(func, defaultVal=null){
-  return function(a,b,c){
-    try{
-      return func(a,b,c)
-    }catch(e){
-      console.error("Unable to access cookies with function ", func)
-      return defaultVal
-    }
-  }
-}
-
 export let cookie = {
-  create: createCookie,
-  read: readCookie,
-  erase: eraseCookie,
-  // versions that try to create/read/erase and return null upon failur
-  tryCreate: tryOrNull(createCookie),
-  tryRead: tryOrNull(readCookie),
-  tryErase: tryOrNull(eraseCookie),
+  setItem,
+  getItem
 }

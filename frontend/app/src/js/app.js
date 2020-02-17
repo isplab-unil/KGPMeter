@@ -33,13 +33,13 @@ async function languageLoader(lng){
 }
 
 function onChangeLanguage(oldLng, newLng){
-  cookie.create("lng",newLng,30)
+  cookie.setItem("lng",newLng,30)
   // ensure external links target is blank to open them in a new page. Timeout, otherwise doesn't work
   setTimeout(()=>{ d3.selectAll(".ext-link").attr("target","blank") },1)
 }
 
 let i18n = new Internationalisation(["en","fr","de","it","es"], languageLoader, null, true,"kgpmeter.")
-cookie.read("lng", lng=>lng? i18n.changeLanguage(lng): null)
+cookie.getItem("lng", lng=>lng? i18n.changeLanguage(lng): null)
 i18n.languageChangeCallbacks.push(onChangeLanguage)
 i18n.observe(document)
 //i18n.dynamic["cookie-text"] = (t,d) => t.replace("{#1}",Boolean(document.URL.match(/\/privacy-dev\//))? "/privacy-dev" : "/privacy")
