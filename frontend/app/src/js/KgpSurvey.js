@@ -193,7 +193,7 @@ export class KgpSurvey{
     return cookie.getItem(this.cookieName)
   }
   setSurveyStatus(status){
-    cookie.setItem(this.cookieName,status,1)
+    cookie.setItem(this.cookieName,status,1 *24*60*60*1000)
     this.updateSurveyVolunteerButton()
   }
 }

@@ -1,9 +1,9 @@
-function setItem(name, value, days) {
+function setItem(name, value, durationMsec) {
   var expires;
 
-  if (days) {
+  if (durationMsec) {
       var date = new Date();
-      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      date.setTime(date.getTime() + durationMsec);
       expires = "; expires=" + date.toGMTString();
   } else {
       expires = "";

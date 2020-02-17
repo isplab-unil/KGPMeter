@@ -33,7 +33,7 @@ async function languageLoader(lng){
 }
 
 function onChangeLanguage(oldLng, newLng){
-  cookie.setItem("lng",newLng,30)
+  cookie.setItem("lng",newLng,30 *24*60*60*1000)
   // ensure external links target is blank to open them in a new page. Timeout, otherwise doesn't work
   setTimeout(()=>{ d3.selectAll(".ext-link").attr("target","blank") },1)
 }

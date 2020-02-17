@@ -2,11 +2,11 @@ import {cookie as vanillaCookie} from "./cookies.js"
 
 // ============== downstream cookie functions ==============
 
-function cookieSetItem(name, value, days) {
+function cookieSetItem(name, value, durationMsec) {
   if(window.parent==window){
-    vanillaCookie.setItem(name, value, days)
+    vanillaCookie.setItem(name, value, durationMsec)
   }else{
-    let data = {"type": "cookie.setItem", "name":name, "value":value, "days":days}
+    let data = {"type": "cookie.setItem", name, value, durationMsec}
     window.parent.postMessage(data, "*")
   }
 }
@@ -58,10 +58,10 @@ export class IframeCookieActionListener{
         }
         switch(e.data.type){
           case "cookie.setItem":
-            vanillaCookie.setItem(self.prefix+"."+e.data.name, e.data.value, e.data.days)
+            vanillaCookie.setItem(self.prefix+e.data.name, e.data.value, e.data.durationMsec)
             break
           case "cookie.getItem":
-            let result = vanillaCookie.getItem(self.prefix+"."+e.data.name)
+            let result = vanillaCookie.getItem(self.prefix+e.data.name)
             let data = {"type": "cookie.getItem.result", "id": e.data.id, "name": e.data.name, "result":result}
             self.iframe.contentWindow.postMessage(data, "*")
             break
@@ -78,17 +78,18 @@ export class IframeCookieActionListener{
 // ============== downstream LocalStorage functions ==============
 
 
-function setItem(name, value, duration, durationSuffix="expires") {
+function setItem(name, value, durationMsec, timestampSuffix=".expires") {
   if(window.parent==window){
     localStorage.setItem(name, value)
+    localStorage.setItem(name+timestampSuffix, value)
   }else{
-    let data = {"type": "iframeLocalStorage.setItem", name, value, duration, durationSuffix}
+    let data = {"type": "iframeLocalStorage.setItem", name, value, durationMsec, timestampSuffix}
     window.parent.postMessage(data, "*")
   }
 }
 
 
-/** Reads a cookie in the parent frame, the cookie is passed as arg to the callback and to the Promise resolve */
+/** gets an item from localstorage in the parent frame, the cookie is passed as arg to the callback and to the Promise resolve */
 async function getItem(name) {
   // not in an iframe: straightforward
   if(window.parent==window){
@@ -133,10 +134,10 @@ export class IframeLocalStorageActionListener{
         }
         switch(e.data.type){
           case "iframeLocalStorage.setItem":
-            localStorage.setItem(self.prefix+"."+e.data.name, e.data.value)
+            localStorage.setItem(self.prefix+e.data.name, e.data.value)
             break
           case "iframeLocalStorage.getItem":
-            let result = localStorage.getItem(self.prefix+"."+e.data.name)
+            let result = localStorage.getItem(self.prefix+e.data.name)
             let data = {"type": "iframeLocalStorage.getItem.result", "id": e.data.id, "name": e.data.name, "result":result}
             self.iframe.contentWindow.postMessage(data, "*")
             break

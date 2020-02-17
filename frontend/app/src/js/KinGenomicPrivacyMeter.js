@@ -53,7 +53,7 @@ export class KinGenomicPrivacyMeter{
         self.userId = userId
         if(!self.userId){
           self.userId = (+new Date())+"-"+Math.random()
-          cookie.setItem(idCookie,self.userId,1)
+          cookie.setItem(idCookie,self.userId,1 *24*60*60*1000)
         }
       }
     )
@@ -68,7 +68,7 @@ export class KinGenomicPrivacyMeter{
         if(Boolean(self.userSource.match(/\/privacy-dev\//))){
           self.userSource = self.userSource+"?test"
         }
-        cookie.setItem(sourceCookie,self.userSource,1)
+        cookie.setItem(sourceCookie,self.userSource,1 *24*60*60*1000)
 
         // send init request
         self.scoreRequestHandler.requestScore(
