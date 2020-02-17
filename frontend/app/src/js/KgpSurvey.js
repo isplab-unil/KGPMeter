@@ -95,7 +95,7 @@ export class KgpSurvey{
    */
   launchSurvey(trigger){
     let self = this
-    this.getSurveyStatus(status => {
+    this.getSurveyStatus().then(status => {
       if(status!="finished"){
         self.surveyTrigger = trigger
         self.surveyNotStarted=false
@@ -134,7 +134,7 @@ export class KgpSurvey{
   updateSurveyVolunteerButton(transitionSpeed=500){
     let self = this
     //
-    this.getSurveyStatus(surveyStatus => {
+    this.getSurveyStatus().then(surveyStatus => {
       $("#survey-launch-button").off("click")
       // not launched: volunteer
       if(!surveyStatus){
@@ -189,8 +189,8 @@ export class KgpSurvey{
    *          "step-1-done" if step 1 is done, but not step 2 (=user clicked on first finish button)
    *          "finished" if finished (=user clicked on second finish button)
    */
-  getSurveyStatus(func){
-    cookie.getItem(this.cookieName, func)
+  getSurveyStatus(){
+    return cookie.getItem(this.cookieName)
   }
   setSurveyStatus(status){
     cookie.setItem(this.cookieName,status,1)
