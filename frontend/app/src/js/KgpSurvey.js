@@ -1,12 +1,12 @@
-import {cookie} from "./lib/iframeCookiesLocalStorage.js"
+import {iframeLocalStorage} from "./lib/iframeCookiesLocalStorage.js"
 
 export class KgpSurvey{
-  constructor(api_endpoint, userId, i18n, launchWaitTimeBasis=60, launchWaitTimePoissonMean=90, launchWaitTimeMax = 300, cookieLocalStoragePrefix="kgpmeter-"){
+  constructor(api_endpoint, userId, i18n, launchWaitTimeBasis=60, launchWaitTimePoissonMean=90, launchWaitTimeMax = 300, localStoragePrefix="kgpmeter-"){
     this.api_endpoint = api_endpoint
     this.questions = ["prior-knowledge","score-exp","you-or-family","utility-website","nps","survey-comment","survey-sex","survey-age", "survey-own-sequence", "survey-other-sequence"]
     this.userId = userId
     this.i18n = i18n 
-    this.cookieName = cookieLocalStoragePrefix+"survey-status"
+    this.localStorageKey = localStoragePrefix+"survey-status"
 
     let self = this
     
@@ -190,10 +190,10 @@ export class KgpSurvey{
    *          "finished" if finished (=user clicked on second finish button)
    */
   getSurveyStatus(){
-    return cookie.getItem(this.cookieName)
+    return iframeLocalStorage.getItem(this.localStorageKey)
   }
   setSurveyStatus(status){
-    cookie.setItem(this.cookieName,status,1 *24*60*60*1000)
+    iframeLocalStorage.setItem(this.localStorageKey,status,1 *24*60*60*1000)
     this.updateSurveyVolunteerButton()
   }
 }

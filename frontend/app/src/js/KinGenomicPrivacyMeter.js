@@ -1,4 +1,4 @@
-import {cookie, iframeLocalStorage} from "./lib/iframeCookiesLocalStorage.js"
+import {iframeLocalStorage} from "./lib/iframeCookiesLocalStorage.js"
 import {FamilyTreeLayout} from "./FamilyTreeLayout.js"
 import {FamilyTreeArtist} from "./FamilyTreeArtist.js"
 import {KgpScoreRequestHandler} from "./KgpScoreRequestHandler.js"
@@ -13,7 +13,7 @@ import {KgpTutorialButton, kgpTutorial} from "./KgpTutorial.js"
 import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
 
 export class KinGenomicPrivacyMeter{
-  constructor(api_base_url, svgId, youNodeId, i18n, cookieLocalStoragePrefix="kgpmeter-", options={}){
+  constructor(api_base_url, svgId, youNodeId, i18n, localStoragePrefix="kgpmeter-", options={}){
     this.setOptions(options)
     let self = this
     this.i18n = i18n
@@ -45,19 +45,19 @@ export class KinGenomicPrivacyMeter{
     }
 
     // user id&source + source event
-    let idCookie = cookieLocalStoragePrefix+"user-id"
-    let sourceCookie = cookieLocalStoragePrefix+"user-source"
+    let idLSkey = localStoragePrefix+"user-id"
+    let sourceLSkey = localStoragePrefix+"user-source"
 
-    cookie.getItem(idCookie).then(
+    iframeLocalStorage.getItem(idLSkey).then(
       function(userId){
         self.userId = userId
         if(!self.userId){
           self.userId = (+new Date())+"-"+Math.random()
-          cookie.setItem(idCookie,self.userId,1 *24*60*60*1000)
+          iframeLocalStorage.setItem(idLSkey,self.userId,1 *24*60*60*1000)
         }
       }
     )
-    cookie.getItem(sourceCookie).then(
+    iframeLocalStorage.getItem(sourceLSkey).then(
       userSource => {if(userSource){self.userSource = userSource}}
     )
     function setSource(e){
@@ -68,7 +68,7 @@ export class KinGenomicPrivacyMeter{
         if(Boolean(self.userSource.match(/\/privacy-dev\//))){
           self.userSource = self.userSource+"?test"
         }
-        cookie.setItem(sourceCookie,self.userSource,1 *24*60*60*1000)
+        iframeLocalStorage.setItem(sourceLSkey,self.userSource,1 *24*60*60*1000)
 
         // send init request
         self.scoreRequestHandler.requestScore(

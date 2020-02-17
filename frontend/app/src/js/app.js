@@ -1,8 +1,7 @@
 
 import {KinGenomicPrivacyMeter} from "./KinGenomicPrivacyMeter.js"
 import {Internationalisation} from "./lib/i18n.js"
-//import {cookie} from "./lib/cookies.js"
-import {cookie} from "./lib/iframeCookiesLocalStorage.js"
+import {iframeLocalStorage} from "./lib/iframeCookiesLocalStorage.js"
 
 
 
@@ -33,13 +32,13 @@ async function languageLoader(lng){
 }
 
 function onChangeLanguage(oldLng, newLng){
-  cookie.setItem("lng",newLng,30 *24*60*60*1000)
+  iframeLocalStorage.setItem("lng",newLng,30 *24*60*60*1000)
   // ensure external links target is blank to open them in a new page. Timeout, otherwise doesn't work
   setTimeout(()=>{ d3.selectAll(".ext-link").attr("target","blank") },1)
 }
 
 let i18n = new Internationalisation(["en","fr","de","it","es"], languageLoader, null, true,"kgpmeter.")
-cookie.getItem("lng", lng=>lng? i18n.changeLanguage(lng): null)
+iframeLocalStorage.getItem("lng").then(lng=>lng? i18n.changeLanguage(lng): null)
 i18n.languageChangeCallbacks.push(onChangeLanguage)
 i18n.observe(document)
 //i18n.dynamic["cookie-text"] = (t,d) => t.replace("{#1}",Boolean(document.URL.match(/\/privacy-dev\//))? "/privacy-dev" : "/privacy")
