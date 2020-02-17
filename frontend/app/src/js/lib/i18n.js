@@ -31,10 +31,11 @@ export class Internationalisation{
    * @param {string} keyAttr the name of the html5 attribute to watch for keys, by default "data-i18n"
    * @param {string} dataAttr the name of the html5 attribute to watch for data, by default "data-i18n-data".
    */
-  constructor(supportedLanguages, languageLoader, lng=false, useLocalStorage=true, localStoragePrefix = "", dynamic, keyAttr = "data-i18n", dataAttr = "data-i18n-data"){
+  constructor(supportedLanguages, languageLoader, lng=false, useLocalStorage=true, localStoragePrefix = "", dynamic, keyAttr = "data-i18n", dataAttr = "data-i18n-data", localStorageDurationMsec = 2*3600*1000){
     this.dynamic = dynamic? dynamic : {}
     this.keyAttr = keyAttr
     this.dataAttr = dataAttr
+    this.localStorageDurationMsec = localStorageDurationMsec
     this.useLocalStorage = useLocalStorage
     this.localStoragePrefix = localStoragePrefix
     this.supportedLanguages = supportedLanguages
@@ -206,19 +207,13 @@ export class Internationalisation{
     }
   }
 
-  async loadLngFromLocalStorage(lng, transKey = "translation."+lng,saveDateKey="translation_save_date."+lng){
+  async loadLngFromLocalStorage(lng, transKey = "translation."+lng){
     let self = this
     if(this.useLocalStorage){
-      let promise = Promise.all([
-        iframeLocalStorage.getItem(self.localStoragePrefix+transKey),
-        iframeLocalStorage.getItem(self.localStoragePrefix+saveDateKey)
-      ])
-      return promise.then(function(values) {
-        let [transDict, transDictSaveDate] = values
-        if(Boolean(transDict) & ((+transDictSaveDate)+2*3600*1000>=+new Date()) ){
-          self.translations[lng] = JSON.parse(transDict)
-          return self.translations[lng]
-        }
+      let promise = iframeLocalStorage.getItem(self.localStoragePrefix+transKey)
+      return promise.then(function(transDict){
+        self.translations[lng] = JSON.parse(transDict)
+        return self.translations[lng]
       }).catch(()=>{
         console.log("i18n: not able to load translations form localStorage")
       })
@@ -226,17 +221,15 @@ export class Internationalisation{
     return Promise.resolve()
   }
 
-  saveLngToLocalStorage(lng, transDict, transKey = "translation."+lng,saveDateKey="translation_save_date."+lng){
+  saveLngToLocalStorage(lng, transDict, transKey = "translation."+lng){
     if(this.useLocalStorage){
-      iframeLocalStorage.setItem(this.localStoragePrefix+transKey,JSON.stringify(transDict))
-      iframeLocalStorage.setItem(this.localStoragePrefix+saveDateKey,+new Date())
+      iframeLocalStorage.setItem(this.localStoragePrefix+transKey,JSON.stringify(transDict), this.localStorageDurationMsec)
     }
   }
   
-  resetLngLocalStorage(transKey = "translation.",saveDateKey="translation_save_date."){
+  resetLngLocalStorage(transKey = "translation."){
     for(let lng of this.supportedLanguages){
-      iframeLocalStorage.setItem(this.localStoragePrefix+transKey+lng,null)
-      iframeLocalStorage.setItem(this.localStoragePrefix+saveDateKey+lng,null)
+      iframeLocalStorage.removeItem(this.localStoragePrefix+transKey+lng,null)
     }
   }
 }
