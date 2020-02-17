@@ -175,17 +175,8 @@ export class KinGenomicPrivacyMeter{
     onWindowResize(()=>self.resizeSvg())
     onWindowResize(()=>d3.range(1000)) // hack with an astonishing effect: fixes problems with privacyBar&target on window resize...
     
-    Promise.all([
-      iframeLocalStorage.getItem("kgp-familyTree"),
-      iframeLocalStorage.getItem("kgp-targetId"),
-      iframeLocalStorage.getItem("kgp-saveDate")
-    ]).then(function(values) {
-      let [ftl, targetId, saveDate] = values
-      if(Boolean(ftl) & (saveDate+2*3600*1000>=+new Date()) ){
-        self.ftree = FamilyTreeLayout.unserialize(ftl)
-        self.target = targetId? self.ftree.nodes[targetId] : null
-      }
-      let savedFtree = Boolean(self.ftree)
+    this.loadFamilyTreeFromLocalStorage().then(ftree=>{
+      let savedFtree = Boolean(ftree)
       if(!savedFtree){
         self.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
       }
@@ -255,14 +246,29 @@ export class KinGenomicPrivacyMeter{
     Object.assign(this.options, options)
   }
 
-  saveFamilyTreeToLocalStorage(familyTreeKey="kgp-familyTree", targetKey="kgp-targetId", saveDateKey="kgp-saveDate"){
-    iframeLocalStorage.setItem(familyTreeKey,JSON.stringify(this.ftree.serialize(["sequencedDNA","lastSequencedDNA","i18nName"])))
-    iframeLocalStorage.setItem(saveDateKey,+new Date())
+  saveFamilyTreeToLocalStorage(familyTreeKey="kgp-familyTree", targetKey="kgp-targetId"){
+    let durationMsec = 2*3600*1000
+    iframeLocalStorage.setItem(familyTreeKey,JSON.stringify(this.ftree.serialize(["sequencedDNA","lastSequencedDNA","i18nName"])), durationMsec)
     if(this.target){
-      iframeLocalStorage.setItem(targetKey, this.target.id)
+      iframeLocalStorage.setItem(targetKey, this.target.id, durationMsec)
     }else{
-      iframeLocalStorage.setItem(targetKey,null)
+      iframeLocalStorage.setItem(targetKey,null, durationMsec)
     }
+  }
+
+  loadFamilyTreeFromLocalStorage(familyTreeKey="kgp-familyTree", targetKey="kgp-targetId"){
+    let self = this
+    return Promise.all([
+      iframeLocalStorage.getItem(familyTreeKey),
+      iframeLocalStorage.getItem(targetKey)
+    ]).then(function(values) {
+      let [ftl, targetId] = values
+      if(Boolean(ftl) ){
+        self.ftree = FamilyTreeLayout.unserialize(ftl)
+        self.target = targetId? self.ftree.nodes[targetId] : null
+      }
+      return self.ftree
+    })
   }
 
   selectTarget(newTarget, forceUpdate=false){

@@ -39,7 +39,7 @@ async function cookieGetItem(name, callback=()=>{}) {
   
 }
 
-export let cookie = {
+export const cookie = {
   setItem: cookieSetItem,
   getItem: cookieGetItem
 }
@@ -75,13 +75,51 @@ export class IframeCookieActionListener{
   }
 }
 
-// ============== downstream LocalStorage functions ==============
+// ============== localStorage with expires ==============
 
+
+function localStorageSetItemWithExpires(name, value, durationMsec, timestampSuffix=".expires") {
+  localStorage.setItem(name, value)
+  if(durationMsec){
+    let date = new Date()
+    date.setTime(date.getTime() + durationMsec)
+    localStorage.setItem(name+timestampSuffix, date.toGMTString())
+  }
+}
+function localStorageGetItemWithExpires(name, timestampSuffix=".expires"){
+  let value = localStorage.getItem(name)
+  let expirationDate = new Date(localStorage.getItem(name+timestampSuffix))
+  console.log("exp LS getItem expirationDate: "+ (+expirationDate)+", value: ", value)
+  if(expirationDate){
+    let date = +new Date()
+    console.log("exp LS getItem expirationDate: "+ (+expirationDate)+", date: ", date, ", date<=+expirationDate=",date<= +expirationDate)
+    if(date<= +expirationDate){
+      return value
+    }else{
+      localStorageRemoveItemWithExpires(name)
+      return null
+    }
+  }
+  else{
+    return value
+  }
+}
+function localStorageRemoveItemWithExpires(name, timestampSuffix=".expires") {
+  localStorage.removeItem(name)
+  localStorage.removeItem(name+timestampSuffix)
+}
+
+export const expiringLocalStorage = {
+  setItem: localStorageSetItemWithExpires,
+  getItem: localStorageGetItemWithExpires,
+  removeItem: localStorageRemoveItemWithExpires
+}
+
+// ============== downstream LocalStorage functions ==============
 
 function setItem(name, value, durationMsec, timestampSuffix=".expires") {
   if(window.parent==window){
-    localStorage.setItem(name, value)
-    localStorage.setItem(name+timestampSuffix, value)
+    expiringLocalStorage.setItem(name, value, durationMsec, timestampSuffix)
   }else{
     let data = {"type": "iframeLocalStorage.setItem", name, value, durationMsec, timestampSuffix}
     window.parent.postMessage(data, "*")
@@ -90,15 +128,15 @@ function setItem(name, value, durationMsec, timestampSuffix=".expires") {
 
 
 /** gets an item from localstorage in the parent frame, the cookie is passed as arg to the callback and to the Promise resolve */
-async function getItem(name) {
+async function getItem(name, timestampSuffix=".expires") {
   // not in an iframe: straightforward
   if(window.parent==window){
-    let result = localStorage.getItem(name)
+    let result = expiringLocalStorage.getItem(name, timestampSuffix)
     return Promise.resolve(result)
   //in an iframe..
   }else{
     let id = (+new Date())+"-"+Math.random()
-    let data = {"type": "iframeLocalStorage.getItem", id, name}
+    let data = {"type": "iframeLocalStorage.getItem", id, name, timestampSuffix}
     let el
     let promise = new Promise((resolve, reject)=>{
       el = function iframeLocalStorageGetItemActionListener(e){
@@ -115,7 +153,7 @@ async function getItem(name) {
   
 }
 
-export let iframeLocalStorage = {
+export const iframeLocalStorage = {
   setItem,
   getItem,
 }
@@ -134,10 +172,10 @@ export class IframeLocalStorageActionListener{
         }
         switch(e.data.type){
           case "iframeLocalStorage.setItem":
-            localStorage.setItem(self.prefix+e.data.name, e.data.value)
+            expiringLocalStorage.setItem(self.prefix+e.data.name, e.data.value, e.data.durationMsec, e.data.timestampSuffix)
             break
           case "iframeLocalStorage.getItem":
-            let result = localStorage.getItem(self.prefix+e.data.name)
+            let result = expiringLocalStorage.getItem(self.prefix+e.data.name, e.data.timestampSuffix)
             let data = {"type": "iframeLocalStorage.getItem.result", "id": e.data.id, "name": e.data.name, "result":result}
             self.iframe.contentWindow.postMessage(data, "*")
             break
