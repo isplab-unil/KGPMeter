@@ -1,5 +1,3 @@
-import {cookie} from "./lib/cookies.js"
-
 
 /******** down events ********/
 

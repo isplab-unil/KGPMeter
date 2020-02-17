@@ -54,7 +54,7 @@ i18n.observe(document)
       "svg-kin-genomics-privacy-app",
       "@I1@",
       i18n,
-      "kgpXXXmeter-",
+      "kgpmeter-",
       options
     )
   }

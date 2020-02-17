@@ -21,7 +21,7 @@ async function cookieGetItem(name, callback=()=>{}) {
   //in an iframe..
   }else{
     let id = (+new Date())+"-"+Math.random()
-    let data = {"type": "cookie.getItem", "id": id, "name":name}
+    let data = {"type": "cookie.getItem", id, name}
     let el
     let promise = new Promise((resolve, reject)=>{
       el = function readCookieActionListener(e){
@@ -78,11 +78,11 @@ export class IframeCookieActionListener{
 // ============== downstream LocalStorage functions ==============
 
 
-function setItem(name, value) {
+function setItem(name, value, duration, durationSuffix="expires") {
   if(window.parent==window){
     localStorage.setItem(name, value)
   }else{
-    let data = {"type": "iframeLocalStorage.setItem", "name":name, "value":value}
+    let data = {"type": "iframeLocalStorage.setItem", name, value, duration, durationSuffix}
     window.parent.postMessage(data, "*")
   }
 }
@@ -97,7 +97,7 @@ async function getItem(name) {
   //in an iframe..
   }else{
     let id = (+new Date())+"-"+Math.random()
-    let data = {"type": "iframeLocalStorage.getItem", "id": id, "name":name}
+    let data = {"type": "iframeLocalStorage.getItem", id, name}
     let el
     let promise = new Promise((resolve, reject)=>{
       el = function iframeLocalStorageGetItemActionListener(e){

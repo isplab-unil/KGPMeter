@@ -13,7 +13,7 @@ import {KgpTutorialButton, kgpTutorial} from "./KgpTutorial.js"
 import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
 
 export class KinGenomicPrivacyMeter{
-  constructor(api_base_url, svgId, youNodeId, i18n, cookieLocalStoragePrefix="kgpXXXmeter-", options={}){
+  constructor(api_base_url, svgId, youNodeId, i18n, cookieLocalStoragePrefix="kgpmeter-", options={}){
     this.setOptions(options)
     let self = this
     this.i18n = i18n
