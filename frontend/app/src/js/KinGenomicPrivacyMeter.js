@@ -45,7 +45,6 @@ export class KinGenomicPrivacyMeter{
       self.options.svgMaxHeight = e.data.maxHeight-self.nonSvgElementsHeight
       if(self.familyTreeArtist && (self.familyTreeArtist.scaleFactor!=1 || self.familyTreeArtist.heightFtree>self.options.svgMaxHeight)){
         self.resizeSvg()
-        console.log("HUAHAHA")
         self.updateSvgHeight(self.heightFtree*self.familyTreeArtist.scaleFactor, 0, true)
       }
     }
