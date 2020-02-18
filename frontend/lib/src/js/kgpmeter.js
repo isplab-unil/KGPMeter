@@ -84,15 +84,24 @@ class KgpMeter{
 window.KgpMeter = KgpMeter
 
 // create default kgpmeter if div#kin-genomic-privacy-meter exists
-let defaultKgpmeterDivId = "kin-genomic-privacy-meter"
-let div = document.getElementById(defaultKgpmeterDivId)
-let kgpmeter
-if(div){
-  let apiUrl = div.getAttribute("data-kgpmeter-api-url")
-  apiUrl = apiUrl? apiUrl : "https://santeperso.unil.ch/api-dev/"
-  let lng = div.getAttribute("data-kgpmeter-lng")
-  let maxHeight = div.getAttribute("data-kgpmeter-max-height")
-  kgpmeter = new KgpMeter(defaultKgpmeterDivId, apiUrl, lng, maxHeight)
-  window.kgpmeter = kgpmeter
+let singletonCreated = false
+function singletonKgpMeter(){
+  console.log("MOUAHAHAHA")
+    if(!singletonCreated){
+    let defaultKgpmeterDivId = "kin-genomic-privacy-meter"
+    let div = document.getElementById(defaultKgpmeterDivId)
+    let kgpmeter
+    if(div){
+      let apiUrl = div.getAttribute("data-kgpmeter-api-url")
+      apiUrl = apiUrl? apiUrl : "https://santeperso.unil.ch/api-dev/"
+      let lng = div.getAttribute("data-kgpmeter-lng")
+      let maxHeight = div.getAttribute("data-kgpmeter-max-height")
+      kgpmeter = new KgpMeter(defaultKgpmeterDivId, apiUrl, lng, maxHeight)
+      window.kgpmeter = kgpmeter
+      singletonCreated = true
+    }
+  }
 }
-    
+// call it directly & onload for as fast as possible loading of kgp_meter 
+singletonKgpMeter()
+window.addEventListener("load", singletonKgpMeter)
