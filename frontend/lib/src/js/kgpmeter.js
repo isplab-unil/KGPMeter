@@ -86,7 +86,6 @@ window.KgpMeter = KgpMeter
 // create default kgpmeter if div#kin-genomic-privacy-meter exists
 let singletonCreated = false
 function singletonKgpMeter(){
-  console.log("MOUAHAHAHA")
     if(!singletonCreated){
     let defaultKgpmeterDivId = "kin-genomic-privacy-meter"
     let div = document.getElementById(defaultKgpmeterDivId)
