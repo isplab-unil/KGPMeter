@@ -9,6 +9,7 @@ export class FamilyTreeArtist{
     this.ftree = this.kgp.ftree
     this.i18n = i18n
     this.heightFtree = 0
+    this.scaleFactor = 1
     this.init(transitionDuration)
   }
 
@@ -66,17 +67,17 @@ export class FamilyTreeArtist{
     let widthScaleFactor = d3.min([1, this.kgp.svgWidth/widthFtree])
     this.kgp.updateSvgHeight(this.heightFtree*widthScaleFactor, transitionsDuration)
     
-    let scaleFactor = d3.min([1, widthScaleFactor, this.kgp.svgHeight/this.heightFtree])
+    this.scaleFactor = d3.min([1, widthScaleFactor, this.kgp.svgHeight/this.heightFtree])
 
     let translateX = widthFtree<this.kgp.svgWidth-ftreeRightMargin/2?
         this.kgp.svgWidth/2 :
-        scaleFactor * (this.ftree.width() / 2 + ftreeLeftMargin)
+        this.scaleFactor * (this.ftree.width() / 2 + ftreeLeftMargin)
 
     this.svgg.transition()
       .duration(transitionsDuration)
-      .attr("transform","translate("+translateX+","+(scaleFactor*(80-miny))+") scale("+scaleFactor+")")
+      .attr("transform","translate("+translateX+","+(self.scaleFactor*(80-miny))+") scale("+self.scaleFactor+")")
       // for tutorial videos, use these settings:
-      //.attr("transform","translate("+550+","+(scaleFactor*(75-miny))+") scale("+scaleFactor+")")
+      //.attr("transform","translate("+550+","+(self.scaleFactor*(75-miny))+") scale("+self.scaleFactor+")")
 
     // updateSource:
     updateSource = updateSource? updateSource : {x:translateX+(widthFtree-ftreeRightMargin)/2,y:50}

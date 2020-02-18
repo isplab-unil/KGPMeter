@@ -21,6 +21,7 @@ export class KinGenomicPrivacyMeter{
     this.svg = d3.select("#"+svgId)
     this.svgHeight = parseInt(this.svg.attr("height"))
     this.svgOriginalHeight = this.svgHeight
+    this.nonSvgElementsHeight=190
     this.updateSvgHeight(this.svgHeight, 800, true)
 
     this.youNodeId = youNodeId // "@I1@"
@@ -41,7 +42,12 @@ export class KinGenomicPrivacyMeter{
 
     // set max dimensions event
     function setIframeMaxDimensionEvent(e){
-      self.options.svgMaxHeight = e.data.maxHeight
+      self.options.svgMaxHeight = e.data.maxHeight-self.nonSvgElementsHeight
+      if(self.familyTreeArtist && (self.familyTreeArtist.scaleFactor!=1 || self.familyTreeArtist.heightFtree>self.options.svgMaxHeight)){
+        self.resizeSvg()
+        console.log("HUAHAHA")
+        self.updateSvgHeight(self.heightFtree*self.familyTreeArtist.scaleFactor, 0, true)
+      }
     }
 
     // user id&source + source event
@@ -58,7 +64,11 @@ export class KinGenomicPrivacyMeter{
       }
     )
     iframeLocalStorage.getItem(sourceLSkey).then(
-      userSource => {if(userSource){self.userSource = userSource}}
+      function(userSource){
+        if(userSource){
+          self.userSource = userSource
+        }
+      }
     )
     function setSource(e){
       if(!self.userSource){
@@ -234,7 +244,7 @@ export class KinGenomicPrivacyMeter{
 
   resetOptions(){
     this.options = {
-      svgMaxHeight:2000,
+      svgMaxHeight:1000,
       maxFamilyTreeDepth:5
     }
   }
@@ -311,13 +321,12 @@ export class KinGenomicPrivacyMeter{
     }
     // if needed -> change it
     if(newSvgHeight!=this.svgHeight || forceEnclosingHeightUpdate){
-      let oldBodyHeight = document.getElementsByTagName('body')[0].scrollHeight;
-      let newBodyHeight = oldBodyHeight - this.svgHeight + newSvgHeight
+      let newBodyHeight = newSvgHeight + this.nonSvgElementsHeight
       this.svgHeight = newSvgHeight
       this.svg.transition()
         .duration(transitionsDuration)
         .attr("height",newSvgHeight)
-      let event = kgpSetHeightEvent(newBodyHeight+20, transitionsDuration)
+      let event = kgpSetHeightEvent(newBodyHeight, transitionsDuration)
       window.parent.postMessage(event, "*")
     }
   }
