@@ -31,11 +31,11 @@ If it finds it, the script automatically creates a kgpmeter instance in it, usin
 
 It is also possible to specify some options using optional `data-` attributes :
 ```
-<div id="kin-genomic-privacy-meter" data-kgpmeter-api-url="https://santeperso.unil.ch/api-dev/" data-kgpmeter-lng="fr" data-kgpmeter-max-height="1000"></div>
+<div id="kin-genomic-privacy-meter" data-kgpmeter-api-url="https://santeperso.unil.ch/api-dev/" data-kgpmeter-lng="en" data-kgpmeter-max-height="1000"></div>
 <script src="path/to/kgpmeter.js"></script>
 ```
 `data-kgpmeter-api-url` specifies the url of the used KGPMeter backend, here our default [api endpoint] endpoint. Once you have set up your own KGPMeter backend, you can use its url.
-The two other `data-` attributes allow to set the web app language and maximum height (in pixel), if not present they default to `"en"` and `2000`. Available languages are `["en", "fr", "it", "de", "es"]`, the `data-kgpmeter-max-height` should be at least `600`.
+The two other `data-` attributes allow to set the web app language and maximum height (in pixel), if not present they default to `"en"` and `1000`. Available languages are `["en", "fr", "it", "de", "es"]`, the `data-kgpmeter-max-height` should be at least `600`.
 
 The second method to integrate KGPMeter in a webpage is to create a KGPMeter instance with javascript, the only advantage being the ability to use another `<div>` id:
 ```
@@ -45,8 +45,8 @@ The second method to integrate KGPMeter in a webpage is to create a KGPMeter ins
   kgpmeter = new KgpMeter(
     "kgp-meter",
     "https://santeperso.unil.ch/api-dev/",
-    "en",
-    2000
+    "it",
+    600
   )
 </script>
 ```
