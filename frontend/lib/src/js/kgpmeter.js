@@ -74,10 +74,10 @@ class KgpMeter{
     this.height = height
   }
   setDivStyle(oldHeightstr, heightStr, transitionDuration){
-    let divStyle = 'border:none; width:100%; height: '+oldHeightstr+'; transition-property: height; transition-duration: '+transitionDuration+'s; transition-timing-function: ease;'
-    this.div.setAttribute("style",divStyle)
-    divStyle = 'border:none; width:100%; height: '+heightStr+'; transition-property: height; transition-duration: '+transitionDuration+'s; transition-timing-function: ease;'
-    this.div.setAttribute("style",divStyle)
+    this.div.style.height = oldHeightstr
+    let divTransitionStyle = 'transition-property: height; transition-duration: '+transitionDuration+'s; transition-timing-function: ease;'
+    this.div.setAttribute("style",divTransitionStyle)
+    this.div.style.height = heightStr
   }
 }
 // export KgpMeter to global namespace
