@@ -13,18 +13,22 @@ __project__ = "Data-less Kin Genomic Privacy Estimator"
 
 import argparse
 import datetime
+from multiprocessing import Pool
 import sys
 import time
-from multiprocessing import Pool
+import traceback
+from typing import Tuple
+
 
 import api
 import kin_genomic_privacy as kgp
-from config import config
+from config import Config
+from app import application
 import database as db
 
 
 def _fetch(syn_queue, nb_entry = 2000):
-    with db.connect_db(config["DATABASE_CONFIG"]) as db_connexion:
+    with db.connect_db(Config.DATABASE_CONFIG) as db_connexion:
       result = db.get_null_privacy_metrics(db_connexion, nb_entry)
       if result:
         [syn_queue.append(record) for record in result]
@@ -34,8 +38,8 @@ def daemon_compute_and_save_privacy_metrics(tree: str, maf: float, value_id:int)
     Computes privacy metrics from a serialized tree from the database.
     """
     unserialized_tree = kgp.SequencedFamilyTree.unserialize(tree)
-    if len(unserialized_tree.inference_network.nodes()) > config["ENGINE_MAX_NODES"] and config["ENGINE_USE_CACHE"]:
-        with db.connect_db(config["DATABASE_CONFIG"]) as db_connexion:
+    if len(unserialized_tree.inference_network.nodes()) > Config.ENGINE_MAX_NODES and Config.ENGINE_USE_CACHE:
+        with db.connect_db(Config.DATABASE_CONFIG) as db_connexion:
             db.update_privacy_metric(db_connexion, value_id, -1, -1, 0)
         return (maf, -1, -1, 0)
     res = (maf, -1, -1, 0)
@@ -45,10 +49,14 @@ def daemon_compute_and_save_privacy_metrics(tree: str, maf: float, value_id:int)
     except Exception as e:
         print("\n\nerror for value_id %d tree (maf=%f):" % (value_id, maf))
         print(tree)
+        print("error:")
+        print(traceback.format_exc())
     finally:
         return res
 
 if __name__ == '__main__':
+
+  with application.app_context():
 
     parser = argparse.ArgumentParser(
         description="Update 'value' table from database for the row with Null values.")
@@ -90,7 +98,7 @@ if __name__ == '__main__':
                 print("No empty maf value.", end='\r')
             else:
                 with Pool(args.number_process) as pool:
-                    pool.starmap(api.daemon_compute_and_save_privacy_metrics, queue)
+                    pool.starmap(daemon_compute_and_save_privacy_metrics, queue)
                 queue = []
             time.sleep(args.pause)
         else:
