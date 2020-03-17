@@ -63,7 +63,7 @@ To launch it locally for testing, with the virtual environment activated enter t
 python app.py -r
 ```
 
-You can now browse to `http://localhost:5000/app/` to see the embedable app. The proper URL to use for integration would be `http://localhost:5000/`.
+You can now browse to http://localhost:5000/app/ to see the embedable app. The proper URL to use for a website integration would here be http://localhost:5000/.
 
 
 ### 3. Use the KGPMeter python API
