@@ -57,7 +57,7 @@ def serve_iframe_app(path):
     return send_from_directory("../frontend/app/", path)
 
 # only for local testing:
-if application.config["TESTING"]:
+if application.config["TESTING"] and application.config["SERVE_STATIC_FILES_FROM"] and application.config["STATIC_FILES_FOLDER"]:
     @application.route('/%s/' % application.config["SERVE_STATIC_FILES_FROM"], defaults={'path': ""})
     @application.route('/%s/<path:path>' % application.config["SERVE_STATIC_FILES_FROM"])
     def serve_static_debug_website(path):

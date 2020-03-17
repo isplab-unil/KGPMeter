@@ -44,5 +44,5 @@ class Config(object):
 
   LOGGER = logging.getLogger("KGP_METER")
 
-  STATIC_FILES_FOLDER = "website/"
-  SERVE_STATIC_FILES_FROM = "static"
+  STATIC_FILES_FOLDER = None
+  SERVE_STATIC_FILES_FROM = None
