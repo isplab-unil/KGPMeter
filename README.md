@@ -56,7 +56,15 @@ The second method to integrate KGPMeter in a webpage is to create a KGPMeter ins
 
 If it is not already done, follow the guide _A) Download Netica and install python dependencies_ below to have Netica and python dependencies installed.
 
-`TODO`
+`backend/app.py` instantiates a flask app. It is ready to be deployed as a WSGI application for production use.
+
+To launch it locally for testing, with the virtual environment activated enter the `backend/` folder and simply do:
+```
+python app.py -r
+```
+
+You can now browse to `http://localhost:5000/app/` to see the embedable app.
+
 
 ### 3. Use the KGPMeter python API
 
@@ -91,7 +99,7 @@ pip install -r requirements.txt
 cd ..
 ```
 
-With the depedencies installed and the virtual environment activated, you can then follow wiht 2) or 3).
+With the depedencies installed and the virtual environment activated, you can then follow with 2. or 3. .
 Once you're done, you can deactivate the python virtual environment:
 ```
 deactivate
