@@ -1,9 +1,9 @@
 # Kin Genomic Privacy Meter
 
 This git repo is the companion to our paper [_KGP Meter: Communicating Kin Genomic Privacy to the Masses_][KGPMeter_paper_url] presenting KGPMeter. Here is the paper's abstract:
->Direct-to-consumer genetic testing services are gaining a lot of momentum: As of today, companies such as 23andMe or AncestryDNA have already attracted 26 million customers, and the trend is certainly not about to cease. These services ob- viously raise new concerns regarding privacy, exacerbated by the fact that their customers can then share their genomic data on platforms such as GEDmatch. Notwithstanding their right to know more about their genetic background or to share their genomic data, individuals must realize that such a behavior damages their relatives’ genomic privacy.
+>Direct-to-consumer genetic testing services are gaining a lot of momentum: As of today, companies such as 23andMe or AncestryDNA have already attracted 26 million customers, and the trend is certainly not about to cease. These services obviously raise new concerns regarding privacy, exacerbated by the fact that their customers can then share their genomic data on platforms such as GEDmatch. Notwithstanding their right to know more about their genetic background or to share their genomic data, individuals must realize that such a behavior damages their relatives’ genomic privacy.
 >
->In this paper, we present KGP Meter, a new online tool that provides means for raising awareness in the general public about the privacy risks of genomic data sharing. Our tool features various properties that makes it highly interactive, privacy-preserving (i.e., it does not require access to actual genomic data), and user-friendly. It explores possible config- urations in an optimized way and combines well-established graphical models with an entropy-based metric to compute kin genomic privacy scores. Our benchmarking experiments show that KGP Meter is very reactive, it provides privacy scores in less than a second on average. We design and imple- ment an interface that enables users to draw their family trees and indicate which of their relatives’ genomes are known, and that communicates the resulting privacy scores to the users. By analyzing the usage of our tool and surveying its users, we observe that most users find the privacy score worrisome, and that the large majority of them find KGP Meter useful.
+>In this paper, we present KGP Meter, a new online tool that provides means for raising awareness in the general public about the privacy risks of genomic data sharing. Our tool features various properties that makes it highly interactive, privacy-preserving (i.e., it does not require access to actual genomic data), and user-friendly. It explores possible configurations in an optimized way and combines well-established graphical models with an entropy-based metric to compute kin genomic privacy scores. Our benchmarking experiments show that KGP Meter is very reactive, it provides privacy scores in less than a second on average. We design and implement an interface that enables users to draw their family trees and indicate which of their relatives’ genomes are known, and that communicates the resulting privacy scores to the users. By analyzing the usage of our tool and surveying its users, we observe that most users find the privacy score worrisome, and that the large majority of them find KGP Meter useful.
 
 ## Getting started
 
@@ -67,11 +67,6 @@ If it is not already done, follow the guide _A) Download Netica and install pyth
 jupyter notebook backend/demo/demo.ipynb
 ```
 
-Of course, once you're done, do not forget to deactivate the python virtual environment:
-```
-deactivate
-```
-
 
 ### A) Download Netica and install python dependencies
 
@@ -96,7 +91,11 @@ pip install -r requirements.txt
 cd ..
 ```
 
-
+With the depedencies installed and the virtual environment activated, you can then follow wiht 2) or 3).
+Once you're done, you can deactivate the python virtual environment:
+```
+deactivate
+```
 
 [KGPMeter_paper_url]: santeperso.unil.ch/privacy-dev/?test
 [our_website]: santeperso.unil.ch/privacy-dev/?github
