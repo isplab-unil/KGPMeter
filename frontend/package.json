@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-es6": "watch -n 2 \"cp -r app/src/js app/ & cp -r lib/src/ lib/\"",
     "build": "webpack --config webpack.config.js --watch"
   },
   "keywords": [],
