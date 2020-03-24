@@ -65,6 +65,7 @@ python app.py -r
 
 You can now browse to http://localhost:5000/app/ to see the embedable app. The proper URL to use for a website integration would here be http://localhost:5000/.
 
+```backend/config_default.py``` describes a default configuration for ```app.py```. It shouldn't be modified, copy it into  ```backend/config.py``` and modify this one instead. ```app.py``` first looks for the ```backend/config.py``` config file and uses ```backend/config_default.py``` as fallback.
 
 ### 3. Use the KGPMeter python API
 
@@ -104,6 +105,16 @@ Once you're done, you can deactivate the python virtual environment:
 ```
 deactivate
 ```
+
+
+### B) Repo structure
+
+The `backend/` directory contains the python code to compute kin genomic privacy scores and the flask app handling score requests.
+
+The `frontend/` directory contains the HTML, CSS, Javascript code for the webapp: visually building family trees, sending requests to the backend as well as for integration in webpages.
+
+
+
 
 [KGPMeter_paper_url]: santeperso.unil.ch/privacy-dev/?test
 [our_website]: santeperso.unil.ch/privacy-dev/?github
