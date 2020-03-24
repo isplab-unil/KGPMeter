@@ -1,4 +1,4 @@
-# Kin Genomic Privacy Frontend
+# Kin Genomic Privacy Meter Frontend
 
 This directory contains all the HTML, CSS and Javascript code to display the KGP Meter webapp.
 
@@ -12,7 +12,7 @@ Note: the source code is contained in `app/src/` and `lib/src/`. The directories
 Note that the transpiled Javascript is already available in the `app/js/` and `lib/js/` directories.
 
 You need to have `npm` installed to transpile the source code.
-To transpile the `app/` code to ES6, first install the required npm packages:
+To transpile the source code, first install the required npm packages:
 ```
 npm install
 ```

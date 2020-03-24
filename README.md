@@ -109,9 +109,8 @@ deactivate
 
 ### B) Repo structure
 
-The `backend/` directory contains the python code to compute kin genomic privacy scores and the flask app handling score requests.
-
-The `frontend/` directory contains the HTML, CSS, Javascript code for the webapp: visually building family trees, sending requests to the backend as well as for integration in webpages.
+- `backend/` contains the python code to compute kin genomic privacy scores and the flask app handling score requests.
+- `frontend/` contains the HTML, CSS, Javascript code for the webapp: visually building family trees, sending requests to the backend as well as for integration in webpages.
 
 
 
