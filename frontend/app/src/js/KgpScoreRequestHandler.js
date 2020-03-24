@@ -33,6 +33,19 @@ export class KgpScoreRequestHandler{
     return [];
   }
 
+  /** Requests a score from the backend
+   * 
+   * Returns the backend response as a promise, also calls the listeners with the promise, request and previous response
+   * 
+   * @param {String} target_id the target id as a string
+   * @param {Array[Array[String]]} familyTreeEdges an array of edges, each edge is an array of length 2 of the form
+   *        [predecessorId, successorId], family nodes must still be included.
+   * @param {Array[String]} familyTreeSequencedRelatives an array of id of sequenced relatives
+   * @param {String} user_id the webapp id of the user
+   * @param {String} user_source the webapp's user source
+   * @param {String} lng the current webapp language
+   * @param {Boolean} silent [optional] if true, listeners aren't called. false by default
+   */
   requestScore(target_id, familyTreeEdges, familyTreeSequencedRelatives, user_id, user_source, lng, silent=false){
     let self = this
     let currentRequest = new KgpScoreRequest(
