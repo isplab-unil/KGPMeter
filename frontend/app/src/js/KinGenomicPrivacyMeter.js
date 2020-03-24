@@ -171,11 +171,11 @@ export class KinGenomicPrivacyMeter{
         kgpError => $("body").css({'cursor':'auto'}))
     })
     // ...other listeners
-    this.scoreRequestHandler.addListener((...args) => self.privacyBar.await(...args))
-    this.scoreRequestHandler.addListener((...args) => self.privacyWordedScore.await(...args))
-    this.scoreRequestHandler.addListener((...args) => self.backendStatus.await(...args))
-    this.scoreRequestHandler.addListener((...args) => self.scoreNumberExplainer.await(...args))
-    this.scoreRequestHandler.addListener((...args) => self.kgpsurvey.await(...args))
+    this.scoreRequestHandler.addListener((...args) => self.privacyBar.awaitScore(...args))
+    this.scoreRequestHandler.addListener((...args) => self.privacyWordedScore.awaitScore(...args))
+    this.scoreRequestHandler.addListener((...args) => self.backendStatus.awaitScore(...args))
+    this.scoreRequestHandler.addListener((...args) => self.scoreNumberExplainer.awaitScore(...args))
+    this.scoreRequestHandler.addListener((...args) => self.kgpsurvey.awaitScore(...args))
     
     // trash button
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})

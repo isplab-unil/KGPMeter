@@ -114,8 +114,8 @@ export class KgpPrivacyBar{
     }
   }
 
-  /** await() puts the KgpPrivacyBar in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
-  await(kgpPromise, request, previousResponse){
+  /** awaitScore() puts the KgpPrivacyBar in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
+  awaitScore(kgpPromise, request, previousResponse){
     this.elements.transition(200).attr("opacity",0.5)
     kgpPromise.then(kgpSuccess=>{
       this.update(kgpSuccess.result.privacy_metric)

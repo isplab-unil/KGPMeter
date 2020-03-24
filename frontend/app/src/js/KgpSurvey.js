@@ -106,7 +106,7 @@ export class KgpSurvey{
     //$('#modal-survey').on('hidden.bs.modal', function (e) {if(getSurveyStatus()!="finished"){ showSurveyVolunteerButton() }})
   }
 
-  await(kgpPromise, request, previousResponse){
+  awaitScore(kgpPromise, request, previousResponse){
     let self = this
     kgpPromise.then(kgpSuccess => {
       this.signaturesRequestedTrees.add(kgpSuccess.tree_signature)

@@ -81,8 +81,8 @@ export class KgpWordedScore{
     }*/
   }
 
-  /** await() puts the KgpWordedScore in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
-  await(kgpPromise, request, previousResponse){
+  /** awaitScore() puts the KgpWordedScore in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
+  awaitScore(kgpPromise, request, previousResponse){
     if(this.text.attr("opacity")==1){
       this.text.transition(200).attr("opacity",0.5)
     }

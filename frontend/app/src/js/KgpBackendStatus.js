@@ -23,8 +23,8 @@ export class KgpBackendStatus{
     this.i18n.dynamic["response-success"] = this.i18nFormatSuccessMessage
   }
 
-  /** await() puts the KgpBackendStatus in a waiting state and updates it properly once the promise has fulfilled */
-  await(kgpPromise, request, previousResponse){
+  /** awaitScore() puts the KgpBackendStatus in a waiting state and updates it properly once the promise has fulfilled */
+  awaitScore(kgpPromise, request, previousResponse){
     let self = this
     this.displayOngoing()
     return kgpPromise.then(kgpSuccess=>{

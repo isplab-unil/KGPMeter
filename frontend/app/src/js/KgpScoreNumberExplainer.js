@@ -32,8 +32,8 @@ export class KgpScoreNumberExplainer{
     this.div.stop(true).slideDown(transitionDuration)//.fadeTo(5000, 500).slideUp(500)
   }
 
-  /** await() puts the KgpWordedScore in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
-  await(kgpPromise, request, previousResponse){
+  /** awaitScore() puts the KgpWordedScore in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
+  awaitScore(kgpPromise, request, previousResponse){
     kgpPromise.then(kgpSuccess=>{
       this.update(kgpSuccess.result.privacy_metric)
     },()=>{})
