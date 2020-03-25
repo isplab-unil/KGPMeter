@@ -1,9 +1,11 @@
 import {KgpScoreResponse, KgpScoreSuccess, KgpScoreError, KgpScoreStale} from "./KgpScoreResponse.js"
 import {KgpScoreRequest} from "./KgpScoreRequest.js"
+import {KgpScoreJsCache} from "./KgpScoreJsCache.js"
 
 export class KgpScoreRequestHandler{
-  constructor(api_endpoint){
+  constructor(api_endpoint, cache = null){
     this.api_endpoint = api_endpoint
+    this.cache = cache? cache : new KgpScoreJsCache({})
     this.lastRequest = {}
     // necessary dummy
     this.latestResponse = new KgpScoreSuccess(-1, {}, "", 1.0001, 0, 0, 0)
@@ -57,16 +59,37 @@ export class KgpScoreRequestHandler{
     let previousResponse = this.latestResponse
     this.lastRequest = currentRequest
 
-    let kgpPromise = fetch(self.api_endpoint, {
-      method: 'POST',
-      body: JSON.stringify(currentRequest)
-    })
-    .then(resp=>resp.json())
-    // handle connexion error
-    .catch( () => Promise.reject(new KgpScoreError(currentRequest.timestamp_js, currentRequest, null, 5, {"message":'Erreur de connexion au serveur.'})))
-    // parse response
-    .then(json=>{
-      let kgpr = KgpScoreResponse.parse(json, currentRequest)
+    // get from cache
+    const jsTreeSignature = this.cache.signature(target_id, familyTreeEdges, familyTreeSequencedRelatives)
+    let scoreFromCache = this.cache.get(target_id, familyTreeEdges, familyTreeSequencedRelatives)
+    let kgpPromise;
+    console.log("Family tree, target:", target_id,", familyTreeEdges:", familyTreeEdges, ", familyTreeSequencedRelatives:", familyTreeSequencedRelatives)
+
+    if(scoreFromCache==null){
+      console.log("JS cache miss, jsTreeSignature: ", jsTreeSignature)
+      // if cache miss fetch from serer
+      kgpPromise = fetch(self.api_endpoint, {
+          method: 'POST',
+          body: JSON.stringify(currentRequest)
+        })
+        .then(resp=>resp.json())
+        // handle connexion error
+        .catch( () => Promise.reject(new KgpScoreError(currentRequest.timestamp_js, currentRequest, null, 5, {"message":'Erreur de connexion au serveur.'})))
+        // parse response
+        .then(obj => KgpScoreResponse.parse(obj, currentRequest))
+    }else{
+      console.log("JS cache hit, jsTreeSignature: ", jsTreeSignature, ", score: ", scoreFromCache)
+      // if cache hit, build porper kgpPromise with KgpScoreSuccess
+      kgpPromise = Promise.resolve(new KgpScoreSuccess(
+        currentRequest.timestamp_js,
+        currentRequest,
+        null,
+        scoreFromCache,
+        true/*TO ADAPT: FROM JS CACHE*/ ,
+        Date.now()-currentRequest.timestamp_js))
+    }
+
+    kgpPromise = kgpPromise.then(kgpr=>{
       // check if it's stale or not
       if(kgpr.timestamp_js!=self.lastRequest.timestamp_js){
         return Promise.reject(new KgpScoreStale(kgpr))
@@ -77,6 +100,13 @@ export class KgpScoreRequestHandler{
       }
       // success!
       self.latestResponse = kgpr
+      //save result in cache
+      self.cache.add(
+        currentRequest.family_tree.target,
+        currentRequest.family_tree.edges,
+        currentRequest.family_tree.sequenced_relatives,
+        kgpr.result.privacy_metric
+      )
       return kgpr
     })
 

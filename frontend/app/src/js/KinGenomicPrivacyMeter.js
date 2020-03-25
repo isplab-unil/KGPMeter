@@ -1,6 +1,7 @@
 import {iframeLocalStorage} from "./lib/iframeCookiesLocalStorage.js"
 import {FamilyTreeLayout} from "./FamilyTreeLayout.js"
 import {FamilyTreeArtist} from "./FamilyTreeArtist.js"
+import {KgpScoreJsCache} from "./KgpScoreJsCache.js"
 import {KgpScoreRequestHandler} from "./KgpScoreRequestHandler.js"
 import {KgpSurvey} from "./KgpSurvey.js"
 import {KgpBackendStatus} from "./KgpBackendStatus.js"
@@ -154,8 +155,12 @@ export class KinGenomicPrivacyMeter{
     // explainer
     this.scoreNumberExplainer = new KgpScoreNumberExplainer("kgp-explainer-container", self.i18n, "explainer-text")
 
+    // js score cach
+    const kgpScoreCacheLSkey = localStoragePrefix+"score-cache"
+    const scoreCache = new KgpScoreJsCache(null, kgpScoreCacheLSkey, this.scoreJsCacheApiEndpoint)
+
     // request handler
-    this.scoreRequestHandler = new KgpScoreRequestHandler(this.privacyScoreApiEndpoint)
+    this.scoreRequestHandler = new KgpScoreRequestHandler(this.privacyScoreApiEndpoint, scoreCache)
     // update privacyMetric
     this.scoreRequestHandler.addListener(kgpPromise => {
       kgpPromise.then(
@@ -303,6 +308,7 @@ export class KinGenomicPrivacyMeter{
     let separator = this.api_base_url.endsWith("/")? "" : "/"
     this.privacyScoreApiEndpoint = (this.api_base_url+ separator + "privacy-score")
     this.surveyApiEndpoint = this.api_base_url+separator+"survey"
+    this.scoreJsCacheApiEndpoint = this.api_base_url+separator+"app/jscache/cache.json"
   }
 
   updateSvgHeight(heightFtree, transitionsDuration = 800, forceEnclosingHeightUpdate=false){
