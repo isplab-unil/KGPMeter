@@ -24,22 +24,20 @@ export class KgpScoreJsCache{
             self.scores = JSON.parse(json)
             console.log("KgpScoreJsCache from LocalStorage self.scores: ",self.scores)
             self.loadedFrom = "localStorageKey"
-          }
-
           // ... try from url
-          if(!self.scores && url){
+          } else if( url){
             fetch(url)
               .then(resp => resp.json())
               .then(json =>{
                 if(json){
-                  console.log("KgpScoreJsCache from URL json: ",json)
                   self.scores = json
+                  console.log("KgpScoreJsCache from URL self.scores: ",self.scores)
                   self.save()
                 }
               }).catch(fail=>console.warn("KgpScoreJsCache: failed to load cache json file from: ",url))
               self.loadedFrom = "url"
           }
-        }, fail=>null)
+        }, console.warn)
       }
     }
   }
