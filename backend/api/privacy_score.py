@@ -71,7 +71,7 @@ def privacy_score() -> KgpResponse:
                         "F" in node or "f" in node]
 
         # if no target or target not in tree -> return error
-        if(all([tree_target not in edge for edge in tree_edges])):
+        if(all([tree_target not in edge for edge in tree_edges]) and len(tree_edges)>0):
             return KgpError(timestamp_js, "before instanciation", code=4, allow_cross_origin=current_app.config["ALLOW_CROSS_ORIGIN"])
 
         # Create the SequencedFamilyTree
