@@ -111,7 +111,7 @@ export class KgpBackendStatus{
     //"Réponse calculée en {#1} secondes{#2 (en cache)}.{#3 Le score est inchangé, <a href='../faq#change' target='_blank'>en savoir plus</a>.}",
     text = text.replace("{#1}",data.time)
     text = text.replace(/({#2(.+?);(.*?)})/,data.cached==1? "$2":"$1")
-    text = text.replace(/({#2(.+?);(.*?)})/,data.cached==2? "$3":"")
+    text = text.replace(/({#2(.+?);(.*?)})/,data.cached==2? "$3":"$2")
     text = text.replace(/{#3(.+?)}/,data.similar? "$1":"")
     return text
   }
