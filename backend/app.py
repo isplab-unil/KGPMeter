@@ -46,7 +46,7 @@ import json
 def save_cache():
     # TODO: 302 code to static doc page
     cache_json = request.get_json(force=True)
-    with open(os.path.join(WSGI_PROJECT_DIR, "../frontend/app/jscache/cache_latest.json"), "w") as outf:
+    with open(os.path.join(WSGI_PROJECT_DIR, "../frontend/app/jscache/cache.json"), "w") as outf:
       json.dump(cache_json, outf, indent=1)
     return "Cache saved!"
 # END: ONLY TEMPORARY TO SAVE CACHE JSON ON SERVER 

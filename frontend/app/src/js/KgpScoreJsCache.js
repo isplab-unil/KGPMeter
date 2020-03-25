@@ -20,6 +20,9 @@ export class KgpScoreJsCache{
       if(localStorageKey){
         // ... try from localStorageKey
         iframeLocalStorage.getItem(localStorageKey).then(json =>{
+          // ONLY TEMPORARY TO SAVE CACHES ON SERVER
+          json=null
+          // END: ONLY TEMPORARY TO SAVE CACHES ON SERVER
           if(json){
             self.scores = JSON.parse(json)
             self.loadedFrom = "localStorageKey"
@@ -65,8 +68,8 @@ export class KgpScoreJsCache{
   }
 
   save(){
-    if(this.localStorageKey){
-      iframeLocalStorage.setItem(this.localStorageKey, JSON.stringify(this.scores), 2*3600*1000)
+    if(this.localStorageKey){    
+      // ONLY TEMPORARY TO SAVE CACHES ON SERVER iframeLocalStorage.setItem(this.localStorageKey, JSON.stringify(this.scores), 2*3600*1000)
     }
     /* ONLY TEMPORARY TO SAVE CACHES ON SERVER */
     fetch("/save-cache", {
