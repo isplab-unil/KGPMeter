@@ -88,7 +88,7 @@ export class KgpScoreRequestHandler{
           null,
           scoreFromCache,
           2 /*2: from js cache, 1 or true: from python cache*/ ,
-          Date.now()-currentRequest.timestamp_js)
+          (Date.now() - currentRequest.timestamp_js) / 1000)
         )
       }
     } else {
