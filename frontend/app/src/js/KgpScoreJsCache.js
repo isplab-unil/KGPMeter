@@ -106,7 +106,7 @@ export class KgpScoreJsCache{
       const predSignature = nodesSignature(predecessors(node))
       const succSignature = nodesSignature(successors(node))
       const isSeq = +familyTreeSequencedRelatives.includes(node)
-      return "N("+isSeq+"|"+predSignature+"|"+succSignature+")"
+      return "N("+(isSeq?"True":"False")+"|"+predSignature+"|"+succSignature+")"
     }
     return md5(signatureRecursive(target_id))
   }
