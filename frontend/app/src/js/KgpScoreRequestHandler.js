@@ -65,10 +65,10 @@ export class KgpScoreRequestHandler{
       // get from cache
       const jsTreeSignature = this.cache? this.cache.signature(target_id, familyTreeEdges, familyTreeSequencedRelatives) : null
       const scoreFromCache = this.cache? this.cache.get(target_id, familyTreeEdges, familyTreeSequencedRelatives) : null
-      console.log("Family tree, target:", target_id,", familyTreeEdges:", familyTreeEdges, ", familyTreeSequencedRelatives:", familyTreeSequencedRelatives)
+      //console.log("Family tree, target:", target_id,", familyTreeEdges:", familyTreeEdges, ", familyTreeSequencedRelatives:", familyTreeSequencedRelatives)
 
       if(scoreFromCache==null){
-        if(this.cache){console.log("JS cache miss, jsTreeSignature: ", jsTreeSignature)}
+        if(this.cache){console.log("JS cache miss, tree signature: ", jsTreeSignature)}
         // if cache miss fetch from serer
         kgpPromise = fetch(self.api_endpoint, {
             method: 'POST',
@@ -80,7 +80,7 @@ export class KgpScoreRequestHandler{
           // parse response
           .then(obj => KgpScoreResponse.parse(obj, currentRequest))
       }else{
-        if(this.cache){console.log("JS cache hit, jsTreeSignature: ", jsTreeSignature, ", score: ", scoreFromCache)}
+        if(this.cache){console.log("JS cache hit, tree signature: ", jsTreeSignature, ", score: ", scoreFromCache)}
         // if cache hit, build porper kgpPromise with KgpScoreSuccess
         kgpPromise = Promise.resolve(new KgpScoreSuccess(
           currentRequest.timestamp_js,

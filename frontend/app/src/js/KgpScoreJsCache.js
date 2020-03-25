@@ -22,7 +22,6 @@ export class KgpScoreJsCache{
         iframeLocalStorage.getItem(localStorageKey).then(json =>{
           if(json){
             self.scores = JSON.parse(json)
-            console.log("KgpScoreJsCache from LocalStorage self.scores: ",self.scores)
             self.loadedFrom = "localStorageKey"
           // ... try from url
           } else if( url){
@@ -31,7 +30,6 @@ export class KgpScoreJsCache{
               .then(json =>{
                 if(json){
                   self.scores = json
-                  console.log("KgpScoreJsCache from URL self.scores: ",self.scores)
                   self.save()
                 }
               }).catch(fail=>console.warn("KgpScoreJsCache: failed to load cache json file from: ",url))
