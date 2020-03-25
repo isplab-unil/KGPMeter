@@ -48,7 +48,7 @@ def save_cache():
     cache_json = request.get_json(force=True)
     with open(os.path.join(WSGI_PROJECT_DIR, "../frontend/app/jscache/cache_latest.json"), "w") as outf:
       json.dump(cache_json, outf, indent=1)
-    return f"Cache saved! \n{json.dumps(cache_json, indent=1)}"
+    return "Cache saved!"
 # END: ONLY TEMPORARY TO SAVE CACHE JSON ON SERVER 
 
 
