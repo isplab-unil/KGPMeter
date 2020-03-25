@@ -87,7 +87,7 @@ export class KgpScoreRequestHandler{
           currentRequest,
           null,
           scoreFromCache,
-          true/*TO ADAPT: FROM JS CACHE*/ ,
+          2 /*2: from js cache, 1 or true: from python cache*/ ,
           Date.now()-currentRequest.timestamp_js)
         )
       }

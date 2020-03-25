@@ -102,7 +102,7 @@
     "privacy-bar-score-1": "très peu protégée",
     "_COMMENT8": "-------------- response messages --------------",
     "response-ongoing": "<i class='fas fa-cog'></i> Calcul en cours...",
-    "response-success": "<i class='fas fa-check-circle'></i> Score calculé en {#1} secondes{#2 (en cache)}.{#3 Le score est inchangé, <a href='../faq#change' target='_blank'>en savoir plus <i class='fas fa-question-circle'></i></a></a>.}",
+    "response-success": "<i class='fas fa-check-circle'></i> Score calculé en {#1} secondes{#2 (en cache); (du cache local)}.{#3 Le score est inchangé, <a href='../faq#change' target='_blank'>en savoir plus <i class='fas fa-question-circle'></i></a></a>.}",
     "response-error-1": "<i class='fas fa-clock'></i> Le calcul prend trop de temps pour être calculé en temps réel. Ré-essayez plus tard. <a href='../faq#duration' target='_blank'>En savoir plus <i class='fas fa-question-circle'></i></a></a>",
     "response-error-2": "<i class='fas fa-exclamation-circle'></i> Erreur interne au serveur, id erreur: {}. Veuillez réessayer plus tard.",
     "response-error-3": "<i class='fas fa-exclamation-circle'></i> Vous avez atteint le nombre maximum d'individus séquencés dans l'arbre de famille. Veuillez enlever des individus séquencés.",
