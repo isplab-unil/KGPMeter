@@ -72,10 +72,12 @@ export class KgpScoreJsCache{
       // ONLY TEMPORARY TO SAVE CACHES ON SERVER iframeLocalStorage.setItem(this.localStorageKey, JSON.stringify(this.scores), 2*3600*1000)
     }
     /* ONLY TEMPORARY TO SAVE CACHES ON SERVER */
-    fetch("../save-cache", {
-      method: 'POST',
-      body: JSON.stringify(this.scores)
-    })
+    if((""+window.location).search("localhost")>=0){
+      fetch("../save-cache", {
+        method: 'POST',
+        body: JSON.stringify(this.scores)
+      })
+    }
     /* END: ONLY TEMPORARY TO SAVE CACHES ON SERVER */
   }
 
