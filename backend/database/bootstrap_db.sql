@@ -14,6 +14,8 @@ CREATE TABLE request (
   timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   user_id   VARCHAR(64),
   IP        TEXT,
+  location_country        TEXT,
+  location_state        TEXT,
   tree      TEXT        NOT NULL,
   signature VARCHAR(64) NOT NULL,
   number_sequenced         INT,
