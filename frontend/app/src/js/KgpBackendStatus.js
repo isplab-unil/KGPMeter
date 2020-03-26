@@ -30,6 +30,9 @@ export class KgpBackendStatus{
     return kgpPromise.then(kgpSuccess=>{
       // success
       let same_signature = previousResponse.tree_signature == kgpSuccess.tree_signature
+      if((!previousResponse.tree_signature) || (!kgpSuccess.tree_signature)){
+        same_signature = Math.abs(previousResponse.result.privacy_metric - kgpSuccess.result.privacy_metric) <= 10**(-6)
+      }
       self.displaySuccess(
         kgpSuccess.result.privacy_metric,
         kgpSuccess.result.execution_time,
