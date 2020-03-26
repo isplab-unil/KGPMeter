@@ -68,8 +68,8 @@ export class KgpScoreRequestHandler{
       //console.log("Family tree, target:", target_id,", familyTreeEdges:", familyTreeEdges, ", familyTreeSequencedRelatives:", familyTreeSequencedRelatives)
 
       if(scoreFromCache==null){
+        // if cache miss fetch from server
         if(this.cache){console.log("JS cache miss, tree signature: ", jsTreeSignature)}
-        // if cache miss fetch from serer
         kgpPromise = fetch(self.api_endpoint, {
             method: 'POST',
             body: JSON.stringify(currentRequest)
@@ -80,8 +80,8 @@ export class KgpScoreRequestHandler{
           // parse response
           .then(obj => KgpScoreResponse.parse(obj, currentRequest))
       }else{
-        if(this.cache){console.log("JS cache hit, tree signature: ", jsTreeSignature, ", score: ", scoreFromCache)}
         // if cache hit, build porper kgpPromise with KgpScoreSuccess
+        if(this.cache){console.log("JS cache hit, tree signature: ", jsTreeSignature, ", score: ", scoreFromCache)}
         kgpPromise = Promise.resolve(new KgpScoreSuccess(
           currentRequest.timestamp_js,
           currentRequest,
