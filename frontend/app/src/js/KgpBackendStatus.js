@@ -94,7 +94,7 @@ export class KgpBackendStatus{
 
   displayDanger(errorKey, timeout=5000){
     this.displayMessage("danger", errorKey, timeout)
-}
+  }
 
 
   displaySuccess(score, time, cached, similar, timeout=5000){
