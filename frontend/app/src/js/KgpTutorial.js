@@ -20,6 +20,9 @@ export class KgpTutorialButton{
     this.listeners[event] = listener
     this.tutoButton.on(event, listener)
   }
+  remove(){
+    this.tutoButton.remove()
+  }
 }
 
 export function kgpTutorial(i18n, video_url_prefix = "./tuto/"){

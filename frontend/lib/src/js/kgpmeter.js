@@ -1,4 +1,4 @@
-import {kgpSetLanguageEvent, kgpSetSourceEvent, kgpSetIframeMaxDimensionEvent, kgpLaunchTutorialEvent} from "../../../app/src/js/KgpIframeInterface.js"
+import {kgpSetLanguageEvent, kgpSetSourceEvent, kgpSetIframeMaxDimensionEvent, kgpLaunchTutorialEvent, kgpToggleTutorialButtonEvent} from "../../../app/src/js/KgpIframeInterface.js"
 import {IframeCookieActionListener, IframeLocalStorageActionListener} from "../../../app/src/js/lib/iframeCookiesLocalStorage.js"
 
 
@@ -7,6 +7,9 @@ class KgpMeter{
     let self = this
     this.divId = divId
     this.div = document.getElementById(divId)
+
+    this.iframeLoaded = false
+    this.onloadListeners = []
 
     this.apiUrl = apiUrl
     if(!this.apiUrl){
@@ -28,14 +31,20 @@ class KgpMeter{
 
     this.iframe.onload = ()=>{
       setTimeout(() => {
-        // set language
-        self.setLanguage(self.lng)
-        // set source
-        self.setSource(document.URL)
-        // set max height
-        self.setMaxheight(self.maxHeight)
+        // set iframeLoaded
+        self.iframeLoaded=true
+        // call load listeners
+        self.onloadListeners.forEach(f => f());
       }, 50);
     }
+    this.onload(()=>{
+      // set language
+      self.setLanguage(self.lng)
+      // set source
+      self.setSource(document.URL)
+      // set max height
+      self.setMaxheight(self.maxHeight)
+    })
 
     // ======== handle height updates ========
     function dispatchKgpIframeMessage(e) {
@@ -48,6 +57,14 @@ class KgpMeter{
       }
     }
     window.addEventListener('message', dispatchKgpIframeMessage, false)
+  }
+
+  onload(func){
+    if(this.iframeLoaded){
+      func()
+    }else{
+      this.onloadListeners.push(func)
+    }
   }
 
   setLanguage(lng){
@@ -66,6 +83,11 @@ class KgpMeter{
   }
   launchTutorial(){
     this.iframe.contentWindow.postMessage(kgpLaunchTutorialEvent(), this.apiUrl)
+  }
+
+  toggleTutorialButton(showTutorialButton){
+    console.log("KGP OUTER toggleTutorialButton")
+    this.iframe.contentWindow.postMessage(kgpToggleTutorialButtonEvent(showTutorialButton), this.apiUrl)
   }
 
   setHeight(height, transitionDuration){

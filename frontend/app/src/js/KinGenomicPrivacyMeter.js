@@ -96,8 +96,32 @@ export class KinGenomicPrivacyMeter{
       window.postMessage(event, "*")
     },1000)
 
+    // tutorial button
+    function createTutorialButton(){
+      console.log("createTutorialButton!! createTutorialButton!! createTutorialButton!! createTutorialButton!!")
+      if(!self.tutorialButton){
+        self.tutorialButton = new KgpTutorialButton("tutorial-button", self, {"click.tutorial": d=>kgpTutorial(self.i18n)})
+      }
+    }
+    function removeTutorialButton(){
+      console.log("removeTutorialButton!! removeTutorialButton!! removeTutorialButton!! removeTutorialButton!!")
+      if(self.tutorialButton){
+        self.tutorialButton.remove()
+      }
+    }
+    function setTutorialButton(e){
+      if(e.data.showTutorialButton){
+        createTutorialButton()
+      }else{
+        removeTutorialButton()
+      }
+    }
+    createTutorialButton()
+
+    console.log("blurb BLURB BLURB BLURB BLURB BLURB BLURB")
     //handles messages received from parent window
     function dispatchKgpParentMessage(e){
+      console.log("dispatchKgpParentMessage, e.data:", e.data.type)
       if(e.data.type){
         switch(e.data.type){
           case "KgpSetLanguageEvent":
@@ -112,6 +136,9 @@ export class KinGenomicPrivacyMeter{
           case "KgpLaunchTutorialEvent":
             $("#tuto-modal").modal("show")
             kgpTutorial(self.i18n)
+            break
+          case "KgpToggleTutorialButtonEvent":
+            setTutorialButton(e)
             break
           case "KgpSetHeightEvent":
             break
@@ -184,7 +211,6 @@ export class KinGenomicPrivacyMeter{
     
     // trash button
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
-    this.tutorialButton = new KgpTutorialButton("tutorial-button", this, {"click.tutorial": d=>kgpTutorial(self.i18n)})
 
     onWindowResize(()=>self.resizeSvg())
     onWindowResize(()=>d3.range(1000)) // hack with an astonishing effect: fixes problems with privacyBar&target on window resize...
