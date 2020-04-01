@@ -22,7 +22,7 @@ export class KgpTutorialButton{
   }
 }
 
-export function kgpTutorial(i18n){
+export function kgpTutorial(i18n, video_url_prefix = "./tuto/"){
   //intro1: 'Construisez votre arbre de famille: <img class="tutorial-img" src="../img/tool/tuto1_build.png">'
   //intro2: 'Indiquez qui est séquencé dans votre famille: <img class="tutorial-img" src="../img/tool/tuto2_sequence.png">'
   //intro3: 'Observez votre score: <video controls="false" autoplay width="365px" height="348px" name="Video Name" src="../img/tool/tuto3_score.mov"></video>'+'<script type="javascript">var vids = $("video");$.each(vids, function(){this.controls = false;});</script>'
@@ -68,7 +68,7 @@ export function kgpTutorial(i18n){
     $("#tuto-title").attr(i18n.keyAttr,"tuto-title-"+tutoStep)
     $("#tuto-text").attr(i18n.keyAttr,"tuto-text-"+tutoStep)
     let video_lng = i18n.lng=="fr"?  i18n.lng : "en" // video only in french or english
-    $("#tuto-video").attr("src","./tuto/tuto_"+video_lng+"_"+tutoStep+".mp4")
+    $("#tuto-video").attr("src", video_url_prefix+"tuto_"+video_lng+"_"+tutoStep+".mp4")
     $("#tuto-video").currentTime=0
     d3.selectAll(".tuto-puce").transition(500).attr("fill","#f0f0f0")
     d3.select("#tuto-puce"+tutoStep).transition(500).attr("fill","grey")
