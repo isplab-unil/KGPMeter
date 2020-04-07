@@ -86,6 +86,7 @@ class KgpMeter{
   }
 
   toggleTutorialButton(showTutorialButton){
+    console.log("KGP OUTER toggleTutorialButton")
     this.iframe.contentWindow.postMessage(kgpToggleTutorialButtonEvent(showTutorialButton), this.apiUrl)
   }
 
@@ -118,9 +119,6 @@ function singletonKgpMeter(){
       let maxHeight = div.getAttribute("data-kgpmeter-max-height")
       kgpmeter = new KgpMeter(defaultKgpmeterDivId, apiUrl, lng, maxHeight)
       window.kgpmeter = kgpmeter
-      kgpmeter.onload(() => {
-        kgpmeter.toggleTutorialButton(true)
-      })
       singletonCreated = true
     }
   }
