@@ -58,7 +58,7 @@ application.route('/privacy-score', methods=["POST"])(privacy_score)
 # serve kgpmeter.js lib file
 @application.route('/kgpmeter.js')
 def kgpmeter():
-  path = "../frontend/lib/js/kgpmeter.js" 
+  path = os.path.join(WSGI_PROJECT_DIR, "../frontend/lib/js/kgpmeter.js")
   with open(path, "r") as f:
     lines = [s for s in f.readlines()]
     res = "".join(lines)
