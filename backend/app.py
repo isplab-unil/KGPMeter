@@ -18,6 +18,7 @@ import sys
 import warnings
 
 from flask import Flask, redirect, request, send_from_directory
+from flask_mime import Mime
 
 from api import privacy_score
 
@@ -25,6 +26,7 @@ WSGI_PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, WSGI_PROJECT_DIR)
 
 application = Flask(__name__)
+mimetype = Mime(application)
 
 CONFIG_FILE = os.path.join(WSGI_PROJECT_DIR, "config.py")
 DEFAULT_CONFIG_FILE = os.path.join(WSGI_PROJECT_DIR, "config_default.py")
@@ -55,8 +57,10 @@ def save_cache():
 # Privacy score entry point: Computes privacy score from JSON request
 application.route('/privacy-score', methods=["POST"])(privacy_score)
 
+@mimetype('application/javascript')
 # serve kgpmeter.js lib file
 @application.route('/kgpmeter.js')
+@application.route('/lib/js/kgpmeter.js')
 def kgpmeter():
   path = os.path.join(WSGI_PROJECT_DIR, "../frontend/lib/js/kgpmeter.js")
   with open(path, "r", encoding="utf-8") as f:
