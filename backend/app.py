@@ -59,7 +59,7 @@ application.route('/privacy-score', methods=["POST"])(privacy_score)
 @application.route('/kgpmeter.js')
 def kgpmeter():
   path = os.path.join(WSGI_PROJECT_DIR, "../frontend/lib/js/kgpmeter.js")
-  with open(path, "r") as f:
+  with open(path, "r", encoding="utf-8") as f:
     lines = [s for s in f.readlines()]
     res = "".join(lines)
     return res
