@@ -55,6 +55,15 @@ def save_cache():
 # Privacy score entry point: Computes privacy score from JSON request
 application.route('/privacy-score', methods=["POST"])(privacy_score)
 
+# serve kgpmeter.js lib file
+@application.route('/kgpmeter.js')
+def kgpmeter():
+  path = "../frontend/lib/js/kgpmeter.js" 
+  with open(path, "r") as f:
+    lines = [s for s in f.readlines()]
+    res = "".join(lines)
+    return res
+  
 # serve iframe website
 @application.route('/app/', defaults={'path': ""})
 @application.route('/app/<path:path>')
