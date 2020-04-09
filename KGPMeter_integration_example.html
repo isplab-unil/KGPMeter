@@ -14,12 +14,33 @@
         margin-left: auto;
         margin-right: auto;
       }
+      pre{
+        font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+        /*margin-bottom: 10px;*/
+        overflow: scroll;
+        max-width: 800px;
+        padding: 10px;
+        padding-bottom: 20px;
+        background-color: #eee;
+        border-radius: 10px;
+        /*padding-bottom: 20px!ie7;*/
+        max-height: 600px;
+      }
+      .html-comment{
+        color: darkgreen;
+      }
     </style>
   </head>
   <body>
 
     <div class="main">
       <h3>KGP Meter integration using default div id</h3>
+        <pre>
+<code><span class="html-comment">&lt;!-- with optional attributes:  
+  &lt;div id="kin-genomic-privacy-meter" data-kgpmeter-api-url="https://santeperso.unil.ch/api-dev/" data-kgpmeter-lng="en" data-kgpmeter-max-height="1000"&gt;&lt;/div&gt;
+--&gt;</span>
+&lt;div id="kin-genomic-privacy-meter"&gt;&lt;/div&gt;
+&lt;script src="./frontend/lib/js/kgpmeter.js"&gt;&lt;/script&gt;</code></pre>
       <!-- with optional attributes:  
       <div id="kin-genomic-privacy-meter" data-kgpmeter-api-url="https://santeperso.unil.ch/api-dev/" data-kgpmeter-lng="en" data-kgpmeter-max-height="1000"></div>
       -->
@@ -30,6 +51,17 @@
 
     <div class="main">
       <h3>KGP Meter integration using javascript</h3>
+      <pre>
+<code>&lt;div id="kgpmeter"&gt;&lt;/div&gt;
+&lt;script src="./frontend/lib/js/kgpmeter.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+  kgpmeter = new KgpMeter(
+    "kgpmeter",
+    "https://santeperso.unil.ch/api-dev/",
+    "it",
+    600
+  )
+&lt;/script&gt;</code></pre>
       <div id="kgpmeter"></div>
       <!--script src="./frontend/lib/js/kgpmeter.js"></script <- already included just above, uncomment if needed -->
       <script type="text/javascript">
