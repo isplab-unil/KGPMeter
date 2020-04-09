@@ -114,7 +114,7 @@ function singletonKgpMeter(){
     let kgpmeter
     if(div){
       let apiUrl = div.getAttribute("data-kgpmeter-api-url")
-      apiUrl = apiUrl? apiUrl : "https://santeperso.unil.ch/api-dev/"
+      apiUrl = apiUrl? apiUrl : "https://santeperso.unil.ch/integration/"
       let lng = div.getAttribute("data-kgpmeter-lng")
       let maxHeight = div.getAttribute("data-kgpmeter-max-height")
       kgpmeter = new KgpMeter(defaultKgpmeterDivId, apiUrl, lng, maxHeight)
