@@ -35,6 +35,9 @@
 
     <div class="main">
       <h3>KGP Meter integration using default div id</h3>
+        <p>
+          The first and simplest method to integrate the KGPMeter web app is to add two tags to your webpage:
+        </p>
         <pre>
 <code><span class="html-comment">&lt;!-- with optional attributes:  
   &lt;div id="kin-genomic-privacy-meter" data-kgpmeter-api-url="https://santeperso.unil.ch/api-dev/" data-kgpmeter-lng="en" data-kgpmeter-max-height="1000"&gt;&lt;/div&gt;
@@ -51,6 +54,10 @@
 
     <div class="main">
       <h3>KGP Meter integration using javascript</h3>
+      <p>
+        The second method to integrate KGPMeter in a webpage is to create a KGPMeter
+        instance with javascript, the only advantage being the ability to use another <span style="font-size:13px;font-family:Consolas,Monaco,Courier New,monospace;">&lt;div&gt;</span> id:
+      </p>
       <pre>
 <code>&lt;div id="kgpmeter"&gt;&lt;/div&gt;
 &lt;script src="./frontend/lib/js/kgpmeter.js"&gt;&lt;/script&gt;

@@ -25,13 +25,13 @@ The first and simplest method to integrate the KGPMeter web app is to add two ta
 <div id="kin-genomic-privacy-meter"></div>
 <script src="path/to/kgpmeter.js"></script>
 ```
-Where `path/to/kgpmeter.js` corresponds to the `frontend/lib/js/kgpmeter.js` file.
+Where `path/to/kgpmeter.js` corresponds to the `frontend/lib/js/kgpmeter.js` file (you can also use our [publicly available kgpmeter.js file]). 
 The `kgpmeter.js` script looks for a `<div>` with id `kin-genomic-privacy-meter`.
 If it finds it, the script automatically creates a kgpmeter instance in it, using by default our [api endpoint].
 
 It is also possible to specify some options using optional `data-` attributes :
 ```
-<div id="kin-genomic-privacy-meter" data-kgpmeter-api-url="https://santeperso.unil.ch/api-dev/" data-kgpmeter-lng="en" data-kgpmeter-max-height="1000"></div>
+<div id="kin-genomic-privacy-meter" data-kgpmeter-api-url="https://santeperso.unil.ch/integration/" data-kgpmeter-lng="en" data-kgpmeter-max-height="1000"></div>
 <script src="path/to/kgpmeter.js"></script>
 ```
 `data-kgpmeter-api-url` specifies the url of the used KGPMeter backend, here our default [api endpoint] endpoint. Once you have set up your own KGPMeter backend, you can use its url.
@@ -44,7 +44,7 @@ The second method to integrate KGPMeter in a webpage is to create a KGPMeter ins
 <script type="text/javascript">
   kgpmeter = new KgpMeter(
     "kgp-meter",
-    "https://santeperso.unil.ch/api-dev/",
+    "https://santeperso.unil.ch/integration/",
     "it",
     600
   )
@@ -116,5 +116,6 @@ deactivate
 
 
 [KGPMeter_paper_url]: santeperso.unil.ch/privacy-dev/?test
-[our_website]: santeperso.unil.ch/privacy-dev/?github
-[api endpoint]: https://santeperso.unil.ch/api-dev/
+[our_website]: santeperso.unil.ch/privacy/?github
+[api endpoint]: https://santeperso.unil.ch/integration/
+[publicly available kgpmeter.js file]: https://santeperso.unil.ch/integration/lib/js/kgpmeter.js
