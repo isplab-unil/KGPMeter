@@ -16,6 +16,8 @@ There are 3 possible use-cases documented here:
 
 For 2. and 3., you will need to first follow the appendix guide to _A) Download Netica and install python dependencies_ at the end of this README.
 
+If you want to contribute to the project/modify the code/understand this repository's structure, jump to appendixe _B) Repo structure_
+
 ### 1. Integrate the KGPMeter web app into a website
 
 You can find html integration examples in the [KGPMeter_integration_example.html](./KGPMeter_integration_example.html) file.
