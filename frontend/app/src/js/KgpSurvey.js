@@ -7,6 +7,7 @@ export class KgpSurvey{
     this.userId = userId
     this.i18n = i18n 
     this.localStorageKey = localStoragePrefix+"survey-status"
+    this.active = true
 
     let self = this
     
@@ -78,15 +79,18 @@ export class KgpSurvey{
    * Check that conditions to launch the survey are filled.
    */
   checkSurveyLaunchConditions(target){
-    let nodes = ftree.nodesArray().filter(n=>!n.id.match(/f|F/))
-    this.twoNodesAdded = nodes.length >= 3
-    //let oneNodeSequenced = nodes.filter(n => n.sequencedDNA).length >= 1
-    this.threeRequestsAsked = this.signaturesRequestedTrees.size>=3
-    this.oneTarget = Boolean(target)
-    //this.surveyNotStarted = !this.getSurveyStatus()
-    //console.log("twoNodesAdded=",twoNodesAdded,", threeRequestsAsked=",threeRequestsAsked,", oneTarget=",oneTarget,", !surveyStarted", !surveyStarted)
-  
-    return this.twoNodesAdded && this.threeRequestsAsked && this.oneTarget && this.surveyNotStarted
+    if(this.active){
+      let nodes = ftree.nodesArray().filter(n=>!n.id.match(/f|F/))
+      this.twoNodesAdded = nodes.length >= 3
+      //let oneNodeSequenced = nodes.filter(n => n.sequencedDNA).length >= 1
+      this.threeRequestsAsked = this.signaturesRequestedTrees.size>=3
+      this.oneTarget = Boolean(target)
+      //this.surveyNotStarted = !this.getSurveyStatus()
+      //console.log("twoNodesAdded=",twoNodesAdded,", threeRequestsAsked=",threeRequestsAsked,", oneTarget=",oneTarget,", !surveyStarted", !surveyStarted)
+    
+      return this.twoNodesAdded && this.threeRequestsAsked && this.oneTarget && this.surveyNotStarted
+    }
+    return false
   }
 
   /**
@@ -94,64 +98,69 @@ export class KgpSurvey{
    * @param {*} trigger either "volunteer", "automatic", "resume"
    */
   launchSurvey(trigger){
-    let self = this
-    this.getSurveyStatus().then(status => {
-      if(status!="finished"){
-        self.surveyTrigger = trigger
-        self.surveyNotStarted=false
-        self.setSurveyStatus("launched")
-        $("#modal-survey").modal('show')
-      }
-    })
-    //$('#modal-survey').on('hidden.bs.modal', function (e) {if(getSurveyStatus()!="finished"){ showSurveyVolunteerButton() }})
+    if(this.active){
+      let self = this
+      this.getSurveyStatus().then(status => {
+        if(status!="finished" && status!="inactive"){
+          self.surveyTrigger = trigger
+          self.surveyNotStarted=false
+          self.setSurveyStatus("launched")
+          $("#modal-survey").modal('show')
+        }
+      })
+      //$('#modal-survey').on('hidden.bs.modal', function (e) {if(getSurveyStatus()!="finished"){ showSurveyVolunteerButton() }})
+    }
   }
 
   awaitScore(kgpPromise, request, previousResponse){
-    let self = this
-    kgpPromise.then(kgpSuccess => {
-      this.signaturesRequestedTrees.add(kgpSuccess.tree_signature)
-      // if needed, set timestamp of first request
-      if(!this.timestampFirstRequest){
-        this.timestampFirstRequest = kgpSuccess.timestamp_js
-      }
-      // if launch conditions filled: launch survey (after required timeout)
-      if(this.checkSurveyLaunchConditions(request.family_tree.target)){
-        let now = +(new Date())
-        let timeSinceFirstRequest = now - this.timestampFirstRequest
-        let timeout;
-        if(timeSinceFirstRequest > (1000*this.launchWaitTime)){
-          // if the launchWaitTime is elapsed: launch after 5 seconds
-          timeout = 5000;
-        } else{
-          // if the launchWaitTime isn't elapsed yet: launch after the time delta
-          timeout = (1000*this.launchWaitTime) - timeSinceFirstRequest
+    if(this.active){
+      let self = this
+      kgpPromise.then(kgpSuccess => {
+        this.signaturesRequestedTrees.add(kgpSuccess.tree_signature)
+        // if needed, set timestamp of first request
+        if(!this.timestampFirstRequest){
+          this.timestampFirstRequest = kgpSuccess.timestamp_js
         }
-        setTimeout(()=>self.launchSurvey("automatic"),timeout)
-      }
-    }).catch(()=>{})
+        // if launch conditions filled: launch survey (after required timeout)
+        if(this.checkSurveyLaunchConditions(request.family_tree.target)){
+          let now = +(new Date())
+          let timeSinceFirstRequest = now - this.timestampFirstRequest
+          let timeout;
+          if(timeSinceFirstRequest > (1000*this.launchWaitTime)){
+            // if the launchWaitTime is elapsed: launch after 5 seconds
+            timeout = 5000;
+          } else{
+            // if the launchWaitTime isn't elapsed yet: launch after the time delta
+            timeout = (1000*this.launchWaitTime) - timeSinceFirstRequest
+          }
+          setTimeout(()=>self.launchSurvey("automatic"),timeout)
+        }
+      }).catch(()=>{})
+    }
   }
   
   updateSurveyVolunteerButton(transitionSpeed=500){
-    let self = this
-    //
-    this.getSurveyStatus().then(surveyStatus => {
-      $("#survey-launch-button").off("click")
-      // not launched: volunteer
-      if(!surveyStatus){
-        $("#survey-launch-button span").attr(self.i18n.keyAttr, "survey-volunteer")
-        $("#survey-launch-button").stop(true).slideDown(transitionSpeed)
-        $("#survey-launch-button").on("click",()=>self.launchSurvey("volunteer"))
-      // launched: resume
-      } else if(surveyStatus=="launched" || surveyStatus=="step-1-done"){
-        $("#survey-launch-button span").attr(self.i18n.keyAttr, "survey-resume")
-        $("#survey-launch-button").stop(true).slideDown(transitionSpeed)
-        $("#survey-launch-button").on("click",()=>self.launchSurvey("resume"))
-      // finished: hide
-      } else if(surveyStatus=="finished"){
-        $("#survey-launch-button").stop(true).slideUp(transitionSpeed)
-      }
-    })
-    
+    if(this.active){
+      let self = this
+      //
+      this.getSurveyStatus().then(surveyStatus => {
+        $("#survey-launch-button").off("click")
+        // not launched: volunteer
+        if(!surveyStatus){
+          $("#survey-launch-button span").attr(self.i18n.keyAttr, "survey-volunteer")
+          $("#survey-launch-button").stop(true).slideDown(transitionSpeed)
+          $("#survey-launch-button").on("click",()=>self.launchSurvey("volunteer"))
+        // launched: resume
+        } else if(surveyStatus=="launched" || surveyStatus=="step-1-done"){
+          $("#survey-launch-button span").attr(self.i18n.keyAttr, "survey-resume")
+          $("#survey-launch-button").stop(true).slideDown(transitionSpeed)
+          $("#survey-launch-button").on("click",()=>self.launchSurvey("resume"))
+        // finished: hide
+        } else if(surveyStatus=="finished" || surveyStatus=="inactive"){
+          $("#survey-launch-button").stop(true).slideUp(transitionSpeed)
+        }
+      })
+    }
   }
     /** from step 1 to step 2 */
   changePageSurvey(){
@@ -195,5 +204,12 @@ export class KgpSurvey{
   setSurveyStatus(status){
     iframeLocalStorage.setItem(this.localStorageKey,status,1 *24*60*60*1000)
     this.updateSurveyVolunteerButton()
+  }
+
+  remove(){
+    this.active=false
+    $("#survey-launch-button").remove()
+    $("#modal-survey").remove()
+    this.setSurveyStatus("inactive")
   }
 }

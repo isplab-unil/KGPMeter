@@ -116,38 +116,11 @@ export class KinGenomicPrivacyMeter{
     }
     createTutorialButton()
 
-    //handles messages received from parent window
-    function dispatchKgpParentMessage(e){
-      if(e.data.type){
-        switch(e.data.type){
-          case "KgpSetLanguageEvent":
-            setLanguage(e)
-            break
-          case "KgpSetIframeMaxDimensionEvent":
-            setIframeMaxDimensionEvent(e)
-            break
-          case "KgpSetSourceEvent":
-            setSource(e)
-            break
-          case "KgpLaunchTutorialEvent":
-            $("#tuto-modal").modal("show")
-            kgpTutorial(self.i18n)
-            break
-          case "KgpToggleTutorialButtonEvent":
-            setTutorialButton(e)
-            break
-          case "KgpSetHeightEvent":
-            break
-          default:
-        }
-      }
-    }
-    window.addEventListener('message', dispatchKgpParentMessage, false)
-
     // api urls
     this.setApiUrl(api_base_url)
 
     this.kgpsurvey = new KgpSurvey(this.surveyApiEndpoint, this.userId, this.i18n)
+    const surveyScoreListener = (...args) => self.kgpsurvey.awaitScore(...args)
 
     // privacy bar
     let privacyBarWidth = 30
@@ -203,8 +176,44 @@ export class KinGenomicPrivacyMeter{
     this.scoreRequestHandler.addListener((...args) => self.privacyWordedScore.awaitScore(...args))
     this.scoreRequestHandler.addListener((...args) => self.backendStatus.awaitScore(...args))
     this.scoreRequestHandler.addListener((...args) => self.scoreNumberExplainer.awaitScore(...args))
-    this.scoreRequestHandler.addListener((...args) => self.kgpsurvey.awaitScore(...args))
+    this.scoreRequestHandler.addListener(surveyScoreListener)
     
+    function removeSurvey(){
+      self.kgpsurvey.remove()
+      self.scoreRequestHandler.removeListener(surveyScoreListener)
+    }
+
+    //handles messages received from parent window
+    function dispatchKgpParentMessage(e){
+      if(e.data.type){
+        switch(e.data.type){
+          case "KgpSetLanguageEvent":
+            setLanguage(e)
+            break
+          case "KgpSetIframeMaxDimensionEvent":
+            setIframeMaxDimensionEvent(e)
+            break
+          case "KgpSetSourceEvent":
+            setSource(e)
+            break
+          case "KgpLaunchTutorialEvent":
+            $("#tuto-modal").modal("show")
+            kgpTutorial(self.i18n)
+            break
+            case "KgpToggleTutorialButtonEvent":
+              setTutorialButton(e)
+              break
+            case "KgpRemoveSurveyEvent":
+              removeSurvey(e)
+              break
+          case "KgpSetHeightEvent":
+            break
+          default:
+        }
+      }
+    }
+    window.addEventListener('message', dispatchKgpParentMessage, false)
+
     // trash button
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
 

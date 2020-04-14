@@ -1,9 +1,9 @@
-import {kgpSetLanguageEvent, kgpSetSourceEvent, kgpSetIframeMaxDimensionEvent, kgpLaunchTutorialEvent, kgpToggleTutorialButtonEvent} from "../../../app/src/js/KgpIframeInterface.js"
+import {kgpSetLanguageEvent, kgpSetSourceEvent, kgpSetIframeMaxDimensionEvent, kgpLaunchTutorialEvent, kgpRemoveSurveyEvent, kgpToggleTutorialButtonEvent} from "../../../app/src/js/KgpIframeInterface.js"
 import {IframeCookieActionListener, IframeLocalStorageActionListener} from "../../../app/src/js/lib/iframeCookiesLocalStorage.js"
 
 
 class KgpMeter{
-  constructor(divId, apiUrl, lng, maxHeight){
+  constructor(divId, apiUrl, lng, maxHeight, removeSurvey=false){
     let self = this
     this.divId = divId
     this.div = document.getElementById(divId)
@@ -44,6 +44,10 @@ class KgpMeter{
       self.setSource(document.URL)
       // set max height
       self.setMaxheight(self.maxHeight)
+      // remove survey if needed
+      if(removeSurvey){
+        self.removeSurvey()
+      }
     })
 
     // ======== handle height updates ========
@@ -86,8 +90,11 @@ class KgpMeter{
   }
 
   toggleTutorialButton(showTutorialButton){
-    console.log("KGP OUTER toggleTutorialButton")
     this.iframe.contentWindow.postMessage(kgpToggleTutorialButtonEvent(showTutorialButton), this.apiUrl)
+  }
+
+  removeSurvey(){
+    this.iframe.contentWindow.postMessage(kgpRemoveSurveyEvent(), this.apiUrl)
   }
 
   setHeight(height, transitionDuration){

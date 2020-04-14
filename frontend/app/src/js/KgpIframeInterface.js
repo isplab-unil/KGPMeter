@@ -23,6 +23,10 @@ export function kgpToggleTutorialButtonEvent(showTutorialButton){
   return {"type": "KgpToggleTutorialButtonEvent", "showTutorialButton":showTutorialButton}
 }
 
+export function kgpRemoveSurveyEvent(){
+  return {"type": "KgpRemoveSurveyEvent"}
+}
+
 /******** up events ********/
 
 /** Event from kgp-iframe to kgpmeter to change height */
