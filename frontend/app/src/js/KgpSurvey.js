@@ -101,7 +101,7 @@ export class KgpSurvey{
     if(this.active){
       let self = this
       this.getSurveyStatus().then(status => {
-        if(status!="finished" && status!="inactive"){
+        if(status!="finished"){
           self.surveyTrigger = trigger
           self.surveyNotStarted=false
           self.setSurveyStatus("launched")
@@ -156,7 +156,7 @@ export class KgpSurvey{
           $("#survey-launch-button").stop(true).slideDown(transitionSpeed)
           $("#survey-launch-button").on("click",()=>self.launchSurvey("resume"))
         // finished: hide
-        } else if(surveyStatus=="finished" || surveyStatus=="inactive"){
+        } else if(surveyStatus=="finished"){
           $("#survey-launch-button").stop(true).slideUp(transitionSpeed)
         }
       })
@@ -210,6 +210,5 @@ export class KgpSurvey{
     this.active=false
     $("#survey-launch-button").remove()
     $("#modal-survey").remove()
-    this.setSurveyStatus("inactive")
   }
 }
