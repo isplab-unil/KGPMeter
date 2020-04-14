@@ -26,7 +26,6 @@ export class KgpTutorialButton{
 export function kgpTutorial(i18n, video_url_prefix = "./tuto/"){
   $('#tuto-modal').modal()
 
-  console.log("--- kgpTutorial")
   //intro1: 'Construisez votre arbre de famille: <img class="tutorial-img" src="../img/tool/tuto1_build.png">'
   //intro2: 'Indiquez qui est séquencé dans votre famille: <img class="tutorial-img" src="../img/tool/tuto2_sequence.png">'
   //intro3: 'Observez votre score: <video controls="false" autoplay width="365px" height="348px" name="Video Name" src="../img/tool/tuto3_score.mov"></video>'+'<script type="javascript">var vids = $("video");$.each(vids, function(){this.controls = false;});</script>'
@@ -69,7 +68,6 @@ export function kgpTutorial(i18n, video_url_prefix = "./tuto/"){
   }
 
   function loadTutoStep(){
-    console.log("loadTutoStep!!!!!!!!!!!!!!!!!!!!!!!!!")
     $("#tuto-title").attr(i18n.keyAttr,"tuto-title-"+tutoStep)
     $("#tuto-text").attr(i18n.keyAttr,"tuto-text-"+tutoStep)
     let video_lng = i18n.lng=="fr"?  i18n.lng : "en" // video only in french or english

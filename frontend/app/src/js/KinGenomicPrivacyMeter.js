@@ -98,13 +98,11 @@ export class KinGenomicPrivacyMeter{
 
     // tutorial button
     function createTutorialButton(){
-      console.log("createTutorialButton!! createTutorialButton!! createTutorialButton!! createTutorialButton!!")
       if(!self.tutorialButton){
         self.tutorialButton = new KgpTutorialButton("tutorial-button", self, {"click.tutorial": d=>kgpTutorial(self.i18n)})
       }
     }
     function removeTutorialButton(){
-      console.log("removeTutorialButton!! removeTutorialButton!! removeTutorialButton!! removeTutorialButton!!")
       if(self.tutorialButton){
         self.tutorialButton.remove()
       }
@@ -118,10 +116,8 @@ export class KinGenomicPrivacyMeter{
     }
     createTutorialButton()
 
-    console.log("blurb BLURB BLURB BLURB BLURB BLURB BLURB")
     //handles messages received from parent window
     function dispatchKgpParentMessage(e){
-      console.log("dispatchKgpParentMessage, e.data:", e.data.type)
       if(e.data.type){
         switch(e.data.type){
           case "KgpSetLanguageEvent":
