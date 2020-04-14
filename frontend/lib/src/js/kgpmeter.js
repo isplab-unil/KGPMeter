@@ -115,7 +115,7 @@ window.KgpMeter = KgpMeter
 // create default kgpmeter if div#kin-genomic-privacy-meter exists
 let singletonCreated = false
 function singletonKgpMeter(){
-    if(!singletonCreated){
+  if(!singletonCreated){
     let defaultKgpmeterDivId = "kin-genomic-privacy-meter"
     let div = document.getElementById(defaultKgpmeterDivId)
     let kgpmeter
@@ -124,7 +124,8 @@ function singletonKgpMeter(){
       apiUrl = apiUrl? apiUrl : "https://santeperso.unil.ch/integration/"
       let lng = div.getAttribute("data-kgpmeter-lng")
       let maxHeight = div.getAttribute("data-kgpmeter-max-height")
-      kgpmeter = new KgpMeter(defaultKgpmeterDivId, apiUrl, lng, maxHeight)
+      let removeSurvey = div.getAttribute("data-kgpmeter-remove-survey")
+      kgpmeter = new KgpMeter(defaultKgpmeterDivId, apiUrl, lng, maxHeight, removeSurvey)
       window.kgpmeter = kgpmeter
       singletonCreated = true
     }
