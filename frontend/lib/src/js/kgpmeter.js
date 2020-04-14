@@ -95,6 +95,7 @@ class KgpMeter{
 
   removeSurvey(){
     this.iframe.contentWindow.postMessage(kgpRemoveSurveyEvent(), this.apiUrl)
+    this.removedSurvey=true
   }
 
   setHeight(height, transitionDuration){
@@ -125,6 +126,7 @@ function singletonKgpMeter(){
       let lng = div.getAttribute("data-kgpmeter-lng")
       let maxHeight = div.getAttribute("data-kgpmeter-max-height")
       let removeSurvey = div.getAttribute("data-kgpmeter-remove-survey")
+      console.log("removeSurvey attr: ", removeSurvey)
       kgpmeter = new KgpMeter(defaultKgpmeterDivId, apiUrl, lng, maxHeight, removeSurvey)
       window.kgpmeter = kgpmeter
       singletonCreated = true

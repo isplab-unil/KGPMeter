@@ -200,15 +200,17 @@ export class KinGenomicPrivacyMeter{
             $("#tuto-modal").modal("show")
             kgpTutorial(self.i18n)
             break
-            case "KgpToggleTutorialButtonEvent":
-              setTutorialButton(e)
-              break
-            case "KgpRemoveSurveyEvent":
-              removeSurvey(e)
-              break
+          case "KgpToggleTutorialButtonEvent":
+            setTutorialButton(e)
+            break
+          case "KgpRemoveSurveyEvent":
+            removeSurvey(e)
+            console.log("kgp dispatchKgpParentMessage removeSurvey()")
+            break
           case "KgpSetHeightEvent":
             break
           default:
+            console.log("unknown kgp parent message, e.data: ", e.data)
         }
       }
     }
