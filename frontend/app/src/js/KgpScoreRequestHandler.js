@@ -113,12 +113,14 @@ export class KgpScoreRequestHandler{
       // success!
       self.latestResponse = kgpr
       //save result in cache
-      self.cache.add(
-        currentRequest.family_tree.target,
-        currentRequest.family_tree.edges,
-        currentRequest.family_tree.sequenced_relatives,
-        kgpr.result.privacy_metric
-      )
+      if(self.cache){
+        self.cache.add(
+          currentRequest.family_tree.target,
+          currentRequest.family_tree.edges,
+          currentRequest.family_tree.sequenced_relatives,
+          kgpr.result.privacy_metric
+        )
+      }
       return kgpr
     })
 
