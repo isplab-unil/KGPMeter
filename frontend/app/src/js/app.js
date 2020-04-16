@@ -70,3 +70,15 @@ if(window.parent != window){
 }
 window.kgp = kgp
 log("app.js loaded")
+
+function logWindowOrientation(){
+  log("window.orientation: "+window.orientation)
+  log('window.matchMedia("(orientation: portrait)").matches: '+ window.matchMedia("(orientation: portrait)").matches)
+  log('window.matchMedia("(orientation: landscape)").matches: '+ window.matchMedia("(orientation: landscape)").matches)
+}
+setInterval(logWindowOrientation,2000)
+
+window.addEventListener("orientationchange", function() {
+  // Announce the new orientation number
+  log("-- orientationchange event! --");
+}, false);
