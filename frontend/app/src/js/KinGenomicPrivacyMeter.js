@@ -210,7 +210,6 @@ export class KinGenomicPrivacyMeter{
           case "KgpSetHeightEvent":
             break
           default:
-            console.log("unknown kgp parent message, e.data: ", e.data)
         }
       }
     }
@@ -220,7 +219,7 @@ export class KinGenomicPrivacyMeter{
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
 
     onWindowResize(()=>self.resizeSvg())
-    onWindowResize(()=>d3.range(1000)) // hack with an astonishing effect: fixes problems with privacyBar&target on window resize...
+    //onWindowResize(()=>d3.range(1000)) // hack with an astonishing effect: fixes problems with privacyBar&target on window resize...
     
     this.loadFamilyTreeFromLocalStorage().then(ftree=>{
       let savedFtree = Boolean(ftree)

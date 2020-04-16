@@ -16,8 +16,8 @@ export function detectMobile() {
 /** adds a 100ms without resize to window.onresize() before executing func (to avoid redraws every msec) */
 export function onWindowResize(func,timeout=100){
   let doit;
-  window.onresize = function(){
+  window.addEventListener("resize", function(){
     clearTimeout(doit);
     doit = setTimeout(func, timeout);
-  }
+  })
 }
