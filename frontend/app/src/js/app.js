@@ -46,26 +46,26 @@ i18n.observe(document)
 
 
 //constructor(api_base_url, svgId, youNodeId, i18n, maxFamilyTreeDepth=5, cookieLocalStoragePrefix="kgpmeter-"){
-  let kgp
-  function initKgp(options){
-    kgp = new KinGenomicPrivacyMeter(
-      "../",
-      "svg-kin-genomics-privacy-app",
-      "@I1@",
-      i18n,
-      "kgpmeter-",
-      options
-    )
-  }
-  if(window.parent != window){
-    /*window.document.addEventListener(
-      'KgpSetKgpOptionsEvent',
-      (e)=>{
-        initKgp(e.details.options)
-      }, false)*/
-    initKgp({})
-  }else{
-    initKgp({})
-  }
-  window.kgp = kgp
+let kgp
+function initKgp(options){
+  kgp = new KinGenomicPrivacyMeter(
+    "../",
+    "svg-kin-genomics-privacy-app",
+    "@I1@",
+    i18n,
+    "kgpmeter-",
+    options
+  )
+}
+if(window.parent != window){
+  /*window.document.addEventListener(
+    'KgpSetKgpOptionsEvent',
+    (e)=>{
+      initKgp(e.details.options)
+    }, false)*/
+  initKgp({})
+}else{
+  initKgp({})
+}
+window.kgp = kgp
 
