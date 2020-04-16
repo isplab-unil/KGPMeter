@@ -11,7 +11,7 @@ import {KgpPrivacyBar} from "./KgpPrivacyBar.js"
 import {kgpSetSourceEvent, kgpSetHeightEvent} from "./KgpIframeInterface"
 import {TrashButton} from "./TrashButton.js"
 import {KgpTutorialButton, kgpTutorial} from "./KgpTutorial.js"
-import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
+import {detectIE11, detectMobile, onWindowResize, log} from "./utils.js"
 
 export class KinGenomicPrivacyMeter{
   constructor(api_base_url, svgId, youNodeId, i18n, localStoragePrefix="kgpmeter-", options={}){
@@ -22,7 +22,7 @@ export class KinGenomicPrivacyMeter{
     this.svg = d3.select("#"+svgId)
     this.svgHeight = parseInt(this.svg.attr("height"))
     this.svgOriginalHeight = this.svgHeight
-    this.nonSvgElementsHeight=190
+    this.nonSvgElementsHeight=190+600
     this.updateSvgHeight(this.svgHeight, 800, true)
 
     this.youNodeId = youNodeId // "@I1@"
@@ -378,6 +378,7 @@ export class KinGenomicPrivacyMeter{
   * function correctly resizing svg, family tree and privacy bar according to svg's parent node
   */
   resizeSvg(){
+    log("kgp.resizeSvg()!!")
     let self = this
     // remove all children of svg
     let svgNode = this.svg.node()
@@ -628,4 +629,5 @@ export class KinGenomicPrivacyMeter{
 }
 
 
+log("kgp.js loaded")
 

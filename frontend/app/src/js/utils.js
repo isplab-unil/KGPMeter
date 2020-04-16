@@ -21,3 +21,8 @@ export function onWindowResize(func,timeout=100){
     doit = setTimeout(func, timeout);
   })
 }
+
+const logUl = document.getElementById("touchscreen-debug")
+export function log(str){
+  logUl.innerHTML+="<li>"+str+"</li>"
+}

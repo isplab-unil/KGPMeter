@@ -3,6 +3,7 @@ import {KinGenomicPrivacyMeter} from "./KinGenomicPrivacyMeter.js"
 import {Internationalisation} from "./lib/i18n.js"
 import {iframeLocalStorage} from "./lib/iframeCookiesLocalStorage.js"
 
+import {onWindowResize, log} from "./utils.js"
 
 
 /* NodeList polyfill for IE11: not included in Babel (->?!?) */
@@ -68,4 +69,4 @@ if(window.parent != window){
   initKgp({})
 }
 window.kgp = kgp
-
+log("app.js loaded")
