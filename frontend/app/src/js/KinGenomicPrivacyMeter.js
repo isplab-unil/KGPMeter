@@ -464,7 +464,7 @@ export class KinGenomicPrivacyMeter{
   /** Block mobile browsers when detected, not the same as IE as foreignObject allows text to wrap in multiple lines on small screens. */
   mobileBlock(){
     let self = this
-    if(detectMobile()){
+    if(detectMobile() && false){
       self.svg.append("rect")
           .attr("width",self.svgWidth)
           .attr("height",self.svgHeight)
