@@ -219,6 +219,10 @@ export class KinGenomicPrivacyMeter{
     this.trashButton = new TrashButton("trash-button", this, {"click.trash": d=>self.reset()})
 
     onWindowResize(()=>self.resizeSvg())
+    window.addEventListener("orientationchange", ()=>{
+      self.resizeSvg()
+      log("orientationchange -> resizeSvg!")
+    }, false);
     //onWindowResize(()=>d3.range(1000)) // hack with an astonishing effect: fixes problems with privacyBar&target on window resize...
     
     this.loadFamilyTreeFromLocalStorage().then(ftree=>{
