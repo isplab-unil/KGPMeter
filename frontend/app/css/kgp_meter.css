@@ -395,6 +395,10 @@ border-right: 0px;
   min-height: 580px;
 }
 
+#tuto-video{
+  max-width: 100%;
+}
+
 .modal-header{
   border-bottom: 0px solid white;
 }
