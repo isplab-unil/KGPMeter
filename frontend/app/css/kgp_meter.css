@@ -390,7 +390,8 @@ border-right: 0px;
 }
 
 .tuto-content{
-  /* width: 700px;*/
+  width: 700px;
+  max-width: 100%;
   height: 580px;
 }
 
