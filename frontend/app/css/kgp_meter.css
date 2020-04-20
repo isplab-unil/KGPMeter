@@ -433,7 +433,7 @@ border-right: 0px;
 
 /* video: hide controls*/
 video::-webkit-media-controls {
-  display: none;
+  /*display: none;*/
 }
 
 /* =================================== debugging  =================================== */
