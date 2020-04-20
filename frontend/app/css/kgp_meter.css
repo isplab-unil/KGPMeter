@@ -55,7 +55,7 @@ body{
 /* ================ Popup response box ================ */
 
 #kgp-response-container{
-  height: 3em;
+  min-height: 3em;
   text-align: center;
 }
 
@@ -63,7 +63,7 @@ body{
   display: inline-block;
   padding: 0.5em;
   padding-top: 0.4em;
-  height: 2em;
+  min-height: 2em;
 }
 
 #kgp-response-container .kgp-alert-content{
