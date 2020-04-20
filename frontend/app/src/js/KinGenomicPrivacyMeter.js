@@ -146,7 +146,7 @@ export class KinGenomicPrivacyMeter{
     )
 
     // backend status
-    this.backendStatus = new KgpBackendStatus("kgp-response-container", self.i18n)
+    this.backendStatus = new KgpBackendStatus("kgp-backend-status", self.i18n)
 
     // explainer
     this.scoreNumberExplainer = new KgpScoreNumberExplainer("kgp-explainer-container", self.i18n, "explainer-text")
