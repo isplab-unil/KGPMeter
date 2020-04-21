@@ -30,9 +30,11 @@ class KgpMeter{
 
     // ======== ensure iframe doesn't overflow its parent ========
     window.addEventListener("orientationchange", ()=>{
+      setTimeout(()=>{
       let divWidth = window.getComputedStyle(self.div, null).getPropertyValue("width")
       self.iframe.style.maxWidth = divWidth;
       log("orientationchange ============> set iframe max-width to divWidth!, self.iframe.style.maxWidth:", self.iframe.style.maxWidth)
+      }, 200)
     }, false);
 
     // ======== send data to iframe ========
