@@ -110,7 +110,7 @@
   "response-error-1":"<i class='fas fa-clock'></i> The computation takes too long to be done in real time. Please come back later. <a href='../faq#duration' target='_blank'>Learn more <i class='fas fa-question-circle'></i></a>",
   "response-error-2":"<i class='fas fa-exclamation-circle'></i> Internal server error, error id: {}. Please retry later.",
   "response-error-3":"<i class='fas fa-exclamation-circle'></i> You attained the maximum number of sequenced individuals in the family tree. Please reduce the number of sequenced individuals.",
-  "response-error-4":"<span style='position:relative;top:-10px;'>To compute a privacy score, please select a target with the button <svg style='position:relative;top:6px;' height='24px' width='24px'><g transform='translate(12,12)'><circle r='12' class='node-button-circle'></circle><text class='fas node-button-fas' x='-6px' y='5px' style='font-size:12px'>&#xf05b;</text></g></svg>.</span>",
+  "response-error-4":"<span style='position:relative;top:0px;'>To compute a privacy score, select a target with the button <svg style='position:relative;top:6px;' height='24px' width='24px'><g transform='translate(12,12)'><circle r='12' class='node-button-circle'></circle><text class='fas node-button-fas' x='-6px' y='5px' style='font-size:12px'>&#xf05b;</text></g></svg>.</span>",
   "response-error-5":"<i class='fas fa-exclamation-circle'></i> Unable to connect to server. Please retry later.",
   "response-error-6":"Survey error",
   "response-error-7":"<i class='fas fa-exclamation-circle'></i> You attained the maximum number of individuals (sequenced or not) in the family tree. Please reduce the number of individuals.",
