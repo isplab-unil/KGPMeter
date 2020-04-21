@@ -38,7 +38,7 @@ function onChangeLanguage(oldLng, newLng){
   setTimeout(()=>{ d3.selectAll(".ext-link").attr("target","blank") },1)
 }
 
-let i18n = new Internationalisation(["en","fr","de","it","es"], languageLoader, null, true,"kgpmeter.")
+let i18n = new Internationalisation(["en","fr","de","it","es"], languageLoader, null, false,"kgpmeter.")
 iframeLocalStorage.getItem("lng").then(lng=>lng? i18n.changeLanguage(lng): null)
 i18n.languageChangeCallbacks.push(onChangeLanguage)
 i18n.observe(document)
