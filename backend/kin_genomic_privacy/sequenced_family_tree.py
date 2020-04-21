@@ -565,16 +565,15 @@ class SequencedFamilyTree(Hashable):
         privacy_metrics = self.get_privacy_metrics(maf, detailed_results)
         prior_entropy = entropy(MendelianInheritanceCPD.prior(maf)).tolist()
         if not detailed_results:
-            if not math.isnan(normalized_entropy):
-                return normalized_entropy
-            normalized_entropy = privacy_metrics[0] / prior_entropy
+            if math.isnan(normalized_entropy):
+                normalized_entropy = privacy_metrics[0] / prior_entropy
             return normalized_entropy
         else:
             for case in privacy_metrics:
-                if not math.isnan(normalized_entropy):
-                    case.normalized_entropy = normalized_entropy
-                else:
+                if math.isnan(normalized_entropy):
                     case.normalized_entropy = case.entropy_posterior / prior_entropy
+                else:
+                    case.normalized_entropy = normalized_entropy
             return privacy_metrics
 
     def snps_privacy_score(self, mafs_to_compute:List[float], mafs_to_interpolate = None):
