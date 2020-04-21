@@ -4,7 +4,7 @@ import {IframeCookieActionListener, IframeLocalStorageActionListener} from "../.
 
 class KgpMeter{
   constructor(divId, apiUrl, lng, maxHeight, removeSurvey=false){
-    let self = this
+    const self = this
     this.divId = divId
     this.div = document.getElementById(divId)
 
@@ -26,6 +26,14 @@ class KgpMeter{
     this.cookieActionListener = new IframeCookieActionListener(this.iframe, "KgpMeter.")
     this.localStorageActionListener = new IframeLocalStorageActionListener(this.iframe, "KgpMeter.")
     this.setDivStyle(this.div.scrollHeight+"px")
+
+
+    // ======== ensure iframe doesn't overflow its parent ========
+    window.addEventListener("orientationchange", ()=>{
+      let divWidth = window.getComputedStyle(self.div, null).getPropertyValue("width")
+      self.iframe.style.maxWidth = divWidth;
+      log("orientationchange ============> set iframe max-width to divWidth!, self.iframe.style.maxWidth:", self.iframe.style.maxWidth)
+    }, false);
 
     // ======== send data to iframe ========
 
