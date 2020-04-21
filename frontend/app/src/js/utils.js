@@ -30,5 +30,5 @@ export function log(str){
   if(logs.length>maxLogs){
     logs.splice(0,logs.length-maxLogs)
   }
-  logUl.innerHTML= logs.reduce((a,c)=>a+c,"")
+  logUl.innerHTML= logs.reduce((a,c)=>c+a,"")
 }
