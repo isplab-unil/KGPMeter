@@ -22,7 +22,13 @@ export function onWindowResize(func,timeout=100){
   })
 }
 
+const maxLogs = 10
+const logs = []
 const logUl = document.getElementById("touchscreen-debug")
 export function log(str){
-  logUl.innerHTML+="<li>"+str+"</li>"
+  logs.push("<li><strong>"+(new Date())+": </strong>"+str+"</li>")
+  if(logs.length>maxLogs){
+    logs.splice(0,logs.length-maxLogs)
+  }
+  logUl.innerHTML= logs.reduce((a,c)=>a+c,"")
 }
