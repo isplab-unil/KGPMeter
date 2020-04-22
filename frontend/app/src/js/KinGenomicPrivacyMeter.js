@@ -22,7 +22,7 @@ export class KinGenomicPrivacyMeter{
     this.svg = d3.select("#"+svgId)
     this.svgHeight = parseInt(this.svg.attr("height"))
     this.svgOriginalHeight = this.svgHeight
-    this.nonSvgElementsHeight=190+600
+    this.nonSvgElementsHeight=190 + (window.innerWidth<700? 50:0)
     this.updateSvgHeight(this.svgHeight, 800, true)
 
     this.youNodeId = youNodeId // "@I1@"
