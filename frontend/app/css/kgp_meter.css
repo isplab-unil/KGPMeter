@@ -91,13 +91,13 @@ body{
 
 @media (max-width: 600px){
   #kgp-explainer-container{
-    height: 7em;
+    height: 8em;
   }
 }
 
 @media (min-width: 601px) and (max-width: 700px){
   #kgp-explainer-container{
-    height: 6em;
+    height: 7em;
   }
 }
 
