@@ -83,12 +83,30 @@ body{
 /* ================ explainer box ================ */
 
 #kgp-explainer-container{
-height: 5em;
-max-width: 650px;
-text-align: justify;
-margin-left:auto;
-margin-right:auto;
+  max-width: 650px;
+  text-align: justify;
+  margin-left:auto;
+  margin-right:auto;
 }
+
+@media (max-width: 600px){
+  #kgp-explainer-container{
+    height: 7em;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 700px){
+  #kgp-explainer-container{
+    height: 6em;
+  }
+}
+
+@media (min-width: 701px){
+  #kgp-explainer-container{
+    height: 5em;
+  }
+}
+
 
 #kgp-explainer-container .fa-lightbulb{
 font-size:2em;
