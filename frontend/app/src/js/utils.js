@@ -26,10 +26,14 @@ const maxLogs = 10
 const logs = []
 const logUl = document.getElementById("touchscreen-debug")
 export function log(...strargs){
-  const str = strargs.reduce((a,b)=>a+b, "")
-  logs.push("<li><strong>"+(new Date())+": </strong>"+str+"</li>")
-  if(logs.length>maxLogs){
-    logs.splice(0,logs.length-maxLogs)
+  if(logUl){
+    const str = strargs.reduce((a,b)=>a+b, "")
+    logs.push("<li><strong>"+(new Date())+": </strong>"+str+"</li>")
+    if(logs.length>maxLogs){
+      logs.splice(0,logs.length-maxLogs)
+    }
+    logUl.innerHTML= logs.reduce((a,c)=>c+a,"")
+  }else{
+    console.log("utils.log() no logUl, log: ", ...strargs)
   }
-  logUl.innerHTML= logs.reduce((a,c)=>c+a,"")
 }
