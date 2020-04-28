@@ -258,10 +258,12 @@ export class FamilyTreeArtist{
       .attr("transform", d => "translate(" + d.x + "," + d.y + ")")
 
     // set target's logo
-    d3.select("#"+FamilyTreeArtist.nodeGroupId(this.kgp.target.id)+" .node-logo")
-        .attr("class", "fas fa-crosshairs crosshairs-logo node-logo node-logo-large")
-        .attr("x","-18px")
-        .text('\uf05b');
+    if(this.kgp.target){
+      d3.select("#"+FamilyTreeArtist.nodeGroupId(this.kgp.target.id)+" .node-logo")
+          .attr("class", "fas fa-crosshairs crosshairs-logo node-logo node-logo-large")
+          .attr("x","-18px")
+          .text('\uf05b');
+    }
   }
 
   setAsTarget(newTarget, oldTarget){
