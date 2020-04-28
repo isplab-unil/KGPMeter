@@ -380,7 +380,6 @@ export class FamilyTreeArtist{
             " Z")
           .attr("fill","red").attr("opacity",0)
   
-      console.log("ADD RELATIVE MENU: +10px")
       let addRelativeFO = addRelativeButton.append("foreignObject").classed("add-relatives-fo",true)
           .attr("x",FOx+"px").attr("y",FOy+"px")
           .attr("width",(FOw+10)+"px").attr("height",(FOh+20)+"px")
