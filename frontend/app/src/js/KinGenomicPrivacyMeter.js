@@ -11,7 +11,7 @@ import {KgpPrivacyBar} from "./KgpPrivacyBar.js"
 import {kgpSetSourceEvent, kgpSetHeightEvent} from "./KgpIframeInterface"
 import {TrashButton} from "./TrashButton.js"
 import {KgpTutorialButton, kgpTutorial} from "./KgpTutorial.js"
-import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
+import {detectIE11, detectMobile, onWindowResize, log} from "./utils.js"
 
 export class KinGenomicPrivacyMeter{
   constructor(api_base_url, svgId, youNodeId, i18n, localStoragePrefix="kgpmeter-", options={}){
@@ -22,7 +22,7 @@ export class KinGenomicPrivacyMeter{
     this.svg = d3.select("#"+svgId)
     this.svgHeight = parseInt(this.svg.attr("height"))
     this.svgOriginalHeight = this.svgHeight
-    this.nonSvgElementsHeight=190 + (window.innerWidth<700? 80:0)
+    this.nonSvgElementsHeight=190 + (window.innerWidth<700? 50:0)
     this.updateSvgHeight(this.svgHeight, 800, true)
 
     this.youNodeId = youNodeId // "@I1@"
@@ -205,6 +205,7 @@ export class KinGenomicPrivacyMeter{
             break
           case "KgpRemoveSurveyEvent":
             removeSurvey(e)
+            console.log("kgp dispatchKgpParentMessage removeSurvey()")
             break
           case "KgpSetHeightEvent":
             break
@@ -220,6 +221,7 @@ export class KinGenomicPrivacyMeter{
     onWindowResize(()=>self.resizeSvg())
     window.addEventListener("orientationchange", ()=>{
       self.resizeSvg()
+      log("orientationchange -> resizeSvg!")
     }, false);
     //onWindowResize(()=>d3.range(1000)) // hack with an astonishing effect: fixes problems with privacyBar&target on window resize...
     
@@ -380,6 +382,7 @@ export class KinGenomicPrivacyMeter{
   * function correctly resizing svg, family tree and privacy bar according to svg's parent node
   */
   resizeSvg(){
+    log("kgp.resizeSvg()!!")
     let self = this
     // remove all children of svg
     let svgNode = this.svg.node()
@@ -630,4 +633,5 @@ export class KinGenomicPrivacyMeter{
 }
 
 
+log("kgp.js loaded")
 

@@ -28,13 +28,14 @@ class KgpMeter{
     this.setDivStyle(this.div.scrollHeight+"px")
 
 
-    // ======== ensure iframe doesn't overflow its parent: actually not effective... ========
-    /*window.addEventListener("orientationchange", ()=>{ // not effective...
+    // ======== ensure iframe doesn't overflow its parent ========
+    window.addEventListener("orientationchange", ()=>{
       setTimeout(()=>{
-      let divWidth = window.getComputedStyle(self.div, null).getPropertyValue("width") // not effective...
-      self.iframe.style.maxWidth = divWidth; // not effective...
+      let divWidth = window.getComputedStyle(self.div, null).getPropertyValue("width")
+      self.iframe.style.maxWidth = divWidth;
+      log("orientationchange ============> set iframe max-width to divWidth!, self.iframe.style.maxWidth:", self.iframe.style.maxWidth)
       }, 200)
-    }, false);*/
+    }, false);
 
     // ======== send data to iframe ========
 
@@ -135,6 +136,7 @@ function singletonKgpMeter(){
       let lng = div.getAttribute("data-kgpmeter-lng")
       let maxHeight = div.getAttribute("data-kgpmeter-max-height")
       let removeSurvey = div.getAttribute("data-kgpmeter-remove-survey")
+      console.log("removeSurvey attr: ", removeSurvey)
       kgpmeter = new KgpMeter(defaultKgpmeterDivId, apiUrl, lng, maxHeight, removeSurvey)
       window.kgpmeter = kgpmeter
       singletonCreated = true

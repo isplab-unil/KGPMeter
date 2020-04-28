@@ -3,6 +3,8 @@ import {KinGenomicPrivacyMeter} from "./KinGenomicPrivacyMeter.js"
 import {Internationalisation} from "./lib/i18n.js"
 import {iframeLocalStorage} from "./lib/iframeCookiesLocalStorage.js"
 
+import {onWindowResize, log} from "./utils.js"
+
 
 /* NodeList polyfill for IE11: not included in Babel (->?!?) */
 if ('NodeList' in window && !NodeList.prototype.forEach) {
@@ -67,3 +69,14 @@ if(window.parent != window){
   initKgp({})
 }
 window.kgp = kgp
+log("app.js loaded")
+
+function intervalFunc(){
+  log("body offset width: "+ document.getElementsByTagName("body")[0].offsetWidth)
+}
+setInterval(intervalFunc,2000)
+
+window.addEventListener("orientationchange", function() {
+  // Announce the new orientation number
+  log("-- orientationchange event! --");
+}, false);
