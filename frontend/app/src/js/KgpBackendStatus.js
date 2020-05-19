@@ -28,35 +28,45 @@ export class KgpBackendStatus{
     let self = this
     this.displayOngoing()
     return kgpPromise.then(kgpSuccess=>{
-      // success
-      let same_signature = previousResponse.tree_signature == kgpSuccess.tree_signature
-      if((!previousResponse.tree_signature) || (!kgpSuccess.tree_signature)){
-        same_signature = Math.abs(previousResponse.result.privacy_metric - kgpSuccess.result.privacy_metric) <= 10**(-6)
+      // success but no sequenced relative -> ask user to seq relative
+      if(request.family_tree.sequenced_relatives.length==0){
+        self.displayWarning("response-error-8", 100000)
       }
-      self.displaySuccess(
-        kgpSuccess.result.privacy_metric,
-        kgpSuccess.result.execution_time,
-        kgpSuccess.result.cached,
-        same_signature
-      )  
+      else{
+        // success
+        let same_signature = previousResponse.tree_signature == kgpSuccess.tree_signature
+        if((!previousResponse.tree_signature) || (!kgpSuccess.tree_signature)){
+          same_signature = Math.abs(previousResponse.result.privacy_metric - kgpSuccess.result.privacy_metric) <= 10**(-6)
+        }
+        self.displaySuccess(
+          kgpSuccess.result.privacy_metric,
+          kgpSuccess.result.execution_time,
+          kgpSuccess.result.cached,
+          same_signature
+        )  
+      }
     }).catch(kgpError=>{
       if(kgpError.status=="error"){
-        // error code 2
-        if(kgpError.code==2){
-          self.displayDanger("response-error-"+kgpError.code)
-          self.i18n.data("response-error-2",[kgpError.extras.error_identifier])
-        }
-        // error code 4
-        else if(kgpError.code==4){
-          self.displayInfo("response-error-4",100000)
-        }
-        // error code 5
-        else if(kgpError.code==5){
-          self.displayDanger("response-error-5")
-        }
-        // other error codes
-        else{
-          self.displayWarning("response-error-"+kgpError.code)
+        switch(kgpError.code){
+          case 1:
+            self.displayInfo("response-error-"+kgpError.code)
+          break
+          case 2:
+            self.displayDanger("response-error-"+kgpError.code)
+            self.i18n.data("response-error-2",[kgpError.extras.error_identifier])
+          break
+          case 3:
+            self.displayWarning("response-error-"+kgpError.code)
+          break
+          case 4:
+            self.displayWarning("response-error-"+kgpError.code,100000)
+          break
+          case 5:
+            self.displayDanger("response-error-5")
+          break
+          case 7:
+            self.displayWarning("response-error-"+kgpError.code)
+          break
         }
       }
     })

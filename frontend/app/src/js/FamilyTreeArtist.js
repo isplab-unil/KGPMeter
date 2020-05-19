@@ -402,6 +402,14 @@ export class FamilyTreeArtist{
               let relativeNode = addRelative(node)
               relativeNode.i18nName = self.kgp.relationToYou(node.i18nName,relative)
               self.update(node)
+              if(self.ftree.nodesArray().length>=4){
+                // if no target, no sequenced relatives, and at least 2 relatives added -> display backend status error code 9
+                const nbSequencedRelatives = self.ftree.nodesArray().filter(n=>n.sequencedDNA).length
+                const hasTarget = Boolean(self.ftree.target)
+                if(nbSequencedRelatives==0 & !hasTarget){
+                  self.kgp.backendStatus.displayWarning("response-error-9", 10000)
+                }
+              }
               self.nodeButtons.hide()
               addRelativeHitbox.remove()
               self.kgp.saveFamilyTreeToLocalStorage()
