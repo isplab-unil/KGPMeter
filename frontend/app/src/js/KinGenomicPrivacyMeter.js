@@ -235,7 +235,7 @@ export class KinGenomicPrivacyMeter{
         let waitTime = 200
         setTimeout(()=>self.selectTarget(self.target, true), waitTime)
       }
-      if(savedFtree){
+      if(savedFtree && self.ftree.nodesArray().filter(n=>n.sequencedDNA).length>0){
         self.scoreRequestHandler.requestScore(
           self.target?self.target.id:"",
           self.ftree.getLinksAsIds(), self.ftree.nodesArray().filter(n=>n.sequencedDNA).map(n=>n.id),
