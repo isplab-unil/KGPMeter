@@ -9,6 +9,7 @@ export class KgpPrivacyBar{
     width, height, r,
     colorScale, 
     i18n,
+    showScoreValue=false,
     nbBoxes = 5,
     strokeWidth = 4,
     elementClass = "privacy-bar-element",
@@ -26,6 +27,7 @@ export class KgpPrivacyBar{
     this.backgroundColor = backgroundColor
     this.privacyStatus = 1
     this.i18n = i18n
+    this.showScoreValue=showScoreValue
 
     this.init(x, y, 0)
   }
