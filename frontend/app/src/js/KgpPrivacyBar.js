@@ -2,6 +2,7 @@
 
 
 export class KgpPrivacyBar{
+  /** init() method should be called after constructor */
   constructor(
     parentId,
     id,
@@ -28,8 +29,25 @@ export class KgpPrivacyBar{
     this.privacyStatus = 1
     this.i18n = i18n
     this.showScoreValue=showScoreValue
+    this.x = x
+    this.y = y
 
-    this.init(x, y, 0)
+  }
+
+  /** abstract method: initialize elements that should have opacity=0.5 when waiting for score 
+   * 
+   * should return an array of DOM nodes
+  */
+  initScoreWaitingElement(){
+
+  }
+  /** abstract method: initialize elements whose "fill" attributes must be updated on score change
+   * 
+   * Also scoreColoredElements are greyed out when an unscorable tree is on (no target/no seq relative).
+   * should return an array of DOM nodes
+   */
+  initScoreColoredElements(){
+
   }
 
   init(x, y, transitionDuration=500){
@@ -82,7 +100,10 @@ export class KgpPrivacyBar{
       this.text = d3.select("#privacy-score text")
     }
 
-    this.elements = d3.selectAll("."+this.elementClass)
+    this.scoreWaitingElements = d3.selectAll("."+this.elementClass)
+    this.scoreColoredElements = d3.selectAll(this.bar.nodes())
+    console.log("scoreWaitingElements.nodes(): ", this.scoreWaitingElements.nodes())
+    console.log("scoreColoredElements.nodes(): ", this.scoreColoredElements.nodes())
     this.update(1, transitionDuration)
   }
 
@@ -91,11 +112,13 @@ export class KgpPrivacyBar{
     this.privacyStatus = privacyMeasure
     let transition = d3.transition().duration(transitionDuration).ease(function(t){return d3.easeBackOut(t,0.8)})
     this.bar.transition(transition)
-      .attr("fill",this.colorScale(privacyMeasure))
       .attr("y",this.scale(privacyMeasure))
       .attr("height",this.height - this.scale(this.privacyStatus))
+
+    this.scoreColoredElements.transition(transition)
+      .attr("fill",this.colorScale(privacyMeasure))
   
-    this.elements.transition(200).attr("opacity",1)
+    this.scoreWaitingElements.transition(200).attr("opacity",1)
     // show score value
     if(this.showScoreValue){
       this.scoreG
@@ -109,15 +132,23 @@ export class KgpPrivacyBar{
 
   /** awaitScore() puts the KgpPrivacyBar in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
   awaitScore(kgpPromise, request, previousResponse){
-    this.elements.transition(200).attr("opacity",0.5)
+    this.scoreWaitingElements.transition(200).attr("opacity",0.5)
+    const self = this
     kgpPromise.then(kgpSuccess=>{
-      this.update(kgpSuccess.result.privacy_metric)
+      self.update(kgpSuccess.result.privacy_metric)
     }).catch(kgpr=>{
       if(kgpr.status=="error"){
         if(kgpr.code==4){
-          this.elements.transition(200).attr("opacity",1)
+          self.reset()
         }
       }
     })
+  }
+
+  /** reset() updates the privacyBar to show that there is currently no score */
+  reset(){
+    console.log("privacyBaaar ressseeeeet()")
+    this.scoreWaitingElements.transition(200).attr("opacity",1)
+    this.update(1)
   }
 }

@@ -133,6 +133,7 @@ export class KinGenomicPrivacyMeter{
       d3.interpolateRgbBasis(["rgb(255,0,0)","rgb(255,125,0)","rgb(255,255,0)","rgb(0,195,0)"]),
       self.i18n
     )
+    this.privacyBar.init(false, false)
 
     // privacy worded score
     this.privacyWordedScore = new KgpWordedScore(
@@ -262,8 +263,7 @@ export class KinGenomicPrivacyMeter{
     // set privacy score back to 1:
     self.privacyMetric = 1
     self.target = null
-    this.privacyBar.elements.transition(200).attr("opacity",1)
-    this.privacyBar.update(1)
+    this.privacyBar.reset()
     this.backendStatus.hide()
     this.privacyWordedScore.hide()
     this.scoreNumberExplainer.hide()
