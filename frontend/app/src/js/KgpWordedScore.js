@@ -5,7 +5,6 @@ export class KgpWordedScore{
   constructor(
     parentId,
     id,
-    elementClass,
     x, y,
     height,
     colorScale,
@@ -14,7 +13,6 @@ export class KgpWordedScore{
   ){
     this.parentId = parentId
     this.id = id
-    this.elementClass = elementClass
     this.x = x
     this.y = y
     this.height = height
@@ -38,7 +36,6 @@ export class KgpWordedScore{
         .attr("text-anchor","end")
         .attr("fill","darkgrey")
         .attr("id",this.id)
-        .attr("class",this.elementClass)
         //TODO: fix i18n.keyAttr reference
         .attr(this.i18n.keyAttr,self.i18nKey)
     this.scale = d3.scaleLinear()

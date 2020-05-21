@@ -131,7 +131,7 @@ export class KinGenomicPrivacyMeter{
       this.svgWidth - privacyBarWidth - privacyBarStrokeWidth, 30, 
       30, 400, 5,
       d3.interpolateRgbBasis(["rgb(255,0,0)","rgb(255,125,0)","rgb(255,255,0)","rgb(0,195,0)"]),
-      self.i18n
+      self.i18n, false,false, true,2,"rgb(255,255,255)"//,2,5,"rgb(255,255,255)"
     )
     this.privacyBar.init(false, false)
 
@@ -139,7 +139,6 @@ export class KinGenomicPrivacyMeter{
     this.privacyWordedScore = new KgpWordedScore(
       this.privacyBar.g.attr("id"),
       "privacy-bar-title",
-      "privacy-bar-element", 
       this.privacyBar.width, -16, 20,
       this.privacyBar.colorScale,
       self.i18n,

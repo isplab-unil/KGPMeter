@@ -11,10 +11,11 @@ export class KgpPrivacyBar{
     colorScale, 
     i18n,
     showScoreValue=false,
-    nbBoxes = 5,
+    showBoxes = true,
+    showContour = false,
     strokeWidth = 4,
-    elementClass = "privacy-bar-element",
-    backgroundColor = "rgb(230,230,230)"
+    backgroundColor = "rgb(230,230,230)",
+    nbBoxes = 5
   ){
     this.parentId = parentId
     this.id = id
@@ -24,29 +25,14 @@ export class KgpPrivacyBar{
     this.nbBoxes = nbBoxes
     this.strokeWidth = strokeWidth
     this.colorScale = colorScale
-    this.elementClass = elementClass
     this.backgroundColor = backgroundColor
     this.privacyStatus = 1
     this.i18n = i18n
     this.showScoreValue=showScoreValue
+    this.showBoxes=showBoxes
+    this.showContour=showContour
     this.x = x
     this.y = y
-
-  }
-
-  /** abstract method: initialize elements that should have opacity=0.5 when waiting for score 
-   * 
-   * should return an array of DOM nodes
-  */
-  initScoreWaitingElement(){
-
-  }
-  /** abstract method: initialize elements whose "fill" attributes must be updated on score change
-   * 
-   * Also scoreColoredElements are greyed out when an unscorable tree is on (no target/no seq relative).
-   * should return an array of DOM nodes
-   */
-  initScoreColoredElements(){
 
   }
 
@@ -65,26 +51,47 @@ export class KgpPrivacyBar{
 
     let startColor = this.colorScale(1)
     let barBasis = '<rect x="0" y="0" rx="'+this.r+'" ry="'+this.r+'" height="'+this.height+'" width="'+this.width+'"'
-    this.g.html(barBasis+' fill="'+this.backgroundColor+'" class="privacy-bar-background '+this.elementClass+'"/>'+
-                        barBasis+' fill="'+startColor+'" class="privacy-bar '+this.elementClass+'" />')
+    this.g.html(barBasis+' fill="'+this.backgroundColor+'" class="privacy-bar-background"/>'+
+                        barBasis+' fill="'+startColor+'" class="privacy-bar" />')
     this.bar = this.g.select(".privacy-bar")
 
-    let boxSize = this.height / this.nbBoxes
-    let yboxes = d3.range(0, this.height, boxSize)
-    this.boxesG = this.g.append("g")
-      .attr("id","privacy-bar-contour-group")
-    this.boxesG.selectAll("rect").data(yboxes).enter()
-      .append("rect")
-      .attr("class","privacy-bar-contour")
-      .attr("x","0")
-      .attr("y",d=>d)
-      .attr("rx",5)
-      .attr("ry",5)
-      .attr("width",this.width)
-      .attr("height",boxSize)
-      .attr("fill","none")
-      .attr("stroke","white")
-      .attr("stroke-width", this.strokeWidth+'px')
+    // boxes
+    if(this.showBoxes){
+      let boxSize = this.height / this.nbBoxes
+      let yboxes = d3.range(0, this.height, boxSize)
+      this.boxesG = this.g.append("g")
+        .attr("id","privacy-bar-boxes-group")
+      this.boxesG.selectAll("rect").data(yboxes).enter()
+        .append("rect")
+        .attr("class","privacy-bar-boxes")
+        .attr("x","0")
+        .attr("y",d=>d)
+        .attr("rx",5)
+        .attr("ry",5)
+        .attr("width",this.width)
+        .attr("height",boxSize)
+        .attr("fill","none")
+        .attr("stroke","white")
+        .attr("stroke-width", this.strokeWidth+'px')
+    }
+    // contour
+    if(this.showContour){
+      this.g.append("rect")
+        .attr("id", "privacy-bar-contour")
+        .attr("x",0)
+        .attr("y",0)
+        .attr("rx",this.r)
+        .attr("ry",this.r)
+        .attr("height",this.height)
+        .attr("width",this.width)
+        .attr("fill","none")
+        .attr("stroke-width",this.strokeWidth+"px")
+        .attr("stroke",this.colorScale(1))
+    
+      //'<rect class="'+privacyBar.elementClass+'" id="privacy-bar-contour" x="0" y="0" rx="5" ry="5" height="'+privacyBar.height+'" width="'+privacyBar.width+'" fill="none" stroke="'+startColor+'" stroke-width="'+privacyBar.strokeWidth+'px"/>')
+      //rx="'+this.r+'" ry="'+this.r+'" height="'+this.height+'" width="'+this.width+'"'
+      
+    }
 
     this.scale = d3.scaleLinear()
       .range([this.height,0])
@@ -100,11 +107,42 @@ export class KgpPrivacyBar{
       this.text = d3.select("#privacy-score text")
     }
 
-    this.scoreWaitingElements = d3.selectAll("."+this.elementClass)
-    this.scoreColoredElements = d3.selectAll(this.bar.nodes())
+    this.scoreWaitingElements = d3.selectAll(this.initScoreWaitingElement())
+    const scoreColoredElements = this.initScoreColoredElements()
+    this.scoreFillColoredElements = d3.selectAll(scoreColoredElements.fill)
+    this.scoreStrokeColoredElements = d3.selectAll(scoreColoredElements.stroke)
     console.log("scoreWaitingElements.nodes(): ", this.scoreWaitingElements.nodes())
-    console.log("scoreColoredElements.nodes(): ", this.scoreColoredElements.nodes())
+    console.log("scoreFillColoredElements.nodes(): ", this.scoreFillColoredElements.nodes())
+    console.log("scoreStrokeColoredElements.nodes(): ", this.scoreStrokeColoredElements.nodes())
     this.update(1, transitionDuration)
+  }
+
+  /** abstract method: initialize elements that should have opacity=0.5 when waiting for score 
+   * 
+   * should return an array of DOM nodes
+   * subclasses should always call the super method and&extend its return array
+  */
+  initScoreWaitingElement(){
+    return Array.from(document.getElementsByClassName("privacy-bar-background")).concat(
+      Array.from(document.getElementsByClassName("privacy-bar"))
+    ).push(document.getElementById("privacy-bar-contour"))
+  }
+  /** abstract method: initialize elements whose "fill" attributes must be updated on score change
+   * 
+   * Also scoreColoredElements are greyed out when an unscorable tree is on (no target/no seq relative).
+   * should return an object with 2 properties "fill" and "stroke", each are an array of DOM nodes of whose corresponding attribute is colored
+   * subclasses should always call the super method and&extend its return array
+   */
+  initScoreColoredElements(){
+    
+
+
+    const bar = document.getElementsByClassName("privacy-bar")[0]
+    const scorePolygon = this.showScoreValue? this.scorePolygon.nodes() : []
+    return {
+      fill: [bar].concat(scorePolygon),
+      stroke: [document.getElementById("privacy-bar-contour")]
+    }
   }
 
   /** update() updates the KgpPrivacyBar with a new score */
@@ -115,8 +153,11 @@ export class KgpPrivacyBar{
       .attr("y",this.scale(privacyMeasure))
       .attr("height",this.height - this.scale(this.privacyStatus))
 
-    this.scoreColoredElements.transition(transition)
-      .attr("fill",this.colorScale(privacyMeasure))
+    const scoreColor = this.colorScale(privacyMeasure)
+    this.scoreFillColoredElements.transition(transition)
+      .attr("fill", scoreColor)
+    this.scoreStrokeColoredElements.transition(transition)
+      .attr("stroke", scoreColor)
   
     this.scoreWaitingElements.transition(200).attr("opacity",1)
     // show score value
@@ -124,8 +165,6 @@ export class KgpPrivacyBar{
       this.scoreG
         .transition(transition)//d3.easeBackOut)//d3.easeExpInOut)//d3.easeCubicIn)
         .attr("transform","translate(0,"+Math.max(this.scale(privacyMeasure),4)+")")
-      this.scorePolygon.transition(transition)
-        .attr("fill",this.colorScale(privacyMeasure))
       this.text.html((100*privacyMeasure).toFixed(0)+"%")
     }
   }
