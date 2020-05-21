@@ -133,6 +133,14 @@ export class KinGenomicPrivacyMeter{
       d3.interpolateRgbBasis(["rgb(255,0,0)","rgb(255,125,0)","rgb(255,255,0)","rgb(0,195,0)"]),
       self.i18n, true,false, true,2,"rgb(255,255,255)"//,2,5,"rgb(255,255,255)"
     )
+    /*this.privacyBar = KgpPrivacyBar.newPrivacyBar(
+      this.svg.attr("id"),
+      "privacy-bar-g",
+      this.svgWidth - privacyBarWidth - privacyBarStrokeWidth, 30, 
+      30, 400, 5,
+      d3.interpolateRgbBasis(["rgb(255,0,0)","rgb(255,125,0)","rgb(255,255,0)","rgb(0,195,0)"]),
+      self.i18n
+    )*/
     this.privacyBar.init(false, false)
 
     // privacy worded score

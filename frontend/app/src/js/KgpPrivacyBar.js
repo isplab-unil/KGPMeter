@@ -203,4 +203,42 @@ export class KgpPrivacyBar{
     this.scoreWaitingElements.transition(200).attr("opacity",1)
     this.update(1)
   }
+
+  static oldPrivacyBar(
+    parentId,
+    id,
+    x, y,
+    width, height, r,
+    colorScale, 
+    i18n
+  ){
+    return new KgpPrivacyBar(
+      parentId,
+      id,
+      x, y,
+      width, height, r,
+      colorScale, 
+      i18n,
+      true,false, true,2,"rgb(255,255,255)"
+    )
+  }
+
+  static newPrivacyBar(
+    parentId,
+    id,
+    x, y,
+    width, height, r,
+    colorScale, 
+    i18n
+  ){
+    return new KgpPrivacyBar(
+      parentId,
+      id,
+      x, y,
+      width, height, r,
+      colorScale, 
+      i18n,
+      false,true, false
+    )
+  }
 }
