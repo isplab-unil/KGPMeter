@@ -131,7 +131,7 @@ export class KinGenomicPrivacyMeter{
       this.svgWidth - privacyBarWidth - privacyBarStrokeWidth, 30, 
       30, 400, 5,
       d3.interpolateRgbBasis(["rgb(255,0,0)","rgb(255,125,0)","rgb(255,255,0)","rgb(0,195,0)"]),
-      self.i18n, true,false, true,2,"rgb(255,255,255)"//,2,5,"rgb(255,255,255)"
+      self.i18n, true,false, true,2,"rgb(255,255,255)"
     )
     /*this.privacyBar = KgpPrivacyBar.newPrivacyBar(
       this.svg.attr("id"),
@@ -142,16 +142,28 @@ export class KinGenomicPrivacyMeter{
       self.i18n
     )*/
     this.privacyBar.init(false, false)
+    this.privacyBar.reset(0)
 
     // privacy worded score
-    this.privacyWordedScore = new KgpWordedScore(
-      this.privacyBar.g.attr("id"),
-      "privacy-bar-title",
-      this.privacyBar.width, -16, 20,
-      this.privacyBar.colorScale,
-      self.i18n,
-      "privacy-bar-title"
-    )
+    if(false){
+      this.privacyWordedScore = new KgpWordedScore(
+        this.privacyBar.g.attr("id"),
+        "privacy-bar-title",
+        this.privacyBar.width, -16, 20,
+        this.privacyBar.colorScale,
+        self.i18n,
+        "privacy-bar-title"
+      )
+    }
+    d3.select("#"+"privacy-bar-g").append("text")
+      .attr("x",this.privacyBar.width)
+      .attr("y",-16)
+      .attr("height",20)
+      .attr("text-anchor","end")
+      .attr("fill","darkgrey")
+      .attr("id","privacy-bar-title")
+      //TODO: fix i18n.keyAttr reference
+      .attr(this.i18n.keyAttr,"privacy-bar-old-title")
 
     // backend status
     this.backendStatus = new KgpBackendStatus("kgp-backend-status", self.i18n)
@@ -181,7 +193,9 @@ export class KinGenomicPrivacyMeter{
     })
     // ...other listeners
     this.scoreRequestHandler.addListener((...args) => self.privacyBar.awaitScore(...args))
-    this.scoreRequestHandler.addListener((...args) => self.privacyWordedScore.awaitScore(...args))
+    if(this.privacyWordedScore){
+      this.scoreRequestHandler.addListener((...args) => self.privacyWordedScore.awaitScore(...args))
+    }
     this.scoreRequestHandler.addListener((...args) => self.backendStatus.awaitScore(...args))
     this.scoreRequestHandler.addListener((...args) => self.scoreNumberExplainer.awaitScore(...args))
     this.scoreRequestHandler.addListener(surveyScoreListener)
@@ -272,7 +286,9 @@ export class KinGenomicPrivacyMeter{
     self.target = null
     this.privacyBar.reset()
     this.backendStatus.hide()
-    this.privacyWordedScore.hide()
+    if(this.privacyWordedScore){
+      this.privacyWordedScore.hide()
+    }
     this.scoreNumberExplainer.hide()
 
     // smoothly transition back to original position
@@ -395,14 +411,18 @@ export class KinGenomicPrivacyMeter{
     this.updateSvgWidth()
     // redraw tree&privacy bar
     this.privacyBar.init( self.svgWidth - this.privacyBar.width - this.privacyBar.strokeWidth, this.privacyBar.y, 0)
-    this.privacyWordedScore.init()
-    this.privacyWordedScore.hide()
+    if(this.privacyWordedScore){
+      this.privacyWordedScore.init()
+      this.privacyWordedScore.hide()
+    }
     this.trashButton.init()
     this.tutorialButton.init()
 
-    if(self.target){
-      self.privacyBar.update(self.privacyMetric, 0)
-      self.privacyWordedScore.update(self.privacyMetric, 0)
+    if(this.target){
+      this.privacyBar.update(this.privacyMetric, 0)
+      if(this.privacyWordedScore){
+        this.privacyWordedScore.update(this.privacyMetric, 0)
+      }
     }
     this.familyTreeArtist.init(0)
     this.mobileBlock()
