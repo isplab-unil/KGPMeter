@@ -6,20 +6,20 @@ export class KgpTutorialButton{
     this.init()
   }
   init(){
-    d3.select("#"+this.domId).remove()
+    /*d3.select("#"+this.domId).remove()
     // trash button
     this.tutoButton = this.kgp.addSvgButton("\uf059",this.domId,"hint-tuto",0,57, 22, 0, 60)
     this.tutoButton
     let self = this
-    Object.keys(this.listeners).forEach(k=>self.tutoButton.on(k, self.listeners[k]))
+    Object.keys(this.listeners).forEach(k=>self.tutoButton.on(k, self.listeners[k]))*/
   }
 
   on(event, listener){
-    this.listeners[event] = listener
-    this.tutoButton.on(event, listener)
+    /*this.listeners[event] = listener
+    this.tutoButton.on(event, listener)*/
   }
   remove(){
-    this.tutoButton.remove()
+    //this.tutoButton.remove()
   }
 }
 
