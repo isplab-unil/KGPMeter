@@ -50,7 +50,9 @@ export class KgpPrivacyBar{
         .attr("id", this.id)
 
     let startColor = this.colorScale(1)
-    let barBasis = '<rect x="0" y="0" rx="'+this.r+'" ry="'+this.r+'" height="'+this.height+'" width="'+this.width+'"'
+    let barBasis = '<rect x="0" y="0" rx="'+
+      (this.showContour? 0 : this.r)+'" ry="'+
+      (this.showContour? 0 : this.r)+'" height="'+this.height+'" width="'+this.width+'"'
     this.g.html(barBasis+' fill="'+this.backgroundColor+'" class="privacy-bar-background"/>'+
                         barBasis+' fill="'+startColor+'" class="privacy-bar" />')
     this.bar = this.g.select(".privacy-bar")
@@ -66,8 +68,8 @@ export class KgpPrivacyBar{
         .attr("class","privacy-bar-boxes")
         .attr("x","0")
         .attr("y",d=>d)
-        .attr("rx",5)
-        .attr("ry",5)
+        .attr("rx",this.showContour? 0 : this.r)
+        .attr("ry",this.showContour? 0 : this.r)
         .attr("width",this.width)
         .attr("height",boxSize)
         .attr("fill","none")
@@ -76,6 +78,17 @@ export class KgpPrivacyBar{
     }
     // contour
     if(this.showContour){
+      this.g.append("rect")
+        .attr("id", "privacy-bar-contour-background")
+        .attr("x",-4*this.strokeWidth)
+        .attr("y",-4*this.strokeWidth)
+        .attr("rx",this.strokeWidth)
+        .attr("ry",this.strokeWidth)
+        .attr("height",this.height+(8*this.strokeWidth))
+        .attr("width",this.width+(8*this.strokeWidth))
+        .attr("fill","none")
+        .attr("stroke-width",(2+8*this.strokeWidth)+"px")
+        .attr("stroke","white")
       this.g.append("rect")
         .attr("id", "privacy-bar-contour")
         .attr("x",0)
