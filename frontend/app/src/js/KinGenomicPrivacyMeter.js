@@ -114,7 +114,7 @@ export class KinGenomicPrivacyMeter{
         removeTutorialButton()
       }
     }
-    createTutorialButton()
+    //createTutorialButton()
 
     // api urls
     this.setApiUrl(api_base_url)
