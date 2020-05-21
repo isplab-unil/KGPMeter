@@ -124,9 +124,6 @@ export class KgpPrivacyBar{
     const scoreColoredElements = this.initScoreColoredElements()
     this.scoreFillColoredElements = d3.selectAll(scoreColoredElements.fill)
     this.scoreStrokeColoredElements = d3.selectAll(scoreColoredElements.stroke)
-    console.log("scoreWaitingElements.nodes(): ", this.scoreWaitingElements.nodes())
-    console.log("scoreFillColoredElements.nodes(): ", this.scoreFillColoredElements.nodes())
-    console.log("scoreStrokeColoredElements.nodes(): ", this.scoreStrokeColoredElements.nodes())
     this.update(1, transitionDuration)
   }
 
@@ -159,14 +156,14 @@ export class KgpPrivacyBar{
   }
 
   /** update() updates the KgpPrivacyBar with a new score */
-  update(privacyMeasure, transitionDuration=500){
+  update(privacyMeasure, transitionDuration=500, forceColor=null){
     this.privacyStatus = privacyMeasure
     let transition = d3.transition().duration(transitionDuration).ease(function(t){return d3.easeBackOut(t,0.8)})
     this.bar.transition(transition)
       .attr("y",this.scale(privacyMeasure))
       .attr("height",this.height - this.scale(this.privacyStatus))
 
-    const scoreColor = this.colorScale(privacyMeasure)
+    const scoreColor = forceColor? forceColor : this.colorScale(privacyMeasure)
     this.scoreFillColoredElements.transition(transition)
       .attr("fill", scoreColor)
     this.scoreStrokeColoredElements.transition(transition)
@@ -175,6 +172,7 @@ export class KgpPrivacyBar{
     this.scoreWaitingElements.transition(200).attr("opacity",1)
     // show score value
     if(this.showScoreValue){
+      this.scoreG.attr("visibility","visible")
       this.scoreG
         .transition(transition)//d3.easeBackOut)//d3.easeExpInOut)//d3.easeCubicIn)
         .attr("transform","translate(0,"+Math.max(this.scale(privacyMeasure),4)+")")
@@ -185,23 +183,31 @@ export class KgpPrivacyBar{
   /** awaitScore() puts the KgpPrivacyBar in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
   awaitScore(kgpPromise, request, previousResponse){
     this.scoreWaitingElements.transition(200).attr("opacity",0.5)
-    const self = this
-    kgpPromise.then(kgpSuccess=>{
-      self.update(kgpSuccess.result.privacy_metric)
-    }).catch(kgpr=>{
-      if(kgpr.status=="error"){
-        if(kgpr.code==4){
-          self.reset()
+    if( (!request.family_tree.target) || (request.family_tree.sequenced_relatives.length==0)){
+      this.reset()
+    }
+    else{
+      const self = this
+      kgpPromise.then(kgpSuccess=>{
+        self.update(kgpSuccess.result.privacy_metric)
+      }).catch(kgpr=>{
+        if(kgpr.status=="error"){
+          if(kgpr.code==4){
+            self.reset()
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   /** reset() updates the privacyBar to show that there is currently no score */
-  reset(){
-    console.log("privacyBaaar ressseeeeet()")
-    this.scoreWaitingElements.transition(200).attr("opacity",1)
-    this.update(1)
+  reset(transitionDuration=500){
+    const noScoreColor="darkgrey"
+    this.scoreWaitingElements.transition(transitionDuration).attr("opacity",1)
+    this.update(1, transitionDuration, noScoreColor)
+    if(this.showScoreValue){
+      this.scoreG.attr("visibility","hidden")
+    }
   }
 
   static oldPrivacyBar(

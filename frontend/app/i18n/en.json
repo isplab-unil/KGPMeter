@@ -96,6 +96,7 @@
   "trash-confirm": "Confirm",
   "mobile-block": "The tool is sadly not yet available on mobile platforms.</br>Please use a computer to estimate your genomic privacy.",
   "IE-block-error": "<i class='fas fa-exclamation-circle'></i> Our tool is sadly not compatible with Internet Explorer. Please use an alternative web browser such as Firefox, Chrome or Safari.",
+  "privacy-bar-old-title": "Privacy score:",
   "privacy-bar-title": "The target's genomic privacy is <tspan>{}</tspan>",
   "privacy-bar-score-100": "totally protected",
   "privacy-bar-score-5": "strongly protected",
