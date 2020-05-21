@@ -155,15 +155,6 @@ export class KinGenomicPrivacyMeter{
         "privacy-bar-title"
       )
     }
-    d3.select("#"+"privacy-bar-g").append("text")
-      .attr("x",this.privacyBar.width)
-      .attr("y",-16)
-      .attr("height",20)
-      .attr("text-anchor","end")
-      .attr("fill","darkgrey")
-      .attr("id","privacy-bar-title")
-      //TODO: fix i18n.keyAttr reference
-      .attr(this.i18n.keyAttr,"privacy-bar-old-title")
 
     // backend status
     this.backendStatus = new KgpBackendStatus("kgp-backend-status", self.i18n)
@@ -418,11 +409,13 @@ export class KinGenomicPrivacyMeter{
     this.trashButton.init()
     this.tutorialButton.init()
 
-    if(this.target){
+    if(this.target && self.ftree.nodesArray().filter(n=>n.sequencedDNA).length>0){
       this.privacyBar.update(this.privacyMetric, 0)
       if(this.privacyWordedScore){
         this.privacyWordedScore.update(this.privacyMetric, 0)
       }
+    }else{
+      this.privacyBar.reset(0)
     }
     this.familyTreeArtist.init(0)
     this.mobileBlock()

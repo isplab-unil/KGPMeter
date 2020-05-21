@@ -57,6 +57,7 @@ export class KgpPrivacyBar{
                         barBasis+' fill="'+startColor+'" class="privacy-bar" />')
     this.bar = this.g.select(".privacy-bar")
 
+
     // boxes
     if(this.showBoxes){
       let boxSize = this.height / this.nbBoxes
@@ -105,6 +106,18 @@ export class KgpPrivacyBar{
       //rx="'+this.r+'" ry="'+this.r+'" height="'+this.height+'" width="'+this.width+'"'
       
     }
+
+    //privacy bar title
+    window.privacyBarTitle = this.g.append("text")
+      .attr("x",this.width)
+      .attr("y",-16)
+      .attr("height",20)
+      .attr("text-anchor","end")
+      .attr("fill","darkgrey")
+      .attr("id","privacy-bar-title-2")
+      //TODO: fix i18n.keyAttr reference
+      .attr(this.i18n.keyAttr,"privacy-bar-old-title")
+    console.log("privacyBarTitle: ", window.privacyBarTitle)
 
     this.scale = d3.scaleLinear()
       .range([this.height,0])
