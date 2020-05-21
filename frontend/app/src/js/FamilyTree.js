@@ -97,7 +97,10 @@ export class FamilyTree{
    * @param {node or str} node 
    */
   contains(node){
-    return Boolean( node.id? this.nodes[node.id] : this.nodes[node] )
+    if(node){
+      return Boolean( node.id? this.nodes[node.id] : this.nodes[node])
+    }
+    return false
   }
 
   /**

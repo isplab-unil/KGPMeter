@@ -300,6 +300,9 @@ export class FamilyTreeArtist{
     // ------------------------ remove node button ------------------------
     function removeNode(node){
       self.ftree.deleteNode(node.id, self.kgp.youNodeId)
+      if(self.kgp.target && !self.ftree.contains(self.kgp.target)){
+        self.kgp.target=undefined
+      }
       self.nodeButtons.hide()
       self.kgp.scoreRequestHandler.requestScore(
         self.kgp.target? self.kgp.target.id:"",
@@ -405,7 +408,7 @@ export class FamilyTreeArtist{
               if(self.ftree.nodesArray().length>=4){
                 // if no target, no sequenced relatives, and at least 2 relatives added -> display backend status error code 9
                 const nbSequencedRelatives = self.ftree.nodesArray().filter(n=>n.sequencedDNA).length
-                const hasTarget = Boolean(self.ftree.target)
+                const hasTarget = Boolean(self.kgp.target)
                 if(nbSequencedRelatives==0 & !hasTarget){
                   self.kgp.backendStatus.displayWarning("response-error-9", 10000)
                 }
