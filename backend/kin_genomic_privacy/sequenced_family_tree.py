@@ -316,7 +316,7 @@ class SequencedFamilyTree(Hashable):
         nodes_to_remove = set()
         sequenced_relatives = self.sequenced_relatives()
         for node in bayes_net.nodes():
-            if not bayes_net.is_active_trail(node, self.target, [n for n in sequenced_relatives if n != node]):
+            if not bayes_net.is_active_trail(node, self.target, [n for n in sequenced_relatives if n != node]) and node in self.family_tree.nodes():
                 nodes_to_remove.add(node)
 
         print("_remove_target_independant_nodes pre-remove edges:")
