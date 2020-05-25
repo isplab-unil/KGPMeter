@@ -93,6 +93,7 @@
     "change-target": "Choisir cet individu comme cible",
     "mobile-block": "L'outil n'est malheureusement pas encore disponible pour les mobiles.</br>\nVeuillez utiliser un ordinateur pour estimer votre confidentialité génomique.",
     "IE-block-error": "<i class='fas fa-exclamation-circle'></i> Notre outil n'est pas compatible avec Internet Explorer. Veuillez utiliser un autre navigateur, tel que Firefox, Chrome ou Safari.",
+    "privacy-bar-old-title": "Score de confidentialité:",
     "privacy-bar-title": "La vie privée génomique de la cible est <tspan>{}</tspan>",
     "privacy-bar-score-100": "totalement protégée",
     "privacy-bar-score-5": "très bien protégée",
