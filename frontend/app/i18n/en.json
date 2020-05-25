@@ -107,7 +107,7 @@
 
   "_COMMENT8": "-------------- response messages --------------",
   "response-ongoing":"<i class='fas fa-cog'></i> Computation in progress...",
-  "response-success":"<i class='fas fa-check-circle'></i> Score computed in {#1} seconds{#2 (cached); (from local cache)}.{#3 The score is unchanged, <a href='../faq#change' target='_blank'>learn more <i class='fas fa-question-circle'></i></a>.}",
+  "response-success":"<i class='fas fa-check-circle'></i> Score computed in {#1} seconds{#2 (cached); (from local cache)}.{#3 The score is unchanged, <a href='{#4}#change' target='_blank'>learn more <i class='fas fa-question-circle'></i></a>.}",
   "response-error-1":"<i class='fas fa-clock'></i> The computation takes too long to be done in real time. Please come back later. <a href='../faq#duration' target='_blank'>Learn more <i class='fas fa-question-circle'></i></a>",
   "response-error-2":"<i class='fas fa-exclamation-circle'></i> Internal server error, error id: {}. Please retry later.",
   "response-error-3":"<i class='fas fa-exclamation-circle'></i> You attained the maximum number of tested individuals in the family tree. Please reduce the number of sequenced individuals.",

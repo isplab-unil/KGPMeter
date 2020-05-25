@@ -95,7 +95,7 @@
     "privacy-bar-title": "Datenschutzpunkte:",
     "_COMMENT8": "Antwortmeldungen ---------------------- Antwortmeldungen --------------------------",
     "response-ongoing": "<i class='fas fa-cog'></i> Berechnung läuft.....",
-    "response-success": "<i class='fas fa-check-circle'></i> Score berechnet in {#1} Sekunden{#2 (im Cache); (im lokal Cache)}.{#3 Die Punktzahl ist unverändert, <a href='../faq#change' target='_blank'>Lerne mehr <i class='fas fa-question-circle'></i></a>.}",
+    "response-success": "<i class='fas fa-check-circle'></i> Score berechnet in {#1} Sekunden{#2 (im Cache); (im lokal Cache)}.{#3 Die Punktzahl ist unverändert, <a href='{#4}#change' target='_blank'>Lerne mehr <i class='fas fa-question-circle'></i></a>.}",
     "response-error-1": "<i class='fas fa-clock'></i> Die Berechnung dauert zu lange, um in Echtzeit durchgeführt zu werden. Bitte kommen Sie später wieder. <a href='../faq#duration' target='_blank'>Lernen Sie mehr <i class='fas fa-question-circle'></i></a></a></a>",
     "response-error-2": "<i class='fas fa-exclamation-circle'></i> Interner Serverfehler, Fehler id: {}. Bitte versuchen Sie es später noch einmal.",
     "response-error-3": "<i class='fas fa-exclamation-circle'></i> Sie haben die maximale Anzahl von sequenzierten Personen im Stammbaum erreicht. Bitte reduzieren Sie die Anzahl der sequenzierten Individuen.",

@@ -95,7 +95,7 @@
     "privacy-bar-title": "Puntuación de privacidad:",
     "_COMMENT8": "",
     "response-ongoing": "<i class='fas fa-cog'></i> Cálculo en curso....",
-    "response-success": "<i class='fas fa-check-circle'></i> Puntuación calculada en {#1} segundos{#2 (en caché);}.{#3 La puntuación no ha cambiado, <a href='../faq#change' target='_blank'>aprender más <i class='fas fa-question-circle'></i></a>.}",
+    "response-success": "<i class='fas fa-check-circle'></i> Puntuación calculada en {#1} segundos{#2 (en caché);}.{#3 La puntuación no ha cambiado, <a href='{#4}#change' target='_blank'>aprender más <i class='fas fa-question-circle'></i></a>.}",
     "response-error-1": "<i class='fas fa-clock'></i> El cálculo tarda demasiado tiempo en realizarse en tiempo real. Por favor, vuelve más tarde. <a href='../faq#duration' target='_blank'> <i class='fas fa-question-circle'></i>Conozca más</a>",
     "response-error-2": "<i class='fas fa-exclamation-circle'></i> Error interno del servidor, error id: {}. Por favor, vuelva a intentarlo más tarde.",
     "response-error-3": "<i class='fas fa-exclamation-circle'></i> Usted alcanzó el número máximo de individuos secuenciados en el árbol genealógico. Por favor, reduzca el número de individuos secuenciados.",

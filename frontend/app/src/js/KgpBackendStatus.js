@@ -2,9 +2,10 @@
 
 
 export class KgpBackendStatus{
-  constructor(parentId, i18n){
+  constructor(parentId, i18n, faqPageUrl){
     this.parentId = parentId
     this.i18n = i18n
+    this.faqPageUrl = faqPageUrl
 
     this.init()
   }
@@ -20,7 +21,7 @@ export class KgpBackendStatus{
     '*/
     this.element = $("#"+this.parentId+" .alert")
     this.content = $("#"+this.parentId+" .kgp-alert-content")
-    this.i18n.dynamic["response-success"] = this.i18nFormatSuccessMessage
+    this.i18n.dynamic["response-success"] = this.getI18nFormatSuccessMessage(this.faqPageUrl)
   }
 
   /** awaitScore() puts the KgpBackendStatus in a waiting state and updates it properly once the promise has fulfilled */
@@ -120,13 +121,16 @@ export class KgpBackendStatus{
   }
 
   /** success formatter function for i18n */
-  i18nFormatSuccessMessage(text, data){
-    //"Réponse calculée en {#1} secondes{#2 (en cache)}.{#3 Le score est inchangé, <a href='../faq#change' target='_blank'>en savoir plus</a>.}",
-    text = text.replace("{#1}",data.time)
-    text = text.replace(/({#2(.+?);(.*?)})/,data.cached? "$1":"")
-    text = text.replace(/({#2(.+?);(.*?)})/,data.cached==1? "$2":"$1")
-    text = text.replace(/({#2(.+?);(.*?)})/,data.cached==2? "$3":"$2")
-    text = text.replace(/{#3(.+?)}/,data.similar? "$1":"")
-    return text
+  getI18nFormatSuccessMessage(faqPageUrl){
+    return function(text, data){
+      //"Réponse calculée en {#1} secondes{#2 (en cache)}.{#3 Le score est inchangé, <a href='{#4}#change' target='_blank'>en savoir plus</a>.}",
+      text = text.replace("{#1}",data.time)
+      text = text.replace("{#4}",faqPageUrl)
+      text = text.replace(/({#2(.+?);(.*?)})/,data.cached? "$1":"")
+      text = text.replace(/({#2(.+?);(.*?)})/,data.cached==1? "$2":"$1")
+      text = text.replace(/({#2(.+?);(.*?)})/,data.cached==2? "$3":"$2")
+      text = text.replace(/{#3(.+?)}/,data.similar? "$1":"")
+      return text
+    }
   }
 }
