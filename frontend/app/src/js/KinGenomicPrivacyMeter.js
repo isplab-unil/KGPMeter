@@ -131,22 +131,20 @@ export class KinGenomicPrivacyMeter{
       this.svgWidth - privacyBarWidth - privacyBarStrokeWidth, 30, 
       30, 400, 5,
       d3.interpolateRgbBasis(["rgb(255,0,0)","rgb(255,125,0)","rgb(255,255,0)","rgb(0,195,0)"]),
-      self.i18n, true,false, true, true,2,"rgb(255,255,255)"
+      self.i18n, false,true, false, false,4
     )
     this.privacyBar.init(false, false)
     this.privacyBar.reset(0)
 
     // privacy worded score
-    if(false){
-      this.privacyWordedScore = new KgpWordedScore(
-        this.privacyBar.g.attr("id"),
-        "privacy-bar-title",
-        this.privacyBar.width, -16, 20,
-        this.privacyBar.colorScale,
-        self.i18n,
-        "privacy-bar-title"
-      )
-    }
+    this.privacyWordedScore = new KgpWordedScore(
+      this.privacyBar.g.attr("id"),
+      "privacy-bar-title",
+      this.privacyBar.width, -16, 20,
+      this.privacyBar.colorScale,
+      self.i18n,
+      "privacy-bar-title"
+    )
 
     // backend status
     this.backendStatus = new KgpBackendStatus("kgp-backend-status", self.i18n, "/privacy-dev/faq")
