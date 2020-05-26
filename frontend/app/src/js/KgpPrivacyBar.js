@@ -13,6 +13,7 @@ export class KgpPrivacyBar{
     showScoreValue=false,
     showBoxes = true,
     showContour = false,
+    showOldTitle = false,
     strokeWidth = 4,
     backgroundColor = "rgb(230,230,230)",
     nbBoxes = 5
@@ -31,6 +32,7 @@ export class KgpPrivacyBar{
     this.showScoreValue=showScoreValue
     this.showBoxes=showBoxes
     this.showContour=showContour
+    this.showOldTitle=showOldTitle
     this.x = x
     this.y = y
 
@@ -107,17 +109,18 @@ export class KgpPrivacyBar{
       
     }
 
-    //privacy bar title
-    window.privacyBarTitle = this.g.append("text")
-      .attr("x",this.width)
-      .attr("y",-16)
-      .attr("height",20)
-      .attr("text-anchor","end")
-      .attr("fill","darkgrey")
-      .attr("id","privacy-bar-title-2")
-      //TODO: fix i18n.keyAttr reference
-      .attr(this.i18n.keyAttr,"privacy-bar-old-title")
-    console.log("privacyBarTitle: ", window.privacyBarTitle)
+    if(this.showOldTitle){
+      //privacy bar title
+      const privacyBarTitle = this.g.append("text")
+        .attr("x",this.width)
+        .attr("y",-16)
+        .attr("height",20)
+        .attr("text-anchor","end")
+        .attr("fill","darkgrey")
+        .attr("id","privacy-bar-title-2")
+        //TODO: fix i18n.keyAttr reference
+        .attr(this.i18n.keyAttr,"privacy-bar-old-title")
+    }
 
     this.scale = d3.scaleLinear()
       .range([this.height,0])
