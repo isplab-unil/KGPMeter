@@ -10,6 +10,7 @@ export class KgpWordedScore{
     colorScale,
     i18n,
     i18nKey,
+    hideWhenNoTargetOrNoOneSequenced = true
   ){
     this.parentId = parentId
     this.id = id
@@ -19,6 +20,7 @@ export class KgpWordedScore{
     this.colorScale = colorScale
     this.i18n = i18n
     this.i18nKey = i18nKey
+    this.hideWhenNoTargetOrNoOneSequenced = hideWhenNoTargetOrNoOneSequenced
     this.privacyStatus = 1
 
     this.init()
@@ -83,10 +85,13 @@ export class KgpWordedScore{
     if(this.text.attr("opacity")==1){
       this.text.transition(200).attr("opacity",0.5)
     }
-
-    kgpPromise.then(kgpSuccess=>{
-      this.update(kgpSuccess.result.privacy_metric)
-    },()=>{})
+    if( this.hideWhenNoTargetOrNoOneSequenced && ((!request.family_tree.target) || (request.family_tree.sequenced_relatives.length==0))){
+      this.hide(500)
+    }else{
+      kgpPromise.then(kgpSuccess=>{
+        this.update(kgpSuccess.result.privacy_metric)
+      },()=>{})
+    }
   }
 
   async i18nFormat(text, data){
