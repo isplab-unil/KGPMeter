@@ -165,7 +165,7 @@ export class KinGenomicPrivacyMeter{
         ()=>{}
       )
     })
-    // update cursor
+    // update cursor <- for tutorial videos, comment following listener
     this.scoreRequestHandler.addListener(kgpPromise => {
       $("body").css({'cursor':'progress'})
       kgpPromise.then(
