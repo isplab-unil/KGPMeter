@@ -2,11 +2,12 @@
 
 
 export class KgpScoreNumberExplainer{
-  constructor(parentId, i18n, i18nKey){
+  constructor(parentId, i18n, i18nKey, hideWhenNoTargetOrNoOneSequenced = true){
     this.parentId = parentId
     this.i18n = i18n
     this.i18nKey = i18nKey
     this.parent = $("#"+this.parentId)
+    this.hideWhenNoTargetOrNoOneSequenced = hideWhenNoTargetOrNoOneSequenced
 
     this.init()
   }
@@ -34,9 +35,13 @@ export class KgpScoreNumberExplainer{
 
   /** awaitScore() puts the KgpWordedScore in a waiting state (opacity=0.5) and updates it properly once the promise has fulfilled */
   awaitScore(kgpPromise, request, previousResponse){
-    kgpPromise.then(kgpSuccess=>{
-      this.update(kgpSuccess.result.privacy_metric)
-    },()=>{})
+    if( this.hideWhenNoTargetOrNoOneSequenced && ((!request.family_tree.target) || (request.family_tree.sequenced_relatives.length==0))){
+      this.hide(500)
+    }else{
+      kgpPromise.then(kgpSuccess=>{
+        this.update(kgpSuccess.result.privacy_metric)
+      },()=>{})
+    }
   }
 
   i18nFormat(text, data){
