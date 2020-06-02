@@ -88,8 +88,7 @@ function getNodeFromId(nodes, id) {
   - wife
   - chil:[] 
 */
-function addLinksToNodes(nodes) {
-  var onlyId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+function addLinksToNodes(nodes, onlyId=true) {
 
 
   function addLinksToNode(node) {
@@ -156,15 +155,17 @@ function parseGed(gedData) {
   console.log("parseGedcom.parse(gedData), gedData: ", gedData)
 
   let d3ized_ged = parseGedcom.d3ize(gedData);
-  console.log("parseGedcom.d3ize(gedData), d3ized_ged: ", d3ized_ged)
+  console.log("parseGedcom.d3ize(gedData), d3ized_ged: ", JSON.parse(JSON.stringify(d3ized_ged)))
   // add family links+sex to nodes
 
   d3ized_ged.nodes = addLinksToNodes(d3ized_ged.nodes);
-  console.log("addLinksToNodes(d3ized_ged.nodes), d3ized_ged: ", d3ized_ged)
+  console.log("addLinksToNodes(d3ized_ged.nodes), d3ized_ged: ", JSON.parse(JSON.stringify(d3ized_ged)))
   _.forEach(d3ized_ged.nodes, function (n) {
     addTagToNode(n, "SEX");
+    n.sequencedDNA=false
+    n.lastSequencedDNA=false 
   });
-  console.log(" addTagToNode(n, SEX), d3ized_ged: ", d3ized_ged)
+  console.log(" addTagToNode(n, SEX), d3ized_ged: ", JSON.parse(JSON.stringify(d3ized_ged)))
   //ftree = new FamilyTreeLayout(d3ized_ged.nodes);
   return d3ized_ged
 }
@@ -173,7 +174,7 @@ fetch("start_family.ged").then(
   resp => resp.text()
 ).then(gedData => {
   parseGed(gedData)
-} )
+})
 
 
 // jquery gedcom loading
