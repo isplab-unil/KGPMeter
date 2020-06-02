@@ -324,6 +324,8 @@ export class FamilyTree{
   arguments:
   - node: node or node id to be deleted
   - deleteNodesNotConnectedTo: node or node id, the function deletes all the nodes that are no longer connected to it once the first node has been removed.
+
+  returns a set of the deleted node ids
   */
   deleteNode(node,deleteNodesNotConnectedTo=false){
     node = this.getNode(node)
@@ -374,6 +376,17 @@ export class FamilyTree{
 
     return deletedNodeIds
 
+  }
+
+  /** ensures that the tree doesn't have more than nbGenerations by removing nodes*/
+  truncateToNgenerations(centerNodeId, nbGenerations){
+    this._computeDepths(this.getNode(centerNodeId))
+    if((this.maxDepth+1)>nbGenerations){
+      const centerNodeDepth = this.nodes[centerNodeId].depth
+      const minKeepDepth = Math.max(0, centerNodeDepth)
+      const maxKeepDepth = Math.max(nbGenerations-1, centerNodeDepth+nbGenerations-1)
+      this.nodesArray().filter(n => n.depth<minKeepDepth || n.depth>maxKeepDepth).forEach(n=>this.deleteNode(n))
+    }
   }
 
   // ensure there aren't any "undefined" element in nodes' chil or fams arrays
