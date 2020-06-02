@@ -253,7 +253,7 @@ export class KinGenomicPrivacyMeter{
   }
 
   /** Resets the family tree in a pleasant way */
-  reset(transitionDuration=800){
+  reset(transitionDuration=800, newFtree = KinGenomicPrivacyMeter.getEmptyFamilyTree(), transitionDurationNewTree=0){
     
     let self = this
     // delete all nodes except you
@@ -277,9 +277,9 @@ export class KinGenomicPrivacyMeter{
 
     // once this is done (after 800ms), reset to the empty ftree
     setTimeout(function(){
-      self.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
+      self.ftree = newFtree
       d3.select("#familytree-g").remove()
-      self.familyTreeArtist.init(0)
+      self.familyTreeArtist.init(transitionDurationNewTree)
       self.saveFamilyTreeToLocalStorage()
     },transitionDuration+2)
   }
