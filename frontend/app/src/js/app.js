@@ -77,7 +77,7 @@ window.kgp = kgp
 
 
 
-fetch("start_family.ged").then(
+fetch("cycle_family.ged").then(
   resp => resp.text()
 ).then(gedData => {
   window.gedFtree = FamilyTreeLayout.unserializeGedcom(gedData)
