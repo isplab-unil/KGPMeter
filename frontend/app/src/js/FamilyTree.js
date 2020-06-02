@@ -1,3 +1,5 @@
+import {addLinksToNodes, addTagToNode } from "./utils.js"
+
 export class FamilyTree{
   constructor(nodes){
     this.nodes= nodes
@@ -87,6 +89,44 @@ export class FamilyTree{
     serializedFtree = JSON.parse(serializedFtree)
     return new FamilyTree(FamilyTree.unserializeParseNodes(serializedFtree))
   }
+
+  /** Transforms a gedcom string into a proper node representations
+   * 
+   * @param {*} gedData a gedcom string
+   * @returns nodesDict a dict of nodes, with nodes' links as references to each other
+   */
+  static parseGedcomNodes(gedData) {
+    console.log("gedData: ", gedData)
+    gedData = parseGedcom.parse(gedData)
+
+    let d3ized_ged = parseGedcom.d3ize(gedData);
+
+    // add sex tag + sequencedDNA/lastSequencedDNA booleans
+    _.forEach(d3ized_ged.nodes, function (n) {
+      addTagToNode(n, "SEX");
+      n.sequencedDNA=false
+      n.lastSequencedDNA=false 
+    });
+
+    // add family links+sex to nodes
+    d3ized_ged.nodes = addLinksToNodes(d3ized_ged.nodes, false);
+
+    // transform into Dict as required by FTL constructor
+    let nodesDict = {}
+    d3ized_ged.nodes.forEach(n => nodesDict[n.id] = n )
+
+    console.log("nodesDict: ", nodesDict)
+    return nodesDict
+  }
+  /** Unserializes a FamilyTree serialized in a GEDCOM file
+   * 
+   * @param {string} serializedFtree
+   * @returns {FamilyTree}
+   */
+  static unserializeGedcom(gedcomData){
+    return new FamilyTree(FamilyTree.parseGedcomNodes(gedcomData))
+  }
+
 
   nodesArray(){
     return _.map(this.nodes, n=>n)

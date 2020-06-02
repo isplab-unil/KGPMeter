@@ -50,6 +50,16 @@ export class FamilyTreeLayout extends FamilyTree{
     return new FamilyTreeLayout(FamilyTree.unserializeParseNodes(serializedFtreeLayout),serializedFtreeLayout.centerNodeId)
   }
 
+  
+  /** Unserializes a FamilyTree serialized in a GEDCOM file
+   * 
+   * @param {string} serializedFtree
+   * @returns {FamilyTreeLayout}
+   */
+  static unserializeGedcom(gedcomData){
+    return new FamilyTreeLayout(FamilyTree.parseGedcomNodes(gedcomData) /* TODO: SPECIFY CENTER NODE ID */)
+  }
+
   /**
   Function computing x&y positions for each node
 

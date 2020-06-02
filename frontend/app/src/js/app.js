@@ -3,7 +3,6 @@ import {KinGenomicPrivacyMeter} from "./KinGenomicPrivacyMeter.js"
 import {Internationalisation} from "./lib/i18n.js"
 import {iframeLocalStorage} from "./lib/iframeCookiesLocalStorage.js"
 import { FamilyTreeLayout } from "./FamilyTreeLayout.js";
-import {addLinksToNodes, addTagToNode } from "./utils.js"
 
 
 /* NodeList polyfill for IE11: not included in Babel (->?!?) */
@@ -77,42 +76,16 @@ window.kgp = kgp
 
 
 
-/** Transforms a gedcom string into a proper node representations
- * 
- * @param {*} gedData a gedcom string
- * @returns nodesDict a dict of nodes, with nodes' links as references to each other
- */
-function parseGed(gedData) {
-  console.log("gedData: ", gedData)
-  gedData = parseGedcom.parse(gedData)
-
-  let d3ized_ged = parseGedcom.d3ize(gedData);
-
-  // add sex tag + sequencedDNA/lastSequencedDNA booleans
-  _.forEach(d3ized_ged.nodes, function (n) {
-    addTagToNode(n, "SEX");
-    n.sequencedDNA=false
-    n.lastSequencedDNA=false 
-  });
-
-  // add family links+sex to nodes
-  d3ized_ged.nodes = addLinksToNodes(d3ized_ged.nodes, false);
-
-  // transform into Dict as required by FTL constructor
-  let nodesDict = {}
-  d3ized_ged.nodes.forEach(n => nodesDict[n.id] = n )
-
-  console.log("nodesDict: ", nodesDict)
-  //ftree = new FamilyTreeLayout(d3ized_ged.nodes);
-  return nodesDict
-}
 
 fetch("start_family.ged").then(
   resp => resp.text()
 ).then(gedData => {
-  window.gedFtree = new FamilyTreeLayout(parseGed(gedData)/* TODO SPECIFIY CENTERNODIDE */)
+  window.gedFtree = FamilyTreeLayout.unserializeGedcom(gedData)
   console.log("gedFtree: ",window.gedFtree)
 })
+
+// update with gedcom ftree:
+//kgp.reset(800, gedFtree,800)
 
 // get current localstorage ftree
 //JSON.parse(localStorage.getItem("kgp-familyTree"))
