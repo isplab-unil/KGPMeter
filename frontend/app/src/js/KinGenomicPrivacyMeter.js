@@ -277,7 +277,7 @@ export class KinGenomicPrivacyMeter{
     this.scoreNumberExplainer.hide()
 
     // smoothly transition back to original position
-    this.familyTreeArtist.update(false, transitionDuration)
+    this.familyTreeArtist.update(transitionDuration)
 
     // once this is done (after 800ms), reset to the empty ftree
     setTimeout(function(){
@@ -296,7 +296,7 @@ export class KinGenomicPrivacyMeter{
       }
 
       d3.select("#familytree-g").remove()
-      self.familyTreeArtist.init(transitionDurationNewTree)
+      self.familyTreeArtist.init(transitionDurationNewTree, {x:null,y:80})
       self.saveFamilyTreeToLocalStorage()
     },transitionDuration+2)
   }
