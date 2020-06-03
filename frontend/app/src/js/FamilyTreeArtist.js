@@ -80,7 +80,7 @@ export class FamilyTreeArtist{
       //.attr("transform","translate("+700+","+(self.scaleFactor*(75-miny))+") scale("+self.scaleFactor+")")
 
     // updateSource:
-    updateSource = updateSource? updateSource : {x:translateX+(widthFtree-ftreeRightMargin)/2,y:50}
+    updateSource = updateSource? updateSource : {x:translateX,y:50}
     this.updateLinks(updateSource,transitionsDuration)
     this.updateNodes(updateSource,transitionsDuration)
   }
