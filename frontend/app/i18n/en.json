@@ -10,6 +10,7 @@
   "twitter-link": "<a href='https://twitter.com/intent/tweet?text=Did%20you%20know%20that%20someone%27s%20genome%20can%20be%20deduced%20from%20those%20of%20their%20family%20members%3F%20Estimate%20your%20family%20genomic%20privacy%20using%20our%20interactive%20tool.%20%40GenomePrivacy&hashtags=privacy,genomic&via=santeperso&url=https%3A%2F%2Fbit.ly%2F2Cf8HQW' target='_blank' class='btn btn-social-icon btn-twitter' title='Twitter' data-i18n='twitter-link'><span class='fab fa-fw fa-twitter' aria-hidden='true'></span><span class='sr-only'>Twitter</span></a>",
   "email-link": "<a href='mailto:?subject=Evaluate%20genomic%20privacy%20in%20your%20family&body=Did%20you%20know%20that%20someone%27s%20genome%20can%20be%20deduced%20from%20those%20of%20their%20family%20members%3F%20Estimate%20your%20family%20genomic%20privacy%20using%20this%20interactive%20tool.%20https%3A%2F%2Fbit.ly%2F2F7FNEq'><span id='share-email' class='fas fa-envelope fa-2x' aria-hidden='true'></span><span class='sr-only'>Email</span></a>",
   "explainer-text": "{#1}% of the target's genomic information can be deduced from the genomes of their sequenced relatives. Their privacy score is therefore {#2}%.",
+  "gedcom-upload-hint": "import family tree from GEDCOM file",
 
   "_COMMENT6": "-------------- tutorial --------------",
   "tuto-title-0":"Build your family tree",

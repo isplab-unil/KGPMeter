@@ -1,6 +1,44 @@
+import {FamilyTreeLayout} from "./FamilyTreeLayout.js"
 
 
+export class GedcomImportButton{
+  constructor(buttonDomId, inputId, kgp){
+    this.kgp=kgp
+    this.domId=buttonDomId
+    this.inputId=inputId
+    const self=this
+    console.log("GedcomImportButton. constructor()")
+    
+    // listen to file import event (=input change)
+    const inputElement = document.getElementById(this.inputId);
+    inputElement.addEventListener("change", function(){self.importFile(this.files)}, false);
+
+    this.init()
+  }
+  init(){
+    console.log("GedcomImportButton.init()")
+    d3.select("#"+this.domId).remove()
+
+    // adding button
+    this.button = this.kgp.addSvgButton("\uf0e8",this.domId,"gedcom-upload-hint",0,57, 28, 0, 120)
+    this.button.on("click", function(e){
+      const fileInput = document.getElementById("load-gedcom");
+      if (fileInput) {
+        fileInput.click();
+      }
+    })
+  }
+
+  importFile(files){
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      console.log("GEDCOM LOADED");
+      console.log("content:\n" + e.target.result);
+      const gedFtree = FamilyTreeLayout.unserializeGedcom(e.target.result)
+      kgp.reset(800, gedFtree,800)
+    };
 
 
-// checkout JS serialization of ftree (=FamilyTreeLayout)
-JSON.parse(localStorage.getItem("kgp-familyTree"))
+    reader.readAsText(files[0]);
+  }
+}

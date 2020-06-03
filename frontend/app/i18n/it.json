@@ -8,6 +8,7 @@
     "twitter-link": "<a href='https://twitter.com/intent/tweet?text=Sapevi che il genoma di qualcuno può essere dedotto da quelli dei membri della sua famiglia? Stima la privacy genomica della tua famiglia utilizzando il nostro strumento interattivo. @GenomePrivacy https://bit.ly/2Cf8HQW #privacy #genomic via @santeperso' target='_blank' class='btn btn-social-icon btn-twitter' title='Twitter' data-i18n='twitter-link'><span class='fab fa-fw fa-twitter' aria-hidden='true'></span><span class='sr-only'>Twitter</span></a>",
     "email-link": "<a href='mailto:?subject=Valutare%20la%20privacy%20genomica%20nella%20tua%20famiglia&body=Sapevi%20che%20il%20genoma%20di%20qualcuno%20pu%C3%B2%20essere%20dedotto%20da%20quelli%20dei%20membri%20della%20sua%20famiglia%3F%20Stima%20la%20privacy%20genomica%20della%20tua%20famiglia%20utilizzando%20questo%20strumento%20interattivo.%20https%3A%2F%2Fbit.ly%2F2F7FNEq'><span id='share-email' class='fas fa-envelope fa-2x' aria-hidden='true'></span><span class='sr-only'>Email</span></a>",
     "explainer-text": "{#1}% delle informazioni genomiche del bersaglio possono essere dedotte dai genomi dei loro parenti sequenziati. Il loro punteggio sulla privacy è quindi {#2}%. ",
+    "gedcom-upload-hint": "importare l'albero genealogico da file GEDCOM",
     "_COMMENT6": "-------------- tutorial --------------",
     "tuto-title-0": "Costruisci il tuo albero genealogico",
     "tuto-text-0": "Per aggiungere un individuo, clicca su {#add} e scegli un membro della famiglia; per rimuovere un individuo, clicca su {#remove}.",
