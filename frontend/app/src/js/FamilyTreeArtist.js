@@ -81,8 +81,8 @@ export class FamilyTreeArtist{
 
     // updateSource:
     updateSource = updateSource? updateSource : {x:translateX,y:50}
-    updateSource.x = updateSource.x? updateSource.x : translateX
-    updateSource.y = updateSource.y? updateSource.y : 50
+    updateSource.x = updateSource.x || updateSource.x===0? updateSource.x : translateX
+    updateSource.y = updateSource.y || updateSource.y===0? updateSource.y : 50
     this.updateLinks(updateSource,transitionsDuration)
     this.updateNodes(updateSource,transitionsDuration)
   }
