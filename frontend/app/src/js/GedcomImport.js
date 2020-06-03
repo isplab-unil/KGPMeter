@@ -2,10 +2,11 @@ import {FamilyTreeLayout} from "./FamilyTreeLayout.js"
 
 
 export class GedcomImportButton{
-  constructor(buttonDomId, inputId, kgp){
+  constructor(buttonDomId, inputId, kgp, maxIndiNodesInGedcom=30){
     this.kgp=kgp
     this.domId=buttonDomId
     this.inputId=inputId
+    this.maxIndiNodesInGedcom=maxIndiNodesInGedcom
     const self=this
     console.log("GedcomImportButton. constructor()")
     
@@ -30,12 +31,15 @@ export class GedcomImportButton{
   }
 
   importFile(files){
+    const self=this
     const reader = new FileReader();
     reader.onload = function (e) {
       console.log("GEDCOM LOADED");
       console.log("content:\n" + e.target.result);
       const gedFtree = FamilyTreeLayout.unserializeGedcom(e.target.result)
-      kgp.reset(800, gedFtree,800)
+      let minIndiNodeId = gedFtree.nodesArray().filter(n=>n.tag=="INDI").map(n=>n.id).sort()[0]
+      gedFtree.truncateToMaxNbNodes(minIndiNodeId, self.maxIndiNodesInGedcom)
+      kgp.reset(800, gedFtree,800, minIndiNodeId)
     };
 
 
