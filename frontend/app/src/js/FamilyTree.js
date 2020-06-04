@@ -409,6 +409,16 @@ export class FamilyTree{
     return this.truncateToDistanceNFromCenter(centerNodeId, chosenDist)
   }
 
+  removeNodesNotConnectedTo(centerNode){
+    const self=this
+    let unconnectedNodesIds = []
+    centerNode = this.getNode(centerNode)
+    this._computeDepths(centerNode)
+    unconnectedNodesIds = _.filter(self.nodes,n => n.depth==undefined || isNaN(n.depth)).map(n=>n.id)
+    unconnectedNodesIds.map(n=>this.deleteNode(n))
+    return unconnectedNodesIds
+  }
+
   // ensure there aren't any "undefined" element in nodes' chil or fams arrays
   cleanChilArrays(){
     _.forEach(this.nodes, node => node.chil?node.chil = node.chil.filter(Boolean):node.chil)

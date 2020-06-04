@@ -39,15 +39,18 @@ export class GedcomImportButton{
       reader.onload = function (e) {
         const gedFtree = FamilyTreeLayout.unserializeGedcom(e.target.result)
         let minIndiNodeId = gedFtree.nodesArray().filter(n=>n.tag=="INDI").map(n=>n.id).sort()[0]
+        const truncatedUnconnectedNodes = gedFtree.removeNodesNotConnectedTo(minIndiNodeId)
         const truncatedNbGen = gedFtree.truncateToNgenerations(minIndiNodeId, self.maxNbGenerations)
         const truncatedNbNodes = gedFtree.truncateToMaxNbNodes(minIndiNodeId, self.maxIndiNodesInGedcom)
-        const removedNodes = truncatedNbGen.length>0 || truncatedNbNodes.length>0
+        gedFtree.removeNodesNotConnectedTo(minIndiNodeId)
+        const removedNodes = truncatedUnconnectedNodes.length>0 || truncatedNbGen.length>0 || truncatedNbNodes.length>0
+        console.log("GIB.importFile() truncatedUnconnectedNodes:", truncatedUnconnectedNodes, ", truncatedNbGen:", truncatedNbGen, ", truncatedNbNodes:",truncatedNbNodes)
         kgp.reset(800, gedFtree,800, minIndiNodeId)
         if(removedNodes){
           self.kgp.backendStatus.displayInfo("gedcom-info-2")
           setTimeout(function(){
             self.kgp.backendStatus.displayWarning("response-error-9",30000)
-          },infoTimeout+2)
+          },5002)
         }else{
           self.kgp.backendStatus.displayWarning("response-error-9",30000)
         }
