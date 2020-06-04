@@ -44,7 +44,6 @@ export class FamilyTreeLayout extends FamilyTree{
    * @returns {FamilyTreeLayout}
    */
   static unserialize(serializedFtreeLayout){
-    console.log("FamilyTree serializedFtreeLayout ", JSON.parse(serializedFtreeLayout))
     serializedFtreeLayout = JSON.parse(serializedFtreeLayout)
 
     return new FamilyTreeLayout(FamilyTree.unserializeParseNodes(serializedFtreeLayout),serializedFtreeLayout.centerNodeId)

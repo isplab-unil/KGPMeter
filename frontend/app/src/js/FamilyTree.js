@@ -96,7 +96,6 @@ export class FamilyTree{
    * @returns nodesDict a dict of nodes, with nodes' links as references to each other
    */
   static parseGedcomNodes(gedData) {
-    console.log("gedData: ", gedData)
     gedData = parseGedcom.parse(gedData)
 
     let d3ized_ged = parseGedcom.d3ize(gedData);
@@ -115,7 +114,6 @@ export class FamilyTree{
     let nodesDict = {}
     d3ized_ged.nodes.forEach(n => nodesDict[n.id] = n )
 
-    console.log("nodesDict: ", nodesDict)
     return nodesDict
   }
   /** Unserializes a FamilyTree serialized in a GEDCOM file
@@ -209,7 +207,7 @@ export class FamilyTree{
     //console.log("_computeDepthsRecursive! "+node.id+" at depth "+depth)
     if(node.depth!=undefined){
       if(node.depth!=depth){
-        throw "DepthError: "+node.id+" resolves to 2 different depths: "+node.depth+" and "+depth;
+        console.warn("DepthWarning: "+node.id+" resolves to 2 different depths: "+node.depth+" and "+depth)
       }
       return;
     }
@@ -388,6 +386,7 @@ export class FamilyTree{
       const maxKeepDepth = Math.max(nbGenerations-1, centerNodeDepth+nbGenerations-1)
       return this.nodesArray().filter(n => n.depth<minKeepDepth || n.depth>maxKeepDepth).map(n=>this.deleteNode(n))
     }
+    return []
   }
 
   /** ensures that the tree doesn't have more than nbGenerations by removing nodes*/
@@ -407,7 +406,7 @@ export class FamilyTree{
         chosenDist=i
       }
     }
-    this.truncateToDistanceNFromCenter(centerNodeId, chosenDist)
+    return this.truncateToDistanceNFromCenter(centerNodeId, chosenDist)
   }
 
   // ensure there aren't any "undefined" element in nodes' chil or fams arrays
