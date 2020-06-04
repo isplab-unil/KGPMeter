@@ -175,6 +175,8 @@ export class FamilyTreeArtist{
             tr+=" man"
           }else if(d.sex=="F"){
             tr+=" woman"
+          }else{
+            tr+=" undefined"
           }
           return tr
         })

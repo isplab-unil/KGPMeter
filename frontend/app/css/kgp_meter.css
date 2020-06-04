@@ -164,7 +164,10 @@ margin-right:10px;
 }
 .woman {
   fill: #ff3399;
-}/*#e60073;}
+}
+.undefined {
+  fill: #9933ff;
+}/*#e60073;}ff9900
 /*.woman {fill: #ff8c45;}
 /*.man {fill: #75b303;}
 .woman {fill: #b30065;}
