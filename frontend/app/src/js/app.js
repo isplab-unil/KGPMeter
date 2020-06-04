@@ -70,22 +70,3 @@ if(window.parent != window){
 window.kgp = kgp
 
 
-
-// ================ TEST GEDCOM ================
-
-
-
-
-
-fetch("cycle_family.ged").then(
-  resp => resp.text()
-).then(gedData => {
-  window.gedFtree = FamilyTreeLayout.unserializeGedcom(gedData)
-  console.log("gedFtree: ",window.gedFtree)
-})
-
-// update with gedcom ftree:
-//kgp.reset(800, gedFtree,800)
-
-// get current localstorage ftree
-//JSON.parse(localStorage.getItem("kgp-familyTree"))

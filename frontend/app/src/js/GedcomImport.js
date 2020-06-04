@@ -2,13 +2,14 @@ import {FamilyTreeLayout} from "./FamilyTreeLayout.js"
 
 
 export class GedcomImportButton{
-  constructor(buttonDomId, inputId, kgp, maxIndiNodesInGedcom=30){
+  constructor(buttonDomId, inputId, kgp, maxNbGenerations=5, maxIndiNodesInGedcom=30, maxGedcomFileSize=1024**2){
     this.kgp=kgp
     this.domId=buttonDomId
     this.inputId=inputId
+    this.maxNbGenerations=maxNbGenerations
     this.maxIndiNodesInGedcom=maxIndiNodesInGedcom
+    this.maxGedcomFileSize=maxGedcomFileSize
     const self=this
-    console.log("GedcomImportButton. constructor()")
     
     // listen to file import event (=input change)
     const inputElement = document.getElementById(this.inputId);
@@ -17,7 +18,6 @@ export class GedcomImportButton{
     this.init()
   }
   init(){
-    console.log("GedcomImportButton.init()")
     d3.select("#"+this.domId).remove()
 
     // adding button
@@ -31,18 +31,30 @@ export class GedcomImportButton{
   }
 
   importFile(files){
-    const self=this
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      console.log("GEDCOM LOADED");
-      console.log("content:\n" + e.target.result);
-      const gedFtree = FamilyTreeLayout.unserializeGedcom(e.target.result)
-      let minIndiNodeId = gedFtree.nodesArray().filter(n=>n.tag=="INDI").map(n=>n.id).sort()[0]
-      gedFtree.truncateToMaxNbNodes(minIndiNodeId, self.maxIndiNodesInGedcom)
-      kgp.reset(800, gedFtree,800, minIndiNodeId)
-    };
+    if(files[0].size>this.maxGedcomFileSize){
+      self.kgp.backendStatus.displayWarning("gedcom-info-1")
+    }else{
+      const self=this
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const gedFtree = FamilyTreeLayout.unserializeGedcom(e.target.result)
+        let minIndiNodeId = gedFtree.nodesArray().filter(n=>n.tag=="INDI").map(n=>n.id).sort()[0]
+        const truncatedNbGen = gedFtree.truncateToNgenerations(minIndiNodeId, self.maxNbGenerations)
+        const truncatedNbNodes = gedFtree.truncateToMaxNbNodes(minIndiNodeId, self.maxIndiNodesInGedcom)
+        const removedNodes = truncatedNbGen.length>0 || truncatedNbNodes.length>0
+        kgp.reset(800, gedFtree,800, minIndiNodeId)
+        if(removedNodes){
+          self.kgp.backendStatus.displayInfo("gedcom-info-2")
+          setTimeout(function(){
+            self.kgp.backendStatus.displayWarning("response-error-9",30000)
+          },infoTimeout+2)
+        }else{
+          self.kgp.backendStatus.displayWarning("response-error-9",30000)
+        }
+      };
 
 
-    reader.readAsText(files[0]);
+      reader.readAsText(files[0]);
+    }
   }
 }
