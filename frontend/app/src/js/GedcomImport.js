@@ -21,7 +21,7 @@ export class GedcomImportButton{
     d3.select("#"+this.domId).remove()
 
     // adding button
-    this.button = this.kgp.addSvgButton("\uf0e8",this.domId,"gedcom-upload-hint",0,57, 28, 0, 120)
+    this.button = this.kgp.addSvgButton("\uf0e8",this.domId,"gedcom-upload-hint",0,57, 28, 0, 160)
     this.button.on("click", function(e){
       const fileInput = document.getElementById("load-gedcom");
       if (fileInput) {
