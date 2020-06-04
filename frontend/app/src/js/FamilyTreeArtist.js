@@ -13,12 +13,12 @@ export class FamilyTreeArtist{
     this.init(transitionDuration)
   }
 
-  init(transitionDuration=800){
+  init(transitionDuration=800, updateSource=false){
     this.ftree = this.kgp.ftree
     let self = this
     this.svgg = this.kgp.svg.append("g").attr("id","familytree-g")
 
-    this.update(false, transitionDuration);
+    this.update(updateSource, transitionDuration);
   
     // distinguish you node
     //this.kgp.target = this.ftree.nodes[this.kgp.youNodeId]
@@ -81,6 +81,8 @@ export class FamilyTreeArtist{
 
     // updateSource:
     updateSource = updateSource? updateSource : {x:translateX,y:50}
+    updateSource.x = updateSource.x || updateSource.x===0? updateSource.x : translateX
+    updateSource.y = updateSource.y || updateSource.y===0? updateSource.y : 50
     this.updateLinks(updateSource,transitionsDuration)
     this.updateNodes(updateSource,transitionsDuration)
   }

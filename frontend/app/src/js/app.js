@@ -2,6 +2,7 @@
 import {KinGenomicPrivacyMeter} from "./KinGenomicPrivacyMeter.js"
 import {Internationalisation} from "./lib/i18n.js"
 import {iframeLocalStorage} from "./lib/iframeCookiesLocalStorage.js"
+import { FamilyTreeLayout } from "./FamilyTreeLayout.js";
 
 
 /* NodeList polyfill for IE11: not included in Babel (->?!?) */
@@ -67,3 +68,24 @@ if(window.parent != window){
   initKgp({})
 }
 window.kgp = kgp
+
+
+
+// ================ TEST GEDCOM ================
+
+
+
+
+
+fetch("cycle_family.ged").then(
+  resp => resp.text()
+).then(gedData => {
+  window.gedFtree = FamilyTreeLayout.unserializeGedcom(gedData)
+  console.log("gedFtree: ",window.gedFtree)
+})
+
+// update with gedcom ftree:
+//kgp.reset(800, gedFtree,800)
+
+// get current localstorage ftree
+//JSON.parse(localStorage.getItem("kgp-familyTree"))

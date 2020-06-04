@@ -12,6 +12,7 @@ import {kgpSetSourceEvent, kgpSetHeightEvent} from "./KgpIframeInterface"
 import {TrashButton} from "./TrashButton.js"
 import {KgpTutorialButton, kgpTutorial} from "./KgpTutorial.js"
 import {detectIE11, detectMobile, onWindowResize} from "./utils.js"
+import { GedcomImportButton } from "./GedcomImport.js"
 
 export class KinGenomicPrivacyMeter{
   constructor(api_base_url, svgId, youNodeId, i18n, localStoragePrefix="kgpmeter-", options={}){
@@ -115,6 +116,9 @@ export class KinGenomicPrivacyMeter{
       }
     }
     createTutorialButton()
+
+    // upload gedcom button
+    this.gedcomImport = new GedcomImportButton("gedcom-import","load-gedcom",this)
 
     // api urls
     this.setApiUrl(api_base_url)
@@ -253,7 +257,7 @@ export class KinGenomicPrivacyMeter{
   }
 
   /** Resets the family tree in a pleasant way */
-  reset(transitionDuration=800){
+  reset(transitionDuration=800, newFtree = null, transitionDurationNewTree=0, newYouNodeId = null){
     
     let self = this
     // delete all nodes except you
@@ -273,13 +277,26 @@ export class KinGenomicPrivacyMeter{
     this.scoreNumberExplainer.hide()
 
     // smoothly transition back to original position
-    this.familyTreeArtist.update(false, transitionDuration)
+    this.familyTreeArtist.update(transitionDuration)
 
     // once this is done (after 800ms), reset to the empty ftree
     setTimeout(function(){
-      self.ftree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
+      if(!newFtree){
+        newFtree = KinGenomicPrivacyMeter.getEmptyFamilyTree()
+      }
+      self.ftree = newFtree
+
+      // if need be: update youNodeId
+      if(newFtree.nodes[newYouNodeId]){
+        self.youNodeId = newYouNodeId
+      }
+      else if(!newFtree.nodes[self.youNodeId]){
+        let minIndiNodeId = newFtree.nodesArray().filter(n=>n.tag=="INDI").map(n=>n.id).sort()[0]
+        self.youNodeId = minIndiNodeId
+      }
+
       d3.select("#familytree-g").remove()
-      self.familyTreeArtist.init(0)
+      self.familyTreeArtist.init(transitionDurationNewTree, {x:null,y:80})
       self.saveFamilyTreeToLocalStorage()
     },transitionDuration+2)
   }
@@ -398,6 +415,7 @@ export class KinGenomicPrivacyMeter{
     }
     this.trashButton.init()
     this.tutorialButton.init()
+    this.gedcomImport.init()
 
     if(this.target && self.ftree.nodesArray().filter(n=>n.sequencedDNA).length>0){
       this.privacyBar.update(this.privacyMetric, 0)

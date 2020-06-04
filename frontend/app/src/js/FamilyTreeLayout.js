@@ -44,8 +44,20 @@ export class FamilyTreeLayout extends FamilyTree{
    * @returns {FamilyTreeLayout}
    */
   static unserialize(serializedFtreeLayout){
+    console.log("FamilyTree serializedFtreeLayout ", JSON.parse(serializedFtreeLayout))
     serializedFtreeLayout = JSON.parse(serializedFtreeLayout)
+
     return new FamilyTreeLayout(FamilyTree.unserializeParseNodes(serializedFtreeLayout),serializedFtreeLayout.centerNodeId)
+  }
+
+  
+  /** Unserializes a FamilyTree serialized in a GEDCOM file
+   * 
+   * @param {string} serializedFtree
+   * @returns {FamilyTreeLayout}
+   */
+  static unserializeGedcom(gedcomData){
+    return new FamilyTreeLayout(FamilyTree.parseGedcomNodes(gedcomData) /* TODO: SPECIFY CENTER NODE ID */)
   }
 
   /**

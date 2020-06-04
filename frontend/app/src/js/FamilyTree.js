@@ -1,3 +1,5 @@
+import {addLinksToNodes, addTagToNode } from "./utils.js"
+
 export class FamilyTree{
   constructor(nodes){
     this.nodes= nodes
@@ -88,6 +90,44 @@ export class FamilyTree{
     return new FamilyTree(FamilyTree.unserializeParseNodes(serializedFtree))
   }
 
+  /** Transforms a gedcom string into a proper node representations
+   * 
+   * @param {*} gedData a gedcom string
+   * @returns nodesDict a dict of nodes, with nodes' links as references to each other
+   */
+  static parseGedcomNodes(gedData) {
+    console.log("gedData: ", gedData)
+    gedData = parseGedcom.parse(gedData)
+
+    let d3ized_ged = parseGedcom.d3ize(gedData);
+
+    // add sex tag + sequencedDNA/lastSequencedDNA booleans
+    _.forEach(d3ized_ged.nodes, function (n) {
+      addTagToNode(n, "SEX");
+      n.sequencedDNA=false
+      n.lastSequencedDNA=false 
+    });
+
+    // add family links+sex to nodes
+    d3ized_ged.nodes = addLinksToNodes(d3ized_ged.nodes, false);
+
+    // transform into Dict as required by FTL constructor
+    let nodesDict = {}
+    d3ized_ged.nodes.forEach(n => nodesDict[n.id] = n )
+
+    console.log("nodesDict: ", nodesDict)
+    return nodesDict
+  }
+  /** Unserializes a FamilyTree serialized in a GEDCOM file
+   * 
+   * @param {string} serializedFtree
+   * @returns {FamilyTree}
+   */
+  static unserializeGedcom(gedcomData){
+    return new FamilyTree(FamilyTree.parseGedcomNodes(gedcomData))
+  }
+
+
   nodesArray(){
     return _.map(this.nodes, n=>n)
   }
@@ -150,7 +190,7 @@ export class FamilyTree{
   _computeDepths(startNode){
 
     _.forEach(this.nodes, n=> delete n.depth)
-    this._computeDepthsRecursive(startNode,0)
+    this._computeDepthsRecursive(startNode,0,0)
 
     //ensure non-negative depths & compute family tree global maximum depth
     let depthExtent = d3.extent(_.map(this.nodes,n => n.depth))
@@ -164,7 +204,7 @@ export class FamilyTree{
     })
   }
 
-  _computeDepthsRecursive(node,depth){
+  _computeDepthsRecursive(node,depth, distanceToStartNode){
     if(!node){return;}
     //console.log("_computeDepthsRecursive! "+node.id+" at depth "+depth)
     if(node.depth!=undefined){
@@ -176,14 +216,15 @@ export class FamilyTree{
     let maxmindepths = [[depth,depth]]
 
     node.depth=depth
-    maxmindepths.push(this._computeDepthsRecursive(node.husb,depth))
-    maxmindepths.push(this._computeDepthsRecursive(node.wife,depth))
-    maxmindepths.push(this._computeDepthsRecursive(node.famc,depth-1))
+    node.distanceToStartNode = node.distanceToStartNode? Math.min(distanceToStartNode, node.distanceToStartNode) : distanceToStartNode
+    maxmindepths.push(this._computeDepthsRecursive(node.husb, depth, distanceToStartNode+1))
+    maxmindepths.push(this._computeDepthsRecursive(node.wife, depth, distanceToStartNode+1))
+    maxmindepths.push(this._computeDepthsRecursive(node.famc, depth-1, distanceToStartNode))
     if(node.fams){
-      node.fams.forEach(fam => maxmindepths.push(this._computeDepthsRecursive(fam,depth)))
+      node.fams.forEach(fam => maxmindepths.push(this._computeDepthsRecursive(fam,depth, distanceToStartNode)))
     }
     if(node.chil){
-      node.chil.map(chil => maxmindepths.push(this._computeDepthsRecursive(chil,depth+1)))
+      node.chil.map(chil => maxmindepths.push(this._computeDepthsRecursive(chil,depth+1, distanceToStartNode+1)))
     }
     maxmindepths = maxmindepths.filter(mmd => mmd!=undefined)
     node.minDepth = d3.min(maxmindepths,d=>d[0]) 
@@ -284,6 +325,8 @@ export class FamilyTree{
   arguments:
   - node: node or node id to be deleted
   - deleteNodesNotConnectedTo: node or node id, the function deletes all the nodes that are no longer connected to it once the first node has been removed.
+
+  returns a set of the deleted node ids
   */
   deleteNode(node,deleteNodesNotConnectedTo=false){
     node = this.getNode(node)
@@ -334,6 +377,37 @@ export class FamilyTree{
 
     return deletedNodeIds
 
+  }
+
+  /** ensures that the tree doesn't have more than nbGenerations by removing nodes*/
+  truncateToNgenerations(centerNodeId, nbGenerations){
+    this._computeDepths(this.getNode(centerNodeId))
+    if((this.maxDepth+1)>nbGenerations){
+      const centerNodeDepth = this.nodes[centerNodeId].depth
+      const minKeepDepth = Math.max(0, centerNodeDepth)
+      const maxKeepDepth = Math.max(nbGenerations-1, centerNodeDepth+nbGenerations-1)
+      return this.nodesArray().filter(n => n.depth<minKeepDepth || n.depth>maxKeepDepth).map(n=>this.deleteNode(n))
+    }
+  }
+
+  /** ensures that the tree doesn't have more than nbGenerations by removing nodes*/
+  truncateToDistanceNFromCenter(centerNodeId, maxDistance){
+    this._computeDepths(this.getNode(centerNodeId))
+    return this.nodesArray().filter(n => n.distanceToStartNode>maxDistance).map(n=>this.deleteNode(n))
+  }
+
+  /** ensures that the tree doesn't have more than maxNbNodes INDI nodes by removing nodes, works by using distance from centerNode*/
+  truncateToMaxNbNodes(centerNodeId, maxNbNodes){
+    this._computeDepths(this.getNode(centerNodeId))
+    let nodesDist = this.nodesArray().filter(n => n.tag==="INDI").map(n=>n.distanceToStartNode)
+    const maxDist = Math.max(...nodesDist)
+    let chosenDist = 0
+    for(let i=0; i<=maxDist  ; i++){
+      if(nodesDist.filter(d=>d<=i).length<=maxNbNodes){
+        chosenDist=i
+      }
+    }
+    this.truncateToDistanceNFromCenter(centerNodeId, chosenDist)
   }
 
   // ensure there aren't any "undefined" element in nodes' chil or fams arrays
