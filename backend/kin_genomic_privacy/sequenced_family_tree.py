@@ -335,10 +335,8 @@ class SequencedFamilyTree(Hashable):
         nodes_to_keep.add(self.target)
         undirected_self = self.family_tree.to_undirected()
         for sn in sequenced_relatives:
-            # all_simple paths returns a generator of lists -> call next() to get the first one
-            # (there is only one path as, at this point, the SequencedFamilyTree is a graph theory tree too)
-            sp = next(nx.all_simple_paths(undirected_self, sn, self.target))
-            nodes_to_keep.update(sp)
+            for path in nx.all_simple_paths(undirected_self, sn, self.target):
+              nodes_to_keep.update(path)
         nodes_to_remove = set([n for n in list(self.nodes) if n not in nodes_to_keep])
 
         for n in nodes_to_remove:
