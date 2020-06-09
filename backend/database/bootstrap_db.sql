@@ -9,7 +9,7 @@ GRANT SELECT, SHOW VIEW ON * TO 'stat'@'localhost';
 
 # TABLES
 
-CREATE TABLE request (
+CREATE OR REPLACE TABLE request (
   id        INT         NOT NULL AUTO_INCREMENT,
   timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   user_id   VARCHAR(64),
@@ -23,7 +23,7 @@ CREATE TABLE request (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE user (
+CREATE OR REPLACE TABLE user (
   id         INT                NOT NULL AUTO_INCREMENT,
   user_id    VARCHAR(64) UNIQUE NOT NULL,
   user_agent TEXT,
@@ -31,7 +31,7 @@ CREATE TABLE user (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE tree (
+CREATE OR REPLACE TABLE tree (
   id        INT         NOT NULL AUTO_INCREMENT,
   tree      TEXT        NOT NULL,
   signature VARCHAR(64) NOT NULL UNIQUE,
@@ -39,7 +39,7 @@ CREATE TABLE tree (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE value (
+CREATE OR REPLACE TABLE value (
   id                INT       NOT NULL AUTO_INCREMENT,
   request_id        INT       NOT NULL,
   tree_id         INT,
