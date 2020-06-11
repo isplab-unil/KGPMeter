@@ -586,7 +586,7 @@ class SequencedFamilyTree(Hashable):
     def get_family_relation(self, interest_node, node_other):
         """Returns the family relation of node_who relative to node_ref as a string
         
-        For example, if "B" is the grandfather of "A" are in the family tree and are brothers, get_family_relation("A","B")
+        For example, if "B" is the grandfather of "A", get_family_relation("A","B")
         should return "grandfather".  get_family_relation("B","A") Should return "grandchild".
         Covered family relation: spouse, parent, grandparent, uncle/aunt, uncle-/aunt-in-law, cousin,
         sibling, sibling-in-law, nephew/niece, child, child-in-law, grandchild.
