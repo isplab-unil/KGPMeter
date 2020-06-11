@@ -21,7 +21,3 @@ Then, each time you want to transpile, run the build command:
 ```
 npm run-script build
 ```
-Or to auto-transpile on file changes:
-```
-npm run-script build --watch
-``` 
