@@ -81,19 +81,22 @@ def serve_iframe_app(path):
         path = path + "index.html"
     return send_from_directory("../frontend/app/", path)
 
+def serve_static_files(appli, serve_static_files_from, static_files_folder):
+  @appli.route('/%s/' % serve_static_files_from, defaults={'path': ""})
+  @appli.route('/%s/<path:path>' % serve_static_files_from)
+  def serve_static_debug_website(path):
+    # TODO TOO MUCH OF A HACK
+    if not re.search("\\.", path):
+      # add trailing slash if missing
+      if len(path) > 0 and not path.endswith("/"):
+          return redirect(request.path + "/", code=301)
+      # ...as well as index.html reference
+      path = path + "index.html"
+    return send_from_directory(static_files_folder, path)
+
 # only for local testing:
 if application.config["TESTING"] and application.config["SERVE_STATIC_FILES_FROM"] and application.config["STATIC_FILES_FOLDER"]:
-    @application.route('/%s/' % application.config["SERVE_STATIC_FILES_FROM"], defaults={'path': ""})
-    @application.route('/%s/<path:path>' % application.config["SERVE_STATIC_FILES_FROM"])
-    def serve_static_debug_website(path):
-        # TODO TOO MUCH OF A HACK
-        if not re.search("\\.", path):
-            # add trailing slash if missing
-            if len(path) > 0 and not path.endswith("/"):
-                return redirect(request.path + "/", code=301)
-            # ...as well as index.html reference
-            path = path + "index.html"
-        return send_from_directory(application.config["STATIC_FILES_FOLDER"], path)
+    serve_static_files(application, application.config["SERVE_STATIC_FILES_FROM"], application.config["STATIC_FILES_FOLDER"])
 
 
 # if file is main and -r option: run the Flask application
