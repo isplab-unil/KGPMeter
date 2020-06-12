@@ -151,7 +151,7 @@ export class KinGenomicPrivacyMeter{
     )
 
     // backend status
-    const faqUrl = self.userSource.match(/\/privacy-dev\//)? "/privacy-dev/faq" : "/privacy/faq"
+    const faqUrl = (window.location+"").match(/\/privacy-dev\//)? "/privacy-dev/faq" : "/privacy/faq"
     this.backendStatus = new KgpBackendStatus("kgp-backend-status", self.i18n, faqUrl)
 
     // explainer
