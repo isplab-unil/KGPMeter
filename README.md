@@ -117,7 +117,7 @@ deactivate
 
 
 
-[KGPMeter_paper_url]: santeperso.unil.ch/privacy-dev/?test
+[KGPMeter_paper_url]: santeperso.unil.ch/privacy/?github
 [our_website]: santeperso.unil.ch/privacy/?github
 [api endpoint]: https://santeperso.unil.ch/integration/
 [publicly available kgpmeter.js file]: https://santeperso.unil.ch/integration/lib/js/kgpmeter.js
