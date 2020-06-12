@@ -7,39 +7,37 @@ export class KgpScoreJsCache{
    * 
    * uses scoresDictionnary if given, then localStorageKey if given, and finally url
    */
-  constructor(scoresDictionnary=null, localStorageKey=null, url=null){
+  constructor(scoresDictionnary=null, loadUrl=null, saveUrl, localStorageKey=null){
     const self = this
     this.scores = scoresDictionnary
     this.localStorageKey = localStorageKey
     this.loadedFrom = "scoresDictionnary"
+    this.loadUrl = loadUrl
+    this.saveUrl = saveUrl
 
     if(!this.scores){
       // waiting for LS/server: empty cache
       this.scores = {}
 
-      if(localStorageKey){
-        // ... try from localStorageKey
-        iframeLocalStorage.getItem(localStorageKey).then(json =>{
-          // ONLY TEMPORARY TO SAVE CACHES ON SERVER
-          json=null
-          // END: ONLY TEMPORARY TO SAVE CACHES ON SERVER
-          if(json){
-            self.scores = JSON.parse(json)
-            self.loadedFrom = "localStorageKey"
-          // ... try from url
-          } else if( url){
-            fetch(url)
-              .then(resp => resp.json())
-              .then(json =>{
-                if(json){
-                  self.scores = json
-                  self.save()
-                }
-              }).catch(fail=>console.warn("KgpScoreJsCache: failed to load cache json file from: ",url))
-              self.loadedFrom = "url"
-          }
-        }, console.warn)
-      }
+      // ... try from localStorageKey
+      iframeLocalStorage.getItem(localStorageKey).then(json =>{
+        json=null
+        if(json){
+          self.scores = JSON.parse(json)
+          self.loadedFrom = "localStorageKey"
+        // ... try from url
+        } else if(self.loadUrl){
+          fetch(self.loadUrl)
+            .then(resp => resp.json())
+            .then(json =>{
+              if(json){
+                self.scores = json
+                self.save()
+              }
+            }).catch(fail=>console.warn("KgpScoreJsCache: failed to load cache json file from: ",url))
+            self.loadedFrom = "url"
+        }
+      }, w=>console.warn(w))
     }
   }
 
@@ -68,17 +66,16 @@ export class KgpScoreJsCache{
   }
 
   save(){
+    // save to LS or back on api endpoint if provided
     if(this.localStorageKey){    
-      // ONLY TEMPORARY TO SAVE CACHES ON SERVER iframeLocalStorage.setItem(this.localStorageKey, JSON.stringify(this.scores), 2*3600*1000)
+      iframeLocalStorage.setItem(this.localStorageKey, JSON.stringify(this.scores), 2*3600*1000)
     }
-    /* ONLY TEMPORARY TO SAVE CACHES ON SERVER */
-    if((""+window.location).search("localhost")>=0){
-      fetch("../save-cache", {
+    if(this.saveUrl){
+      fetch(this.saveUrl, {
         method: 'POST',
         body: JSON.stringify(this.scores)
       })
     }
-    /* END: ONLY TEMPORARY TO SAVE CACHES ON SERVER */
   }
 
   /** Returns the signature for the given sequenced family tree */

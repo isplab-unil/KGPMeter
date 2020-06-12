@@ -1,6 +1,5 @@
 import {KgpScoreResponse, KgpScoreSuccess, KgpScoreError, KgpScoreStale} from "./KgpScoreResponse.js"
 import {KgpScoreRequest} from "./KgpScoreRequest.js"
-import {KgpScoreJsCache} from "./KgpScoreJsCache.js"
 
 export class KgpScoreRequestHandler{
   constructor(api_endpoint, cache = null){

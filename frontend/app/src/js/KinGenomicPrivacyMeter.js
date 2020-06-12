@@ -157,8 +157,9 @@ export class KinGenomicPrivacyMeter{
     this.scoreNumberExplainer = new KgpScoreNumberExplainer("kgp-explainer-container", self.i18n, "explainer-text")
 
     // js score cach
-    const kgpScoreCacheLSkey = localStoragePrefix+"score-cache"
-    const scoreCache = new KgpScoreJsCache(null, kgpScoreCacheLSkey, this.scoreJsCacheApiEndpoint)
+    const kgpScoreCacheLSkey = false //localStoragePrefix+"score-cache"
+    const kgpScoreSaveUrl = false //"../save-cache"
+    const scoreCache = new KgpScoreJsCache(null, this.scoreJsCacheApiEndpoint, kgpScoreSaveUrl, kgpScoreCacheLSkey)
 
     // request handler
     this.scoreRequestHandler = new KgpScoreRequestHandler(this.privacyScoreApiEndpoint, scoreCache)

@@ -42,16 +42,17 @@ def root():
     # TODO: 302 code to static doc page
     return 'Hello World! This is the url to use as API url in your frontend ;-)'
 
-# ONLY TEMPORARY TO SAVE CACHE ON SERVER 
-import json
-@application.route('/save-cache', methods=["POST"])
-def save_cache():
-    # TODO: 302 code to static doc page
-    cache_json = request.get_json(force=True)
-    with open(os.path.join(WSGI_PROJECT_DIR, "../frontend/app/jscache/cache.json"), "w") as outf:
-      json.dump(cache_json, outf, indent=1)
-    return "Cache saved!"
-# END: ONLY TEMPORARY TO SAVE CACHE JSON ON SERVER 
+
+# Allow to update cache on server 
+if application.config.get("ENGINE_ENABLE_JS_CACHE_SAVE_ENDPOINT"):
+  import json
+  @application.route('/save-cache', methods=["POST"])
+  def save_cache():
+      # TODO: 302 code to static doc page
+      cache_json = request.get_json(force=True)
+      with open(os.path.join(WSGI_PROJECT_DIR, "../frontend/app/jscache/cache.json"), "w") as outf:
+        json.dump(cache_json, outf, indent=1)
+      return "Cache saved!"
 
 
 # Privacy score entry point: Computes privacy score from JSON request
