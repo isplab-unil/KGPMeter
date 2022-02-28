@@ -7,7 +7,7 @@ This git repo is the companion to our paper [_KGP Meter: Communicating Kin Genom
 
 ## Getting started
 
-This repository is intended for people that either want to add the KGPMeter web app to their website or are interested in using the KGPMeter codebase. If you want to evalulate scenarios of kin genomic privacy, head to our dedicated website [santeperso.unil.ch][our_website]. If you want to learn about the scientific foundations of KGPMeter head to our [paper][KGPMeter_paper_url].
+This repository is intended for people that either want to add the KGPMeter web app to their website or are interested in using the KGPMeter codebase. If you want to evalulate scenarios of kin genomic privacy, head to our dedicated website [santeperso.unil.ch](https://santeperso.unil.ch/privacy). If you want to learn about the scientific foundations of KGPMeter head to our [paper](https://serval.unil.ch/en/notice/serval:BIB_0D43E1BE4D8F).
 
 There are 3 possible use-cases documented here:
 1. Integrate the KGPMeter web app into a website (using our backend or your own).
