@@ -23,7 +23,7 @@ If you want to contribute to the project/modify the code/understand this reposit
 You can find html integration examples in the [KGPMeter_integration_example.html](./KGPMeter_integration_example.html) file.
 
 The first and simplest method to integrate the KGPMeter web app is to add two tags to your webpage:
-```
+```html
 <div id="kin-genomic-privacy-meter"></div>
 <script src="path/to/kgpmeter.js"></script>
 ```
@@ -32,7 +32,7 @@ The `kgpmeter.js` script looks for a `<div>` with id `kin-genomic-privacy-meter`
 If it finds it, the script automatically creates a kgpmeter instance in it, using by default our [api endpoint].
 
 It is also possible to specify some options using optional `data-` attributes :
-```
+```html
 <div id="kin-genomic-privacy-meter" data-kgpmeter-api-url="https://santeperso.unil.ch/integration/" data-kgpmeter-lng="en" data-kgpmeter-max-height="1000" data-kgpmeter-remove-survey="false"></div>
 <script src="path/to/kgpmeter.js"></script>
 ```
@@ -40,7 +40,7 @@ It is also possible to specify some options using optional `data-` attributes :
 The three other `data-` attributes allow to set the web app language, maximum height (in pixel) and whether to remove the user survey, if not present they default to `"en"` and `1000` and `false`. Available languages are `["en", "fr", "it", "de", "es"]`, the `data-kgpmeter-max-height` should be at least `600`.
 
 The second method to integrate KGPMeter in a webpage is to create a KGPMeter instance with javascript, the only advantage being the ability to use another `<div>` id:
-```
+```html
 <div id="kgp-meter"></div>
 <script src="path/to/kgpmeter.js"></script>
 <script type="text/javascript">
@@ -61,20 +61,20 @@ If it is not already done, follow the guide _A) Download Netica and install pyth
 `backend/app.py` instantiates a flask app. It is ready to be deployed as a WSGI application for production use.
 
 To launch it locally for testing, with the virtual environment activated enter the `backend/` folder and simply do:
-```
+```sh
 python app.py -r
 ```
 
 You can now browse to http://localhost:5000/app/ to see the embedable app. The proper URL to use for a website integration would here be http://localhost:5000/.
 
-```backend/config_default.py``` describes a default configuration for ```app.py```. It shouldn't be modified, copy it into  ```backend/config.py``` and modify this one instead. ```app.py``` first looks for the ```backend/config.py``` config file and uses ```backend/config_default.py``` as fallback.
+`backend/config_default.py` describes a default configuration for `app.py`. It shouldn't be modified, copy it into  `backend/config.py` and modify this one instead. `app.py` first looks for the `backend/config.py` config file and uses `backend/config_default.py` as fallback.
 
 ### 3. Use the KGPMeter python API
 
 If it is not already done, follow the guide _A) Download Netica and install python dependencies_ below to have Netica and python dependencies installed.
 
 `backend/demo/demo.ipynb` introduces the kgp_meter backend: how to create a Sequenced Family Tree and compute its target's privacy score:
-```
+```sh
 jupyter notebook backend/demo/demo.ipynb
 ```
 
@@ -87,14 +87,14 @@ Notes:
 - for Windows, we don't have a download_compile script yet. If you write one, we would be very happy to add it!
 
 In the repo folder, run the following commands:
-```
+```sh
 cd backend/neticaPy/
 sh download_compile_netica_<your OS: mac, linux64 or linux32>.sh
 cd ../..
 ```
 
 Install python dependencies:
-```
+```sh
 cd backend/
 python3 -m venv venv
 . venv/bin/activate
@@ -102,9 +102,17 @@ pip install -r requirements.txt
 cd ..
 ```
 
+If you want to run the KGPMeter backend on Linux, you will need to install Apache2 and install the optional requirements in addition to the normal requirements:
+```sh
+cd backend/
+. venv/bin/activate
+pip install -r requirements_optional.txt
+cd ..
+```
+
 With the depedencies installed and the virtual environment activated, you can then follow with 2. or 3. .
 Once you're done, you can deactivate the python virtual environment:
-```
+```sh
 deactivate
 ```
 
