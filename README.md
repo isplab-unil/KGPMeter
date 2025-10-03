@@ -102,6 +102,14 @@ pip install -r requirements.txt
 cd ..
 ```
 
+If you want to run the KGPMeter backend on Linux, you will need to install Apache2 and install the optional requirements in addition to the normal requirements:
+```sh
+cd backend/
+. venv/bin/activate
+pip install -r requirements_optional.txt
+cd ..
+```
+
 With the depedencies installed and the virtual environment activated, you can then follow with 2. or 3. .
 Once you're done, you can deactivate the python virtual environment:
 ```
